@@ -425,7 +425,7 @@ inline scalar mag
     const VectorSpace<Form, Cmpt, Ncmpts>& vs
 )
 {
-    return ::sqrt(magSqr(static_cast<const Form&>(vs)));
+    return sqrt(magSqr(static_cast<const Form&>(vs)));
 }
 
 

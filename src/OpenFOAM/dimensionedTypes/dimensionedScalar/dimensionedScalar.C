@@ -74,11 +74,12 @@ dimensionedScalar pow
     const dimensionedScalar& expt
 )
 {
+    // CoDiPack4OpenFOAM
     return dimensionedScalar
     (
         "pow(" + ds.name() + ',' + expt.name() + ')',
         pow(ds.dimensions(), expt),
-        ::pow(ds.value(), expt.value())
+        pow(ds.value(), expt.value())
     );
 }
 

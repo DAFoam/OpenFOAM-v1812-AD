@@ -22,10 +22,11 @@ wmakeLnInclude -u OpenFOAM
 wmakeLnInclude -u OSspecific/"${WM_OSTYPE:-POSIX}"
 Pstream/Allwmake $targetType $*
 
+OSspecific/"${WM_OSTYPE:-POSIX}"/Allwmake $targetType $*
+
 # CoDiPack4OpenFOAM exit here
 exit 1
 
-OSspecific/"${WM_OSTYPE:-POSIX}"/Allwmake $targetType $*
 wmake $targetType OpenFOAM
 
 wmake $targetType fileFormats
