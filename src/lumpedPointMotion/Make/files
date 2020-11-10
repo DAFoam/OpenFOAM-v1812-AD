@@ -1,0 +1,11 @@
+lumpedPointMovement.C
+lumpedPointMovementWriter.C
+lumpedPointState.C
+lumpedPointStateWriter.C
+lumpedPointIOMovement.C
+
+lumpedPointDisplacementPointPatchVectorField.C
+
+lumpedPointTools.C
+
+LIB = $(FOAM_LIBBIN)/liblumpedPointMotion

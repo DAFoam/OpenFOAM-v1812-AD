@@ -1,0 +1,31 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                            # Run from this directory
+export WM_CONTINUE_ON_ERROR=true                # Optional unit
+. $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
+. $WM_PROJECT_DIR/wmake/scripts/paraviewFunctions  # CMake and PV functions
+
+# -----------------------------------------------------------------------------
+
+warnIncomplete()
+{
+    echo
+    echo "    WARNING: incomplete build of ParaView plugin: $@"
+    echo
+}
+
+if have_pvplugin_support
+then
+(
+    wmakeLibPv foamPv
+    wmakeLibPv vtkPVblockMesh
+    wmakeLibPv vtkPVFoam
+
+    if [ "$targetType" != objects ]
+    then
+        cmakePv $PWD/PVblockMeshReader || warnIncomplete "BlockMesh"
+        cmakePv $PWD/PVFoamReader || warnIncomplete "OpenFOAM"
+    fi
+)
+fi
+
+#------------------------------------------------------------------------------

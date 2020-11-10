@@ -1,0 +1,51 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  avalanche                             |
+|   \\  /    A nd           | https://develop.openfoam.com/Community/avalanche|
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      faMeshDefinition;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+polyMeshPatches  1( terrain );
+
+boundary
+{
+    minX
+    {
+        type                patch;
+        ownerPolyPatch      terrain;
+        neighbourPolyPatch  minX;
+    }
+
+    maxX
+    {
+        type                patch;
+        ownerPolyPatch      terrain;
+        neighbourPolyPatch  maxX;
+    }
+
+    minY
+    {
+        type                patch;
+        ownerPolyPatch      terrain;
+        neighbourPolyPatch  minY;
+    }
+
+    maxY
+    {
+        type                patch;
+        ownerPolyPatch      terrain;
+        neighbourPolyPatch  maxY;
+    }
+
+}
+
+// ************************************************************************** //

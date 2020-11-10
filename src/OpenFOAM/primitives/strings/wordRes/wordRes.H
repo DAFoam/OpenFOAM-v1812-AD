@@ -1,0 +1,169 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | Copyright (C) 2016-2018 OpenCFD Ltd.
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+License
+    This file is part of OpenFOAM.
+
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
+Class
+    Foam::wordRes
+
+Description
+    A List of wordRe with additional matching capabilities.
+
+SourceFiles
+    wordResI.H
+    wordRes.C
+
+\*---------------------------------------------------------------------------*/
+
+#ifndef wordRes_H
+#define wordRes_H
+
+#include "wordReList.H"
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+namespace Foam
+{
+
+/*---------------------------------------------------------------------------*\
+                           Class wordRes Declaration
+\*---------------------------------------------------------------------------*/
+
+class wordRes
+:
+    public List<wordRe>
+{
+    // Private Methods
+
+        //- Smart match as literal or regex, stopping on the first match.
+        inline static bool found_match
+        (
+            const UList<wordRe>& patterns,
+            const std::string& text,
+            bool literal=false
+        );
+
+        //- Smart match across entire list, returning the match type.
+        //  Stops on the first literal match, or continues to examine
+        //  if a regex match occurs.
+        //  \return wordRe::LITERAL, wordRe::REGEX on match and
+        //      wordRe::UNKNOWN otherwise.
+        inline static wordRe::compOption found_matched
+        (
+            const UList<wordRe>& patterns,
+            const std::string& text
+        );
+
+
+public:
+
+    // Public Classes
+
+        //- Functor wrapper for matching against a List of wordRe
+        struct matcher
+        {
+            const UList<wordRe>& values;
+
+            matcher(const UList<wordRe>& list)
+            :
+                values(list)
+            {}
+
+            //- Return true if string matches ANY of the regular expressions
+            //  Allows use as a predicate.
+            bool operator()(const std::string& text) const
+            {
+                return found_match(values, text);
+            }
+        };
+
+
+    // Factory Methods
+
+        //- Return a null wordRes - a reference to the NullObject
+        inline static const wordRes& null();
+
+        //- Return a wordRes with duplicate words filtered out.
+        //  No filtering attempted on regular expressions.
+        static wordRes uniq(const UList<wordRe>& input);
+
+
+    // Constructors
+
+        //- Inherit constructors from List of wordRe
+        using List<wordRe>::List;
+
+
+    //- Destructor
+    ~wordRes() = default;
+
+
+    // Member Functions
+
+        //- Filter out duplicate words (inplace).
+        //  No filtering attempted on regular expressions.
+        void uniq();
+
+        //- Smart match as literal or regex, stopping on the first match.
+        //
+        //  \param literal Force literal match only.
+        //  \return True if text matches ANY of the entries.
+        inline bool match(const std::string& text, bool literal=false) const;
+
+        //- Smart match in the list of matchers, returning the match type.
+        //  It stops if there is a literal match, or continues to examine
+        //  other regexs.
+        //  \return LITERAL if a lteral match was found, REGEX if a regex
+        //      match was found and UNKNOWN otherwise.
+        inline wordRe::compOption matched(const std::string& text) const;
+
+        //- Extract list indices for all matches.
+        //
+        //  \param input  A list of string inputs to match against
+        //  \param invert invert the matching logic
+        //  \return The locations (indices) in the input list where match()
+        //      is true
+        template<class StringType>
+        inline labelList matching
+        (
+            const UList<StringType>& input,
+            const bool invert=false
+        ) const;
+
+
+    // Member Operators
+
+        //- Identical to match(), for use as a predicate.
+        inline bool operator()(const std::string& text) const;
+};
+
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace Foam
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "wordResI.H"
+
+#endif
+
+// ************************************************************************* //

@@ -1,0 +1,17 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                        # Run from this directory
+. $WM_PROJECT_DIR/bin/tools/RunFunctions    # Tutorial run functions
+
+./Allrun.mesh
+
+restore0Dir
+
+runApplication decomposePar -force
+
+runParallel potentialFoam -pName pPotential -initialiseUBCs
+
+\rm -f processor*/0/phi
+
+runParallel XiDyMFoam
+
+#------------------------------------------------------------------------------

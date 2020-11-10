@@ -1,0 +1,29 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                        # Run from this directory
+
+# Parse arguments for library compilation
+if [ -f $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments ]
+then  . $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
+fi
+
+#------------------------------------------------------------------------------
+echo "========================================"
+date "+%Y-%m-%d %H:%M:%S %z" 2>/dev/null || echo "date is unknown"
+echo "Starting compile of cfMesh with ${WM_PROJECT_DIR##*/} ${0##*}"
+echo "  $WM_COMPILER $WM_COMPILER_TYPE compiler"
+echo "  ${WM_OPTIONS}, with ${WM_MPLIB} ${FOAM_MPI}"
+echo
+
+wmake libso meshLibrary
+wmake all executables
+wmake all utilities
+
+# Some summary information
+echo
+date "+%Y-%m-%d %H:%M:%S %z" 2>/dev/null || echo "date is unknown"
+echo "========================================"
+echo "  Finished compile of cfMesh with ${WM_PROJECT_DIR##*/}"
+echo "  $WM_COMPILER $WM_COMPILER_TYPE compiler"
+echo "  ${WM_OPTIONS}, with ${WM_MPLIB} ${FOAM_MPI}"
+echo
+#------------------------------------------------------------------------------

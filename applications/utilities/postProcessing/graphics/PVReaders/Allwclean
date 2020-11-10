@@ -1,0 +1,17 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                            # Run from this directory
+. $WM_PROJECT_DIR/wmake/scripts/wmakeFunctions  # Source wmake functions
+
+# Cleanup libraries
+wclean libso foamPv
+wclean libso vtkPVblockMesh
+wclean libso vtkPVFoam
+
+# Cleanup client-server and/or combined plugins
+rm -f $FOAM_LIBBIN/libPVblockMeshReader* 2>/dev/null
+rm -f $FOAM_LIBBIN/libPVFoamReader* 2>/dev/null
+
+# Cleanup generated files - remove entire top-level
+removeObjectDir $PWD
+
+#------------------------------------------------------------------------------

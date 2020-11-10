@@ -1,0 +1,80 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1812                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     reactingTwoPhaseEulerFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         10;
+
+deltaT          1e-3;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.1;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  10;
+
+writeCompression on;
+
+timeFormat      general;
+
+timePrecision   9;
+
+runTimeModifiable yes;
+
+adjustTimeStep  yes;
+
+maxCo           0.1;
+
+maxDeltaT       1e-2;
+
+functions
+{
+    timeStepping
+    {
+        type            setTimeStep;
+        libs            ("libutilityFunctionObjects.so");
+        enabled         yes;
+        deltaT          tableFile;
+        file            "system/deltaTvalues";
+    }
+
+    minMaxp
+    {
+        type        fieldMinMax;
+        libs        ("libfieldFunctionObjects.so");
+        fields
+        (
+             p
+        );
+        location        no;
+        writeControl    timeStep;
+        writeInterval   1;
+    }
+}
+
+
+// ************************************************************************* //

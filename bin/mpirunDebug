@@ -1,0 +1,356 @@
+#!/bin/bash
+#------------------------------------------------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+#    \\/     M anipulation  | Copyright (C) 2017-2018 OpenCFD Ltd.
+#-------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM.
+#
+#     OpenFOAM is free software: you can redistribute it and/or modify it
+#     under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+#     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+#     for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Script
+#     mpirunDebug
+#
+# Description
+#     Driver script to run mpi jobs with the processes in a separate XTerm
+#     or to separate log files.
+#     Requires bash on all processors.
+#
+#------------------------------------------------------------------------------
+. $WM_PROJECT_DIR/bin/tools/RunFunctions    # Run functions
+
+usage() {
+    exec 1>&2
+    while [ "$#" -ge 1 ]; do echo "$1"; shift; done
+    cat<<USAGE
+
+Usage: ${0##*/} [OPTION] -np <N> <executable> <args>
+
+options:
+  -method=MODE  Run mode
+                  (0) normal
+                  (1) gdb+xterm
+                  (2) gdb
+                  (3) log
+                  (4) log + xterm
+                  (5) valgrind + xterm
+                 (5l) valgrind + log
+                  (6) gperftools(callgrind)
+  -spawn=TYPE   Spawn type: (1) local (2) remote
+  -log          Alias for -method=3
+  -valgrind     Alias for -method=5l (valgrind + log)
+  -local        Alias for -spawn=1
+  -yes          Start without additional prompt
+  -help         Print the usage
+
+Invoke mpirun but with each process in a separate XTerm, or to separate logfile
+
+USAGE
+    exit 1
+}
+
+case "$(uname -s)" in
+Linux)
+    ECHO='echo -e'
+    ;;
+*)
+    ECHO='echo'
+    ;;
+esac
+
+unset nProcs appName appArgs
+unset method spawn optNoAsk
+
+decompDict="system/decomposeParDict"
+
+# parse options
+while [ "$#" -gt 0 ]
+do
+    # echo "$1" 1>&2
+    case "$1" in
+    -help*)
+        usage
+        ;;
+
+    -method=[0-6]* | -method=5l)
+        method="${1#*=}"
+        ;;
+
+    -spawn=[1-2])
+        spawn="${1#*=}"
+        ;;
+
+    -log)
+        method=3
+        ;;
+
+    -valgrind)
+        method=5l
+        ;;
+
+    -local)
+        spawn=1
+        ;;
+
+    -yes)
+        optNoAsk=true
+        ;;
+
+    -np)
+        nProcs=$2
+        shift
+        ;;
+
+    -decomposeParDict)
+        decompDict=$2
+        appArgs="${appArgs}${appArgs:+ }\"$1\""
+        ;;
+
+    *)
+        if [ -z "$appName" ]
+        then
+            appName="$1"
+        else
+            appArgs="${appArgs}${appArgs:+ }\"$1\""
+        fi
+        ;;
+    esac
+    shift
+done
+
+
+# No -np specified?
+# Try guess from system/decomposeParDict or command-line -decomposeParDict
+if [ -z "$nProcs" -a -f "$decompDict" ]
+then
+    nProcs=$(getNumberOfProcessors $decompDict) || unset nProcs
+fi
+
+
+echo "nProcs=$nProcs"
+echo "exec=$appName"
+echo "args=$appArgs"
+
+[ -n "$nProcs" ] || usage
+[ -n "$appArgs" ] || usage
+[ -n "$appName" ] || usage
+
+exec=$(command -v $appName)
+[ -x "$exec" ] || {
+     echo "Cannot find executable $appName or is not executable"
+     usage
+}
+
+[ -n "$PWD" ] || PWD=$(pwd)
+
+echo "run $appArgs" > $PWD/gdbCommands
+echo "where" >> $PWD/gdbCommands
+echo "Constructed gdb initialization file $PWD/gdbCommands"
+
+# Choose method
+if [ -z "$method" ]
+then
+    $ECHO "Choose running method: 0)normal  1)gdb+xterm  2)gdb  3)log  4)log+xterm  5)valgrind+xterm 5l)valgrind+log  6)gperftools(callgrind): \c"
+    read method
+    case "$method" in
+    0 | 1 | 2 | 3 | 4 | 5 | 5l | 6)
+        # okay
+        ;;
+    *)
+        usage
+        ;;
+    esac
+fi
+
+# Choose spawn
+if [ -z "$spawn" ]
+then
+    $ECHO "Run all processes local or distributed? 1)local  2)remote: \c"
+    read spawn
+    case "$spawn" in
+    1 | 2)
+        # okay
+        ;;
+    *)
+        usage
+        ;;
+    esac
+fi
+
+
+sourceFoam=false    # Fallback command
+
+# Same as foamEtcFile -mode=uo bashrc
+#
+# check ~/.$WM_PROJECT/$WM_PROJECT_API/
+# check ~/.$WM_PROJECT/
+# check <installedProject>/etc/
+if [ -n "$WM_PROJECT" ]
+then
+    for i in \
+        "$HOME/.$WM_PROJECT/$WM_PROJECT_API" \
+        "$HOME/.$WM_PROJECT" \
+        "$WM_PROJECT_DIR/etc" \
+        ;
+    do
+        if [ -f "$i/bashrc" ]
+        then
+            sourceFoam="$i/bashrc"
+            break
+        fi
+    done
+fi
+
+# Source OpenFOAM settings if OpenFOAM environment not set.
+# use FOAM_SETTINGS to pass command-line settings
+
+case "$sourceFoam" in
+*/bashrc)
+    sourceFoam=". $sourceFoam $FOAM_SETTINGS"
+    ;;
+esac
+
+echo "**sourceFoam: $sourceFoam"
+
+rm -f $PWD/mpirun.schema
+touch $PWD/mpirun.schema
+
+proc=0
+xpos=0
+ypos=0
+for ((proc=0; proc<$nProcs; proc++))
+do
+    procCmdFile="$PWD/processor${proc}.sh"
+    procLog="processor${proc}.log"
+    xterm="xterm -font fixed -title processor${proc} -geometry 120x15+$xpos+$ypos"
+
+    unset node
+    case "$WM_MPLIB" in
+    *OPENMPI*)
+        node="-np 1 "
+        ;;
+    esac
+
+    echo "#!/bin/bash" > $procCmdFile
+    echo "$sourceFoam" >> $procCmdFile
+    echo "cd $PWD" >> $procCmdFile
+
+    case "$method" in
+    0)
+        echo "${node}$procCmdFile" >> $PWD/mpirun.schema
+        echo "$exec $appArgs | tee $procLog" >> $procCmdFile
+        ;;
+    1)
+        echo "${node}$xterm -e $procCmdFile" >> $PWD/mpirun.schema
+        echo "gdb -command $PWD/gdbCommands $exec 2>&1 | tee $procLog"
+        echo "read dummy"
+        ;;
+    2)
+        echo "${node}$procCmdFile" >> $PWD/mpirun.schema
+        echo "gdb -command $PWD/gdbCommands $exec > $procLog 2>&1"
+        ;;
+    3)
+        echo "${node}$procCmdFile" >> $PWD/mpirun.schema
+        echo "$exec $appArgs > $procLog 2>&1"
+        ;;
+    4)
+        echo "${node}$xterm -e $procCmdFile" >> $PWD/mpirun.schema
+        echo "$exec $appArgs 2>&1 | tee $procLog"
+        echo "read dummy"
+        ;;
+    5)
+        echo "${node}$xterm -e $procCmdFile" >> $PWD/mpirun.schema
+        echo "valgrind --leak-check=full --show-reachable=yes $exec $appArgs 2>&1 | tee $procLog"
+        echo "read dummy"
+        ;;
+    5l)
+        echo "${node}$procCmdFile" >> $PWD/mpirun.schema
+        echo "valgrind --leak-check=full --show-reachable=yes $exec $appArgs > $procLog 2>&1"
+        ;;
+    6)
+        echo "${node}$procCmdFile" >> $PWD/mpirun.schema
+        echo "CPUPROFILE=log.profiler_$proc $exec $appArgs"
+        echo "pprof --callgrind $exec log.profiler_$proc > log.profiler_$proc.callgrind"
+        ;;
+    esac >> $procCmdFile
+
+    chmod +x $procCmdFile
+
+    let column=proc%6
+    if [ $proc -ne 0 -a $column -eq 0 ]
+    then
+        ((xpos+=600))
+        ((ypos=0))
+    else
+        ((ypos+=200))
+    fi
+done
+
+for ((proc=0; proc<$nProcs; proc++))
+do
+    procLog="processor${proc}.log"
+    echo "    tail -f $procLog"
+done
+
+unset cmd
+
+case "$WM_MPLIB" in
+*OPENMPI*)
+    cmd="mpirun -app $PWD/mpirun.schema </dev/null"
+    ;;
+MPICH)
+    cmd="mpiexec"
+    for ((proc=0; proc<$nProcs; proc++))
+    do
+        read procCmd
+
+        procXtermCmdFile="$PWD/processor${proc}Xterm.sh"
+        echo "#!/bin/sh" > $procXtermCmdFile
+        echo "$procCmd" >> $procXtermCmdFile
+        chmod +x $procXtermCmdFile
+        if [ $proc -ne 0 ]
+        then
+            cmd="${cmd} :"
+        fi
+        cmd="${cmd} -n 1 ${procXtermCmdFile}"
+    done < $PWD/mpirun.schema
+    ;;
+*)
+    echo
+    echo "Unsupported WM_MPLIB setting : $WM_MPLIB"
+    usage
+    exit 1
+esac
+
+echo "Constructed $PWD/mpirun.schema file."
+echo
+echo "    $cmd"
+echo
+
+if [ -n "$optNoAsk" ]
+then
+    echo "starting: " $(date '+%Y-%m-%d %H:%M:%S %z' 2>/dev/null)
+    echo
+else
+    # Pause before running
+    $ECHO "Press return to execute.\c"
+    read dummy
+fi
+
+exec $cmd
+
+#------------------------------------------------------------------------------

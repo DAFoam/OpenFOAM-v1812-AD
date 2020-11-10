@@ -1,0 +1,232 @@
+#----------------------------------*-sh-*--------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | Copyright (C) 2015-2016 OpenFOAM Foundation
+#    \\/     M anipulation  | Copyright (C) 2018 OpenCFD Ltd.
+#------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM, licensed under GNU General Public License
+#     <http://www.gnu.org/licenses/>.
+#
+# Script
+#     wmakeFunctions
+#
+# Description
+#     Functions to check wmake environment and find .dep and .o files
+#------------------------------------------------------------------------------
+
+# Ensure these variables are always defined
+MakeDir=Make
+: "${Script:=wmakeFunctions}"
+
+# Environment defaults
+if [ -z "$WM_DIR" ]
+then
+    WM_DIR="$WM_PROJECT_DIR/wmake"
+    export WM_DIR
+fi
+
+
+#------------------------------------------------------------------------------
+# Check environment variables
+#------------------------------------------------------------------------------
+
+checkEnv()
+{
+    local check failed
+
+    for check in WM_PROJECT_DIR WM_OPTIONS WM_DIR
+    do
+        eval test "\$$check" || failed="$failed $check"
+    done
+
+    [ -z "$failed" ] || {
+        echo "$Script error: Environment variable(s) not set" 1>&2
+        echo "   $failed" 1>&2
+        exit 1
+    }
+}
+
+
+#------------------------------------------------------------------------------
+# Search up directories tree for the Make sub-directory
+#------------------------------------------------------------------------------
+
+# Return the absolute path for a directory or a file's parent directory
+# expandPath dirName
+# expandPath fileName
+#
+# Output:
+# - the expanded path name
+expandPath()
+{
+    if [ -d "$1" ]
+    then
+        (cd "$1" && pwd -P)
+    elif [ -n "$1" ]
+    then
+        (cd $(dirname "$1") && pwd -P)
+    else
+        pwd -P
+    fi
+}
+
+# Find the target directory, which contains a Make/ directory
+# search upwards in its parent directories, but stopping
+# when it hits the project root, home, or the file-system root
+#
+# findTarget dirName
+#
+# Output:
+# - the relative target directory
+#
+# Global variables used:
+# - WM_PROJECT_DIR, HOME
+findTarget()
+{
+    local project=$(expandPath $WM_PROJECT_DIR)
+    local home=$(expandPath $HOME)
+    local reldir="${1:-.}"
+    local absdir=$(expandPath $reldir)
+
+    while [ -n "$absdir" ]
+    do
+        case "$absdir" in
+        ($project | $home | /)
+            break
+            ;;
+        esac
+
+        if [ -d "$reldir/Make" ]
+        then
+            echo "$reldir"
+            return 0
+        else
+            # Check parent directory
+            absdir="${absdir%/*}"
+            reldir="$reldir/.."
+        fi
+    done
+
+    echo "Error: no Make directory for $(expandPath $1)" 1>&2
+    echo 1>&2
+    return 1
+}
+
+
+# Change to 'MakeDir' parent
+# - uses 'MakeDir' for its input
+#
+# Side-effects:
+# - unsets targetType
+cdSource()
+{
+    local dir
+    if [ ! -d "$MakeDir" ]
+    then
+        echo "$Script: '$MakeDir' directory does not exist in $PWD" 1>&2
+        echo "    Searching up directories tree for Make directory" 1>&2
+
+        dir=$(findTarget .) || exit 1 # Fatal
+        cd $dir 2>/dev/null || {
+            echo "$Script error: could not change to directory '$dir'" 1>&2
+            exit 1
+        }
+        unset targetType
+    fi
+
+    [ -r $MakeDir/files ] || {
+        echo "$Script error: file '$MakeDir/files' does not exist in $PWD" 1>&2
+        exit 1
+    }
+}
+
+
+# Find the object directory
+# findObjectDir dirName
+# findObjectDir fileName
+#
+# Output:
+# - the objectsDir
+#
+# Global variables used:
+# - WM_PROJECT_DIR, WM_OPTIONS
+findObjectDir()
+{
+    local project=$(expandPath $WM_PROJECT_DIR)
+    local absdir=$(expandPath ${1:-.})
+    local objectsDir
+
+    case "$absdir" in
+    ("$project"/*)
+        local buildPath=$WM_PROJECT_DIR/build/${WM_OPTIONS}
+        objectsDir=$buildPath$(echo $absdir | sed s%$project%% )
+        ;;
+    (*)
+        local path=$absdir
+        local appDir=.
+        [ -d Make ] || appDir=$(findTarget .) || exit 1 # Fatal
+        absdir=$(expandPath $appDir/.)
+        objectsDir=$appDir/Make/${WM_OPTIONS}$(echo $path | sed s%$absdir%% )
+    ;;
+    esac
+
+    echo "$objectsDir"
+}
+
+
+# Find the object directory and remove it
+# removeObjectDir dirName
+# removeObjectDir fileName
+#
+# Output:
+# - NONE
+#
+# Global variables used:
+# - WM_PROJECT_DIR, WM_OPTIONS
+removeObjectDir()
+{
+    local objectsDir=$(findObjectDir ${1:-.})
+    if [ -d "$objectsDir" ]
+    then
+        rm -rf "$objectsDir" > /dev/null 2>&1
+    fi
+}
+
+
+# depToSource depFile
+#
+# Output:
+# - the sourceFile corresponding to depFile
+#
+# Global variables used:
+# - WM_OPTIONS
+# - WM_MPLIB
+if [ -n "$BASH_VERSION" ]
+then
+    depToSource()
+    {
+        local sourceFile=${1%.dep}
+        sourceFile="${sourceFile/build\/${WM_OPTIONS}\//}"
+        sourceFile="${sourceFile/build\/${WM_OPTIONS}${WM_MPLIB}\//}"
+        sourceFile="${sourceFile/Make\/${WM_OPTIONS}\//}"
+        sourceFile="${sourceFile/Make\/${WM_OPTIONS}${WM_MPLIB}\//}"
+
+        echo "$sourceFile"
+    }
+else
+    depToSource()
+    {
+        local sourceFile=$(echo ${1%.dep} |             \
+            sed -e s%build/${WM_OPTIONS}/%%             \
+                -e s%build/${WM_OPTIONS}${WM_MPLIB}/%%  \
+                -e s%Make/${WM_OPTIONS}/%%              \
+                -e s%Make/${WM_OPTIONS}${WM_MPLIB}/%% )
+
+        echo "$sourceFile"
+    }
+fi
+
+
+#------------------------------------------------------------------------------

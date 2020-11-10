@@ -1,0 +1,39 @@
+// -*- C++ -*-
+
+// Control for external coupled simulation
+externalCoupled
+{
+    type    externalCoupled;
+    libs    ("libfieldFunctionObjects.so");
+    log     true;
+
+    // Directory to use for communication
+    commsDir        "<case>/comms";
+
+    // Does external process start first
+    initByExternal  true;
+
+    // Frequency of coupling
+    calcFrequency   4;
+
+    regions
+    {
+        // Region name (wildcards allowed)
+        "(topAir|heater)"
+        {
+            // In topAir adjust the minX patch (fixedValue)
+
+            // Patch or patchGroup
+            coupleGroup
+            {
+                // Fields to output in commsDir
+                writeFields (T);
+                // Fields to read from commsDir
+                readFields  (T);
+            }
+        }
+    }
+}
+
+
+// ************************************************************************* //

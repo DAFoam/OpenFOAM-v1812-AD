@@ -1,0 +1,15 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                        # Run from this directory
+. $WM_PROJECT_DIR/bin/tools/RunFunctions    # Tutorial run functions
+
+runApplication blockMesh
+runApplication $(getApplication)
+
+if notTest $@
+then
+    foamDictionary system/controlDict -entry endTime -set 5
+    foamDictionary 2/T.liquid -entry boundaryField/wall2/q -set 'uniform 1e5'
+    runApplication -a $(getApplication)
+fi
+
+#------------------------------------------------------------------------------

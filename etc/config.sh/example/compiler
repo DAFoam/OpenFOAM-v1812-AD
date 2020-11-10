@@ -1,0 +1,40 @@
+#----------------------------------*-sh-*--------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+#    \\/     M anipulation  | Copyright (C) 2017 OpenCFD Ltd.
+#------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM, licensed under GNU General Public License
+#     <http://www.gnu.org/licenses/>.
+#
+# File
+#     config.sh/example/compiler
+#     - sourced by OpenFOAM-*/etc/config.sh/settings
+#
+# Description
+#     Example of fine tuning compiler versions and settings for OpenFOAM
+#
+#------------------------------------------------------------------------------
+
+# Load the standard versions
+eval $($WM_PROJECT_DIR/bin/foamEtcFile -sh -config -mode=o compiler)
+
+# Modify/override compiler settings
+case "$WM_COMPILER" in
+Gcc70)
+    gcc_version=gcc-7.0.0
+    gmp_version=gmp-6.1.2
+    mpfr_version=mpfr-3.1.5
+    mpc_version=mpc-1.0.3
+    ;;
+Gcc48u)
+    # Example of using the system GCC 4.8 in Ubuntu 15.10. Keep in mind you
+    # will also need to create the respective directory in "wmake/rules"
+    export WM_CC='gcc-4.8'
+    export WM_CXX='g++-4.8'
+    ;;
+esac
+
+#------------------------------------------------------------------------------

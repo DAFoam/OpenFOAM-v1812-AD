@@ -1,0 +1,39 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1812                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    note        "mesh decomposition control dictionary";
+    object      decomposeParDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+numberOfSubdomains  2;
+
+//- Use the volScalarField named here as a weight for each cell in the
+//  decomposition.  For example, use a particle population field to decompose
+//  for a balanced number of particles in a lagrangian simulation.
+// weightField dsmcRhoNMean;
+
+method          scotch;
+
+constraints
+{
+    //- Keep owner and neighbour of baffles on same processor
+    //  (i.e. keep it detectable as a baffle).
+    //  Baffles are two boundary face sharing the same points.
+    baffles
+    {
+        type    preserveBaffles;
+    }
+}
+
+
+// ************************************************************************* //

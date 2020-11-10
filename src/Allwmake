@@ -1,0 +1,91 @@
+#!/bin/sh
+# Run from OPENFOAM src/ directory only
+cd ${0%/*} && wmakeCheckPwd "$WM_PROJECT_DIR/src" 2>/dev/null || {
+    echo "Error (${0##*/}) : not located in \$WM_PROJECT_DIR/src"
+    echo "    Check your OpenFOAM environment and installation"
+    exit 1
+}
+[ -d "$WM_PROJECT_DIR" -a -f "$WM_PROJECT_DIR/etc/bashrc" ] || {
+    echo "Error (${0##*/}) : WM_PROJECT_DIR appears to be incorrect"
+    echo "    Check your OpenFOAM environment and installation"
+    exit 1
+}
+
+. $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
+
+#------------------------------------------------------------------------------
+
+# Trigger update of version strings as required
+wmakeBuildInfo -check || wrmo OpenFOAM/global/global.o 2>/dev/null
+
+wmakeLnInclude -u OpenFOAM
+wmakeLnInclude -u OSspecific/"${WM_OSTYPE:-POSIX}"
+Pstream/Allwmake $targetType $*
+
+OSspecific/"${WM_OSTYPE:-POSIX}"/Allwmake $targetType $*
+wmake $targetType OpenFOAM
+
+wmake $targetType fileFormats
+wmake $targetType surfMesh
+wmake $targetType meshTools
+
+# Decomposition methods needed by dummyThirdParty
+# (dummy metisDecomp, scotchDecomp etc) needed by e.g. meshTools
+parallel/decompose/AllwmakeLnInclude
+dummyThirdParty/Allwmake $targetType $*
+
+wmakeLnInclude -u fvOptions
+
+wmake $targetType finiteVolume
+wmake $targetType lagrangian/basic
+wmake $targetType lagrangian/distributionModels
+wmake $targetType finiteArea
+wmake $targetType genericPatchFields
+
+conversion/Allwmake $targetType $*
+wmake $targetType mesh/extrudeModel
+wmake $targetType dynamicMesh
+wmake $targetType dynamicFvMesh
+wmake $targetType sampling
+wmake $targetType topoChangerFvMesh
+
+# Compile scotchDecomp, metisDecomp etc.
+parallel/Allwmake $targetType $*
+randomProcesses/Allwmake $targetType $*
+
+wmake $targetType overset
+wmake $targetType ODE
+
+transportModels/Allwmake $targetType $*
+thermophysicalModels/Allwmake $targetType $*
+TurbulenceModels/Allwmake $targetType $*
+wmake $targetType combustionModels
+regionModels/Allwmake $targetType $*
+lagrangian/Allwmake $targetType $*
+
+wmake $targetType fvOptions
+wmake $targetType fvMotionSolver
+
+mesh/Allwmake $targetType $*
+renumber/Allwmake $targetType $*
+fvAgglomerationMethods/Allwmake $targetType $*
+wmake $targetType waveModels
+
+wmake $targetType engine
+wmake $targetType regionCoupled
+
+functionObjects/Allwmake $targetType $*
+
+wmake $targetType lumpedPointMotion
+wmake $targetType sixDoFRigidBodyMotion
+wmake $targetType sixDoFRigidBodyState
+wmake $targetType rigidBodyDynamics
+wmake $targetType rigidBodyMeshMotion
+wmake $targetType semiPermeableBaffle
+wmake $targetType atmosphericModels
+
+# Needs access to Turbulence
+
+wmake $targetType thermophysicalModels/thermophysicalPropertiesFvPatchFields/liquidProperties
+
+#------------------------------------------------------------------------------

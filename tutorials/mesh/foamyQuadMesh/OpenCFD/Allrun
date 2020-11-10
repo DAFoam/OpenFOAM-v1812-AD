@@ -1,0 +1,17 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                        # Run from this directory
+. $WM_PROJECT_DIR/bin/tools/RunFunctions    # Tutorial run functions
+
+
+# Make sure surface is oriented properly. Since the letters
+# contain disconnected regions use
+#   surfaceOrient -usePierceTest
+
+cp system/controlDict.mesher system/controlDict
+
+runApplication surfaceFeatureExtract
+runApplication foamyQuadMesh -overwrite
+runApplication extrude2DMesh -overwrite polyMesh2D
+runApplication checkMesh -allGeometry -allTopology -constant -noZero
+
+#------------------------------------------------------------------------------

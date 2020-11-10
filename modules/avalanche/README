@@ -1,0 +1,16 @@
+What:
+
+    Library, solver and utilities for avalanche modelling using finiteArea.
+
+Author:
+
+    Matthias Rauter <matthias.rauter@uibk.ac.at>
+
+    who kindly supplied and ported the code from the original
+    implementation using foam-extend to OpenFOAM-1712.
+
+License:
+
+    Same terms as OpenFOAM.
+    Licensed under GNU General Public License <http://www.gnu.org/licenses/>.
+

@@ -1,0 +1,115 @@
+#------------------------------------------------------------------------------
+project(catalyst)
+
+include(${PARAVIEW_USE_FILE})
+
+# ----------------------------------------------------------------------
+# Test some characteristics
+set(test_file ${CMAKE_CURRENT_BINARY_DIR}/check_initialize.cxx)
+file(WRITE ${test_file}
+    "#include <vtkCPProcessor.h>\n"
+    "int main() {\n"
+    "  vtkCPProcessor* p = vtkCPProcessor::New();\n"
+    "  p->Initialize(\"AAA\");\n"
+    "  p->Delete();\n"
+    "  return 0;\n"
+    "}"
+)
+try_compile(CATALYST_HAS_WORKING_DIRECTORY
+    ${CMAKE_CURRENT_BINARY_DIR} ${test_file}
+    LINK_LIBRARIES vtkPVPythonCatalyst
+    CMAKE_FLAGS "-DINCLUDE_DIRECTORIES=${PARAVIEW_INCLUDE_DIRS}"
+)
+if (CATALYST_HAS_WORKING_DIRECTORY)
+    add_definitions(-DUSE_CATALYST_WORKING_DIRECTORY)
+else()
+    message(WARNING "==== CAUTION: ParaView Catalyst without chdir capability ====")
+endif()
+
+# ----------------------------------------------------------------------
+
+include_directories(
+    ${LIB_SRC}/OpenFOAM/include
+    ${LIB_SRC}/OpenFOAM/lnInclude
+    ${LIB_SRC}/OSspecific/${WM_OSTYPE}/lnInclude
+    ${LIB_SRC}/finiteArea/lnInclude
+    ${LIB_SRC}/finiteVolume/lnInclude
+    ${LIB_SRC}/fileFormats/lnInclude
+    ${LIB_SRC}/conversion/lnInclude
+    ${LIB_SRC}/meshTools/lnInclude
+    ${LIB_SRC}/lagrangian/basic/lnInclude
+    ${LIB_SRC}/overset/lnInclude
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+link_directories(
+    $ENV{FOAM_LIBBIN}
+    $ENV{FOAM_LIBBIN}/dummy
+)
+
+set(CMAKE_BUILD_TYPE Release)
+
+
+file(GLOB SOURCE_FILES
+    catalystCoprocess.C
+    catalystTools.C
+    catalystInput.C
+    catalystFunctionObject.C
+
+    cloud/catalystCloud.C
+    cloud/foamVtkCloudAdaptor.C
+
+    areaMesh/catalystFaMesh.C
+    areaMesh/foamVtkFaMeshAdaptor.C
+    areaMesh/foamVtkFaMeshAdaptorGeom.C
+    areaMesh/foamVtkFaMeshAdaptorFields.C
+
+    volMesh/catalystFvMesh.C
+    volMesh/foamVtkFvMeshAdaptor.C
+    volMesh/foamVtkFvMeshAdaptorGeom.C
+    volMesh/foamVtkFvMeshAdaptorGeomVtu.C
+    volMesh/foamVtkFvMeshAdaptorFields.C
+)
+
+set(OPENFOAM_LIBRARIES
+    OpenFOAM
+    Pstream
+    finiteArea
+    finiteVolume
+    fileFormats
+    meshTools
+    conversion
+    lagrangian
+    overset
+)
+
+
+if (PARAVIEW_USE_MPI)
+    set(LINK_LIBRARIES vtkPVPythonCatalyst vtkParallelMPI)
+else()
+    set(LINK_LIBRARIES vtkPVPythonCatalyst)
+endif()
+
+add_library(
+    catalystFoam
+    SHARED
+    ${SOURCE_FILES}
+)
+
+set_target_properties(
+    catalystFoam
+    PROPERTIES
+    VERSION ${PARAVIEW_VERSION_MAJOR}.${PARAVIEW_VERSION_MINOR}.${PARAVIEW_VERSION_PATCH}
+    SOVERSION ${PARAVIEW_VERSION_MAJOR}.${PARAVIEW_VERSION_MINOR}
+)
+
+target_link_libraries(
+    catalystFoam
+    ${LINK_LIBRARIES}
+    ${OPENFOAM_LIBRARIES}
+)
+
+install(TARGETS catalystFoam DESTINATION lib)
+
+#-----------------------------------------------------------------------------

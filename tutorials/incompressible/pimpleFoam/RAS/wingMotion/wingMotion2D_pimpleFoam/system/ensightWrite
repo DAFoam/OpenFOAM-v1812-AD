@@ -1,0 +1,26 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1812                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+ensightWrite
+{
+    type        ensightWrite;
+    libs        ("libutilityFunctionObjects.so");
+    log         true;
+
+    fields      (U p);
+
+    format      ascii;
+
+    overwrite   true;
+
+    writeControl writeTime;
+
+    consecutive false;
+}
+
+// ************************************************************************* //

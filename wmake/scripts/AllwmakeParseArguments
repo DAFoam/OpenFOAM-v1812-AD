@@ -1,0 +1,144 @@
+#----------------------------------*-sh-*--------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | Copyright (C) 2014-2017 OpenFOAM Foundation
+#    \\/     M anipulation  |
+#------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM, licensed under GNU General Public License
+#     <http://www.gnu.org/licenses/>.
+#
+# File
+#     wmake/scripts/AllwmakeParseArguments
+#
+# Description
+#     Allwmake argument parser
+#
+# Usage
+#     # Parse the arguments by sourcing this script
+#     . $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
+#
+#------------------------------------------------------------------------------
+
+if [ -z "$WM_PROJECT_DIR" ]
+then
+    echo "$Script error: The OpenFOAM environment is not set."
+    echo "    Check the OpenFOAM entries in your dot-files and source them."
+    exit 1
+fi
+usage() {
+    exec 1>&2
+    while [ "$#" -ge 1 ]; do echo "$1"; shift; done
+
+    # Print normal usage options
+    cat<<USAGE
+Executing ${0##*/} is equivalent to
+
+   wmake -all [OPTIONS]
+
+With these additional options:
+   -l | -log | -log=name
+
+USAGE
+
+    wmake -help
+    exit 0
+}
+
+
+#------------------------------------------------------------------------------
+# Parse the arguments and options
+#------------------------------------------------------------------------------
+
+unset fromWmake optLog optQueue
+
+for arg in "$@"
+do
+    # Remove arg
+    shift
+
+    case "$arg" in
+    -h | -help*)
+        usage
+        ;;
+    -fromWmake)
+        # If called from wmake (to avoid recursion)
+        fromWmake=true
+        ;;
+    -k | -non-stop)
+        # Non-stop compilation, ignoring errors
+        export WM_CONTINUE_ON_ERROR=true
+        continue    # Permanently remove arg
+        ;;
+    -l | -log)
+        optLog="log.${WM_OPTIONS:-Allwmake}"
+        continue    # Permanently remove arg
+        ;;
+    -log=*)
+        optLog="${arg##*=}"
+        if [ -d "$optLog" ]
+        then
+            optLog="${optLog%/}/log.${WM_OPTIONS:-Allwmake}"
+        elif [ -z "$optLog" ]
+        then
+            optLog="log.${WM_OPTIONS:-Allwmake}"
+        fi
+        continue    # Permanently remove arg
+        ;;
+    -q | -queue)
+        optQueue="-q"
+        continue    # Permanently remove arg
+        ;;
+    lib | libo | libso | dep | objects)
+        # Target type
+        targetType=$arg
+        ;;
+    esac
+
+    # Re-insert arg
+    set -- "$@" "$arg"
+done
+
+
+#------------------------------------------------------------------------------
+# Execute wmake -all if not called from wmake
+#------------------------------------------------------------------------------
+
+if [ -z "$fromWmake" ]
+then
+    if [ -z "$optLog" ]
+    then
+        exec wmake -all $optQueue $*
+        exit $? # Unneeded, but just in case something went wrong
+    else
+        echo "Logging wmake -all output to '$optLog'" 1>&2
+        echo 1>&2
+        exec wmake -all $optQueue $* 2>&1 | /usr/bin/tee $optLog
+        # Need to cleanup after the tee
+        rc=$? # Error code from tee (not wmake), but not entirely important
+        echo "Done logging to '$optLog'" 1>&2
+        exit $rc
+    fi
+fi
+
+
+#------------------------------------------------------------------------------
+# Activate the shell option "stop on error" unless WM_CONTINUE_ON_ERROR is set
+#------------------------------------------------------------------------------
+
+if [ -z "${WM_CONTINUE_ON_ERROR}" ]
+then
+    set -e
+fi
+
+
+#------------------------------------------------------------------------------
+# Cleanup local variables and functions
+#------------------------------------------------------------------------------
+
+unset fromWmake optLog optQueue
+unset -f usage
+
+
+#------------------------------------------------------------------------------

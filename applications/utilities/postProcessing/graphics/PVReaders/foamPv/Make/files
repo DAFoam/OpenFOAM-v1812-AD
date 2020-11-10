@@ -1,0 +1,3 @@
+foamPvCore.C
+
+LIB = $(FOAM_LIBBIN)/libfoamPv-pv${PARAVIEW_API}

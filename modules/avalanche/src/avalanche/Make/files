@@ -1,0 +1,26 @@
+deposition = deposition
+$(deposition)/depositionModel/depositionModel.C
+$(deposition)/depositionModel/depositionModelNew.C
+$(deposition)/depositionOff/depositionOff.C
+$(deposition)/Stoppingprofile/Stoppingprofile.C
+
+entrainment = entrainment
+$(entrainment)/entrainmentModel/entrainmentModel.C
+$(entrainment)/entrainmentModel/entrainmentModelNew.C
+$(entrainment)/entrainmentOff/entrainmentOff.C
+$(entrainment)/Erosionenergy/Erosionenergy.C
+$(entrainment)/Front/Front.C
+$(entrainment)/IsslerFC/IsslerFC.C
+$(entrainment)/Medina/Medina.C
+
+friction = friction
+$(friction)/frictionModel/frictionModel.C
+$(friction)/frictionModel/frictionModelNew.C
+$(friction)/PoliquenForterre/PoliquenForterre.C
+$(friction)/muI/muI.C
+$(friction)/Voellmy/Voellmy.C
+$(friction)/kt/kt.C
+$(friction)/DarcyWeisbach/DarcyWeisbach.C
+$(friction)/ManningStrickler/ManningStrickler.C
+
+LIB = $(FOAM_LIBBIN)/libfaAvalanche

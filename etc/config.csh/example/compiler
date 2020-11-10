@@ -1,0 +1,34 @@
+#----------------------------------*-sh-*--------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+#    \\/     M anipulation  | Copyright (C) 2017 OpenCFD Ltd.
+#------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM, licensed under GNU General Public License
+#     <http://www.gnu.org/licenses/>.
+#
+# File
+#     config.csh/example/compiler
+#     - sourced by OpenFOAM-*/etc/config.csh/settings
+#
+# Description
+#     Example of fine tuning ThirdParty compiler settings for OpenFOAM
+#
+#------------------------------------------------------------------------------
+
+# Load the standard versions
+eval `$WM_PROJECT_DIR/bin/foamEtcFile -csh -config -mode=o compiler`
+
+# Modify/override compiler settings
+switch ("$WM_COMPILER")
+case Gcc70:
+    set gcc_version=gcc-7.0.0
+    set gmp_version=gmp-6.1.2
+    set mpfr_version=mpfr-3.1.5
+    set mpc_version=mpc-1.0.3
+    breaksw
+endsw
+
+#------------------------------------------------------------------------------

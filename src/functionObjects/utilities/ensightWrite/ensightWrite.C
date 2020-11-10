@@ -1,0 +1,252 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | Copyright (C) 2016-2018 OpenCFD Ltd.
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+License
+    This file is part of OpenFOAM.
+
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
+\*---------------------------------------------------------------------------*/
+
+#include "ensightWrite.H"
+#include "Time.H"
+#include "polyMesh.H"
+#include "addToRunTimeSelectionTable.H"
+
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
+namespace Foam
+{
+namespace functionObjects
+{
+    defineTypeNameAndDebug(ensightWrite, 0);
+
+    addToRunTimeSelectionTable
+    (
+        functionObject,
+        ensightWrite,
+        dictionary
+    );
+}
+}
+
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+
+Foam::label Foam::functionObjects::ensightWrite::writeAllVolFields
+(
+    const fvMeshSubset& proxy,
+    const wordHashSet& acceptField
+)
+{
+    label count = 0;
+
+    count += writeVolFields<scalar>(proxy, acceptField);
+    count += writeVolFields<vector>(proxy, acceptField);
+    count += writeVolFields<sphericalTensor>(proxy, acceptField);
+    count += writeVolFields<symmTensor>(proxy, acceptField);
+    count += writeVolFields<tensor>(proxy, acceptField);
+
+    return count;
+}
+
+
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
+
+Foam::functionObjects::ensightWrite::ensightWrite
+(
+    const word& name,
+    const Time& runTime,
+    const dictionary& dict
+)
+:
+    fvMeshFunctionObject(name, runTime, dict),
+    writeOpts_
+    (
+        IOstreamOption::formatNames.lookupOrDefault
+        (
+            "format",
+            dict,
+            runTime.writeFormat(),
+            true  // Failsafe behaviour
+        )
+    ),
+    caseOpts_(writeOpts_.format()),
+    outputDir_(),
+    consecutive_(false),
+    meshState_(polyMesh::TOPO_CHANGE),
+    selectFields_(),
+    selection_(),
+    meshSubset_(mesh_),
+    ensCase_(nullptr),
+    ensMesh_(nullptr)
+{
+    // May still want this? (OCT-2018)
+    // if (postProcess)
+    // {
+    //     // Disable for post-process mode.
+    //     // Emit as FatalError for the try/catch in the caller.
+    //     FatalError
+    //         << type() << " disabled in post-process mode"
+    //         << exit(FatalError);
+    // }
+
+    read(dict);
+}
+
+
+// * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
+
+bool Foam::functionObjects::ensightWrite::read(const dictionary& dict)
+{
+    fvMeshFunctionObject::read(dict);
+
+    readSelection(dict);
+
+
+    // Writer options
+
+    consecutive_ = dict.lookupOrDefault("consecutive", false);
+
+    writeOpts_.useBoundaryMesh(dict.lookupOrDefault("boundary", true));
+    writeOpts_.useInternalMesh(dict.lookupOrDefault("internal", true));
+
+
+    // Warn if noPatches keyword (1806) exists and contradicts our settings
+    // Cannot readily use Compat since the boolean has the opposite value.
+    if
+    (
+        dict.lookupOrDefault("noPatches", false)
+     && writeOpts_.useBoundaryMesh()
+    )
+    {
+        WarningInFunction
+            << "Use 'boundary' instead of 'noPatches' to enable/disable "
+            << "conversion of the boundaries" << endl;
+    }
+
+    wordRes list;
+    if (dict.readIfPresent("patches", list))
+    {
+        list.uniq();
+        writeOpts_.patchSelection(list);
+    }
+
+    if (dict.readIfPresent("faceZones", list))
+    {
+        list.uniq();
+        writeOpts_.faceZoneSelection(list);
+    }
+
+
+    // Case options
+
+    caseOpts_.nodeValues(dict.lookupOrDefault("nodeValues", false));
+    caseOpts_.width(dict.lookupOrDefault<label>("width", 8));
+    caseOpts_.overwrite(dict.lookupOrDefault("overwrite", false));
+
+
+    // Output directory
+
+    outputDir_.clear();
+    dict.readIfPresent("directory", outputDir_);
+
+    const Time& time_ = obr_.time();
+
+    if (outputDir_.size())
+    {
+        // User-defined output directory
+        outputDir_.expand();
+        if (!outputDir_.isAbsolute())
+        {
+            outputDir_ = time_.globalPath()/outputDir_;
+        }
+    }
+    else
+    {
+        // Standard postProcessing/ naming
+        outputDir_ = time_.globalPath()/functionObject::outputPrefix/name();
+    }
+    outputDir_.clean();
+
+    return true;
+}
+
+
+bool Foam::functionObjects::ensightWrite::execute()
+{
+    return true;
+}
+
+
+bool Foam::functionObjects::ensightWrite::write()
+{
+    const Time& t = obr_.time();
+
+    if (!ensCase_.valid())
+    {
+        ensCase_.reset
+        (
+            new ensightCase(outputDir_, t.globalCaseName(), caseOpts_)
+        );
+    }
+
+    if (consecutive_)
+    {
+        ensCase().nextTime(t.value());
+    }
+    else
+    {
+        ensCase().setTime(t.value(), t.timeIndex());
+    }
+
+
+    if (update())
+    {
+        // Treat all geometry as moving, since we do not know a priori
+        // if the simulation has mesh motion later on.
+        autoPtr<ensightGeoFile> os = ensCase_().newGeometry(true);
+        ensMesh_().write(os);
+    }
+
+    wordHashSet acceptField(mesh_.names<void>(selectFields_));
+
+    // Prune restart fields
+    acceptField.filterKeys
+    (
+        [](const word& k){ return k.endsWith("_0"); },
+        true // prune
+    );
+
+    Log << type() << " " << name() << " write: (";
+    writeAllVolFields(meshSubset_, acceptField);
+
+    Log << " )" << nl;
+
+    ensCase().write();  // Flush case information
+
+    return true;
+}
+
+
+bool Foam::functionObjects::ensightWrite::end()
+{
+    return true;
+}
+
+
+// ************************************************************************* //

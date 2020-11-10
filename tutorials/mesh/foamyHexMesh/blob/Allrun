@@ -1,0 +1,19 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                        # Run from this directory
+. $WM_PROJECT_DIR/bin/tools/RunFunctions    # Tutorial run functions
+
+# copy flange surface from resources directory
+cp $FOAM_TUTORIALS/resources/geometry/blob.stl.gz constant/triSurface/
+
+runApplication foamyHexMesh
+
+runApplication -s collapseFaces \
+    collapseEdges -latestTime -collapseFaces
+
+runApplication -s collapseFaceSet \
+    collapseEdges -latestTime -collapseFaceSet indirectPatchFaces
+
+runApplication checkMesh -latestTime -allGeometry -allTopology
+
+
+#------------------------------------------------------------------------------

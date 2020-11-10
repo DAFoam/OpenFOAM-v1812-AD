@@ -1,0 +1,77 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                            # Run from this directory
+. $WM_PROJECT_DIR/wmake/scripts/cmakeFunctions  # The cmake functions
+
+# CMake into objectsDir with external dependency
+#
+# 1 - depend
+# 2 - sourceDir
+# 3... optional cmake defines
+#
+# Available directly in OpenFOAM-1812 but left here for a while
+# to ensure we can build with slightly older versions too (2018-11-29)
+#
+unset -f cmakeVersionedInstall 2>/dev/null
+cmakeVersionedInstall()
+{
+    local depend="$1"
+    local sourceDir="$2"
+    shift 2
+    local objectsDir sentinel
+
+    # Where generated files are stored
+    objectsDir=$(findObjectDir "$sourceDir") || exit 1 # Fatal
+
+    # Version changed
+    sentinel=$(sameDependency "$depend" "$sourceDir") || \
+        rm -rf "$objectsDir" > /dev/null 2>&1
+
+    mkdir -p "$objectsDir" \
+    && (cd "$objectsDir" && _cmake "$@" "$sourceDir" && make install) \
+    && echo "$depend" >| "${sentinel:-/dev/null}"
+}
+
+# -----------------------------------------------------------------------------
+
+echo "======================================================================"
+echo "${PWD##*/} : $PWD"
+echo
+
+# For FOAM_LIBBIN
+cmakeOpts="-DCMAKE_INSTALL_PREFIX=$WM_PROJECT_DIR/platforms/$WM_OPTIONS"
+
+# or
+# cmakeOpts="-DCMAKE_INSTALL_PREFIX=${FOAM_LIBBIN%/*}"
+
+# For FOAM_USER_LIBBIN
+# cmakeOpts="-DCMAKE_INSTALL_PREFIX=${FOAM_USER_LIBBIN%/*}"
+
+
+unset depend
+if [ -d "$ParaView_DIR" ]
+then
+    depend="ParaView_DIR=$ParaView_DIR"
+fi
+
+if [ -n "$depend" ]
+then
+    if [ "$targetType" != objects ]
+    then
+        if command -v cmake > /dev/null 2>&1
+        then
+            cmakeVersionedInstall "$depend" "$PWD" "$cmakeOpts" || {
+                echo
+                echo "    WARNING: incomplete build of ParaView Catalyst"
+                echo
+            }
+        else
+            echo "WARNING: skipped - needs cmake"
+        fi
+    fi
+else
+    echo "WARNING: skip ParaView Catalyst (missing or incorrrect ParaView)"
+fi
+
+echo "======================================================================"
+
+# -----------------------------------------------------------------------------

@@ -1,0 +1,178 @@
+#---------------------------------*- sh -*-------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+#    \\/     M anipulation  | Copyright (C) 2015-2018 OpenCFD Ltd.
+#------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM, licensed under GNU General Public License
+#     <http://www.gnu.org/licenses/>.
+#
+# Script
+#     CleanFunctions
+#
+# Description
+#     Miscellaneous cleanup functions for tutorial cases
+#
+#------------------------------------------------------------------------------
+
+cleanTimeDirectories()
+{
+    echo "Cleaning case $PWD"
+    zeros=""
+    while [ ${#zeros} -lt 8 ]
+    do
+        timeDir="0.${zeros}[1-9]*"
+        rm -rf ./${timeDir} ./-${timeDir} > /dev/null 2>&1
+        zeros="0$zeros"
+    done
+    rm -rf \
+        ./[1-9]* ./-[1-9]* ./log ./log.* ./log-* ./logSummary.* \
+        ./.fxLock ./*.xml ./ParaView* ./paraFoam* \
+        ./*.blockMesh ./*.foam ./*.OpenFOAM \
+        ./.setSet > /dev/null 2>&1
+}
+
+
+cleanDynamicCode()
+{
+    if [ -d system -a -d dynamicCode ]
+    then
+        rm -rf dynamicCode > /dev/null 2>&1
+    fi
+}
+
+
+cleanSnappyFiles()
+{
+    rm -f \
+        constant/polyMesh/cellLevel \
+        constant/polyMesh/pointLevel \
+        constant/polyMesh/refinementHistory \
+        constant/polyMesh/level0Edge \
+        constant/polyMesh/surfaceIndex > /dev/null 2>&1
+    rm -f \
+        processor*/constant/polyMesh/cellLevel \
+        processor*/constant/polyMesh/pointLevel \
+        processor*/constant/polyMesh/refinementHistory \
+        processor*/constant/polyMesh/level0Edge \
+        processor*/constant/polyMesh/surfaceIndex > /dev/null 2>&1
+    rm -f \
+        constant/cellLevel \
+        constant/pointLevel \
+        0/cellLevel \
+        0/pointLevel > /dev/null 2>&1
+    rm -f \
+        processor*/constant/cellLevel \
+        processor*/constant/pointLevel \
+        processor*/0/cellLevel \
+        processor*/0/pointLevel > /dev/null 2>&1
+}
+
+
+cleanCase()
+{
+    cleanTimeDirectories
+    cleanDynamicCode
+
+    rm -rf processor* > /dev/null 2>&1
+    rm -rf postProcessing > /dev/null 2>&1
+    rm -rf TDAC > /dev/null 2>&1
+    rm -rf probes* > /dev/null 2>&1
+    rm -rf forces* > /dev/null 2>&1
+    rm -rf graphs* > /dev/null 2>&1
+    rm -rf sets > /dev/null 2>&1
+    rm -rf surfaceSampling > /dev/null 2>&1
+    rm -rf cuttingPlane > /dev/null 2>&1
+    rm -rf system/machines > /dev/null 2>&1
+    rm -rf Ensight EnSight ensightWrite insitu VTK > /dev/null 2>&1
+
+    # From mpirunDebug
+    rm -f gdbCommands  mpirun.schema
+
+    cleanSnappyFiles
+    rm -f 0/cellDist > /dev/null 2>&1
+
+    (
+        cd constant 2>/dev/null || exit 0
+
+        rm -rf \
+          cellDecomposition cellToRegion cellLevel* pointLevel* \
+          tetDualMesh \
+          > /dev/null 2>&1
+
+        # Old constant/polyMesh location for blockMeshDict still in use?
+        # - emit a gentle warning
+        if [ -e polyMesh/blockMeshDict.m4 ]
+        then
+            rm -f polyMesh/blockMeshDict > /dev/null 2>&1
+            echo
+            echo "Warning: not removing constant/polyMesh/ "
+            echo "   it contains a blockMeshDict, which should normally be under system/ instead"
+            echo
+        elif [ -e polyMesh/blockMeshDict ]
+        then
+            echo
+            echo "Warning: not removing constant/polyMesh/ "
+            echo "   it contains a blockMeshDict, which should normally be under system/ instead"
+            echo
+        else
+            # Remove polyMesh entirely if there is no blockMeshDict
+            rm -rf polyMesh > /dev/null 2>&1
+        fi
+    )
+
+    if [ -e system/blockMeshDict.m4 ]
+    then
+        rm -f system/blockMeshDict > /dev/null 2>&1
+    fi
+}
+
+
+# Frequently used - cleanCase and rm -rf 0/
+cleanCase0()
+{
+    cleanCase
+    rm -rf 0
+}
+
+
+removeCase()
+{
+    echo "Removing case ${1:-unknown}"
+    [ "$#" -ge 1 ] && rm -rf "$1"
+}
+
+
+cleanSamples()
+{
+    rm -rf ./sets ./samples ./sampleSurfaces > /dev/null 2>&1
+}
+
+
+cleanUcomponents()
+{
+    rm -rf 0/Ux 0/Uy 0/Uz > /dev/null 2>&1
+}
+
+
+cleanFaMesh ()
+{
+    (
+        cd constant/faMesh 2>/dev/null && \
+        rm -rf \
+          faceLabels* faBoundary* \
+          > /dev/null 2>&1 \
+    )
+}
+
+
+cleanApplication()
+{
+    echo "Cleaning application $PWD"
+    wclean
+}
+
+
+#------------------------------------------------------------------------------

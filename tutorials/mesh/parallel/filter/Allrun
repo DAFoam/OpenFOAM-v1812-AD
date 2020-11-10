@@ -1,0 +1,30 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                        # Run from this directory
+. $WM_PROJECT_DIR/bin/tools/RunFunctions    # Tutorial run functions
+
+application=$(getApplication)
+
+# Create mesh
+runApplication blockMesh
+
+# Restore 0/ from 0.orig/
+restore0Dir
+
+# Create sets
+runApplication topoSet
+
+# Create baffles and fields
+runApplication createBaffles -overwrite
+
+runApplication $application
+
+#- RedistributePar to do decomposition
+runParallel redistributePar -decompose -cellDist
+
+#- Continue running for a bit more
+runParallel -s parallel $application
+
+#- Reconstruct all times
+runParallel -s 1 redistributePar -reconstruct
+
+#------------------------------------------------------------------------------

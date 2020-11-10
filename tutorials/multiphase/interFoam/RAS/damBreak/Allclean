@@ -1,0 +1,18 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                        # Run from this directory
+. $WM_PROJECT_DIR/bin/tools/CleanFunctions  # Tutorial clean functions
+
+keepCases="damBreak"
+loseCases="damBreakFine"
+
+for case in $keepCases
+do
+    (cd $case && foamCleanTutorials)
+done
+
+for case in $loseCases
+do
+    removeCase $case
+done
+
+#------------------------------------------------------------------------------

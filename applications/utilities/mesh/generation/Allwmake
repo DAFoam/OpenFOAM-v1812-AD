@@ -1,0 +1,14 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                        # Run from this directory
+. $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments # (for error catching)
+
+#------------------------------------------------------------------------------
+
+wmake -all $targetType blockMesh
+wmake -all $targetType extrude
+wmake -all $targetType extrude2DMesh
+wmake -all $targetType snappyHexMesh
+
+foamyMesh/Allwmake $targetType $*
+
+#------------------------------------------------------------------------------

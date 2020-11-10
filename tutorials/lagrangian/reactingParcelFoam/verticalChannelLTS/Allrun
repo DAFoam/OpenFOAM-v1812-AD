@@ -1,0 +1,18 @@
+#!/bin/sh
+cd ${0%/*} || exit 1                        # Run from this directory
+. $WM_PROJECT_DIR/bin/tools/RunFunctions    # Tutorial run functions
+
+# create mesh
+runApplication blockMesh
+
+restore0Dir
+
+# initialise with potentialFoam solution
+runApplication potentialFoam
+
+\rm -f 0/phi
+
+# run the solver
+runApplication $(getApplication)
+
+#------------------------------------------------------------------------------
