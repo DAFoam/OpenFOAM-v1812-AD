@@ -285,10 +285,11 @@ namespace Files
         // Report failures
         if (!infile && !optQuiet)
         {
-            std::cerr
-                << EXENAME ": could not open '"
-                << fileName << "' for source file '"
-                << sourceFile << "'";
+            // CoDiPack4OpenFOAM Depress this warning
+            //std::cerr
+            //    << EXENAME ": could not open '"
+            //    << fileName << "' for source file '"
+            //    << sourceFile << "'";
 
             if (dirs.size())
             {
