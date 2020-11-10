@@ -252,7 +252,8 @@ public:
 private:
 
     //- A %union of token types
-    union content
+    // CoDiPack4OpenFOAM
+    struct content
     {
         // Fundamental values. Largest first for any {} initialization.
         int64_t int64Val;
@@ -306,7 +307,7 @@ public:
     // Constructors
 
         //- Construct null
-        inline constexpr token() noexcept;
+        inline token() noexcept;
 
         //- Copy construct
         inline token(const token& t);

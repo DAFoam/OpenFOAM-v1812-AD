@@ -48,14 +48,14 @@ SourceFiles
 namespace Foam
 {
     typedef floatScalar scalar;
-
-    constexpr scalar GREAT = floatScalarGREAT;
-    constexpr scalar VGREAT = floatScalarVGREAT;
-    constexpr scalar ROOTVGREAT = floatScalarROOTVGREAT;
-    constexpr scalar SMALL = floatScalarSMALL;
-    constexpr scalar ROOTSMALL = floatScalarROOTSMALL;
-    constexpr scalar VSMALL = floatScalarVSMALL;
-    constexpr scalar ROOTVSMALL = floatScalarROOTVSMALL;
+    // CoDiPack4OpenFOAM
+    static const scalar GREAT = floatScalarGREAT;
+    static const scalar VGREAT = floatScalarVGREAT;
+    static const scalar ROOTVGREAT = floatScalarROOTVGREAT;
+    static const scalar SMALL = floatScalarSMALL;
+    static const scalar ROOTSMALL = floatScalarROOTSMALL;
+    static const scalar VSMALL = floatScalarVSMALL;
+    static const scalar ROOTVSMALL = floatScalarROOTVSMALL;
 
     scalar readScalar(Istream& is);
 
@@ -87,14 +87,14 @@ namespace Foam
 namespace Foam
 {
     typedef doubleScalar scalar;
-
-    constexpr scalar GREAT = doubleScalarGREAT;
-    constexpr scalar VGREAT = doubleScalarVGREAT;
-    constexpr scalar ROOTVGREAT = doubleScalarROOTVGREAT;
-    constexpr scalar SMALL = doubleScalarSMALL;
-    constexpr scalar ROOTSMALL = doubleScalarROOTSMALL;
-    constexpr scalar VSMALL = doubleScalarVSMALL;
-    constexpr scalar ROOTVSMALL = doubleScalarROOTVSMALL;
+    // CoDiPack4OpenFOAM
+    static const scalar GREAT = doubleScalarGREAT;
+    static const scalar VGREAT = doubleScalarVGREAT;
+    static const scalar ROOTVGREAT = doubleScalarROOTVGREAT;
+    static const scalar SMALL = doubleScalarSMALL;
+    static const scalar ROOTSMALL = doubleScalarROOTSMALL;
+    static const scalar VSMALL = doubleScalarVSMALL;
+    static const scalar ROOTVSMALL = doubleScalarROOTVSMALL;
 
     scalar readScalar(Istream& is);
 
