@@ -7,9 +7,10 @@ ptFLAGS     = -DNoRepository -ftemplate-depth-100
 # - Standard warnings
 # - Less restrictive warnings (may be needed for flex++, CGAL, etc.)
 
+# CoDiPack4OpenFOAM Deleted old style and non virtual warnings
 c++WARN     = \
-    -Wall -Wextra -Wold-style-cast \
-    -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof \
+    -Wall -Wextra \
+    -Wno-unused-parameter -Wno-invalid-offsetof \
     -Wno-attributes -Wno-unknown-pragmas
 
 c++LESSWARN = \
