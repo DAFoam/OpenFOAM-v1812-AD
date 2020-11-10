@@ -69,8 +69,8 @@ static scalar minimaxs(const scalar P)
         1.27364489782223,
         0.03611708101884203
     };
-
-    const scalar t = P < 0.5 ? sqrt(-2*log(P)) : sqrt(-2*log(1 - P));
+    // CoDiPack4OpenFOAM
+    const scalar t = P < 0.5 ? scalar(sqrt(-2*log(P))) : scalar(sqrt(-2*log(1 - P)));
 
     const scalar s =
         t
@@ -122,8 +122,9 @@ Foam::scalar Foam::invIncGamma(const scalar a, const scalar P)
         if (B > 0.6 || (B >= 0.45 && a >= 0.3))
         {
             // Eqn. 21
+            // CoDiPack4OpenFOAM
             const scalar u =
-                (B*Q > 1e-8) ? pow(P*Ga*a, 1/a) : exp((-Q/a) - Eu);
+                (B*Q > 1e-8) ? scalar(pow(P*Ga*a, 1/a)) : scalar(exp((-Q/a) - Eu));
 
             return u/(1 - (u/(a + 1)));
         }
@@ -287,11 +288,14 @@ Foam::scalar Foam::invIncGamma(const scalar a, const scalar P)
                 const scalar ap2 = a + 2;
                 const scalar v = log(P) + lgamma(ap1);
                 z = exp((v + w)/a);
-                s = log1p(z/ap1*(1 + z/ap2));
+                // CoDiPack4OpenFOAM
+                s = log(1+z/ap1*(1 + z/ap2));
                 z = exp((v + z - s)/a);
-                s = log1p(z/ap1*(1 + z/ap2));
+                // CoDiPack4OpenFOAM
+                s = log(1+z/ap1*(1 + z/ap2));
                 z = exp((v + z - s)/a);
-                s = log1p(z/ap1*(1 + z/ap2*(1 + z/(a + 3))));
+                // CoDiPack4OpenFOAM
+                s = log(1+z/ap1*(1 + z/ap2*(1 + z/(a + 3))));
                 z = exp((v + z - s)/a);
             }
 

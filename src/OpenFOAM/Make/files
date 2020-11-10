@@ -11,4 +11,51 @@ global/profiling/profilingTrigger.C
 global/etcFiles/etcFiles.C
 global/version/foamVersion.C
 
+fileOps = global/fileOperations
+$(fileOps)/fileOperation/fileOperation.C
+$(fileOps)/fileOperationInitialise/fileOperationInitialise.C
+$(fileOps)/uncollatedFileOperation/uncollatedFileOperation.C
+$(fileOps)/masterUncollatedFileOperation/masterUncollatedFileOperation.C
+$(fileOps)/collatedFileOperation/collatedFileOperation.C
+$(fileOps)/collatedFileOperation/hostCollatedFileOperation.C
+$(fileOps)/collatedFileOperation/threadedCollatedOFstream.C
+$(fileOps)/collatedFileOperation/OFstreamCollator.C
+
+bools = primitives/bools
+$(bools)/bool/bool.C
+$(bools)/Switch/Switch.C
+$(bools)/lists/boolList.C
+
+chars = primitives/chars
+$(chars)/char/charIO.C
+$(chars)/wchar/wcharIO.C
+
+primitives/direction/directionIO.C
+
+ints = primitives/ints
+$(ints)/uint16/uint16.C
+$(ints)/uint32/uint32.C
+$(ints)/uint32/uint32IO.C
+$(ints)/uint64/uint64.C
+$(ints)/uint64/uint64IO.C
+$(ints)/uint/uintIO.C
+$(ints)/int16/int16.C
+$(ints)/int32/int32.C
+$(ints)/int32/int32IO.C
+$(ints)/int64/int64.C
+$(ints)/int64/int64IO.C
+$(ints)/int/intIO.C
+$(ints)/label/label.C
+$(ints)/uLabel/uLabel.C
+$(ints)/lists/labelIOList.C
+$(ints)/lists/labelListIOList.C
+
+primitives/Scalar/doubleScalar/doubleScalar.C
+primitives/Scalar/floatScalar/floatScalar.C
+primitives/Scalar/scalar/scalar.C
+primitives/Scalar/scalar/invIncGamma.C
+primitives/Scalar/lists/scalarList.C
+primitives/Scalar/lists/scalarIOList.C
+primitives/Scalar/lists/scalarListIOList.C
+
 LIB = $(FOAM_LIBBIN)/libOpenFOAM
