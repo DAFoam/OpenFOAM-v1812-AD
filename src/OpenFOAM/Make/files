@@ -58,4 +58,16 @@ primitives/Scalar/lists/scalarList.C
 primitives/Scalar/lists/scalarIOList.C
 primitives/Scalar/lists/scalarListIOList.C
 
+primitives/DiagTensor/diagTensor/diagTensor.C
+primitives/SphericalTensor/sphericalTensor/sphericalTensor.C
+primitives/SphericalTensor/labelSphericalTensor/labelSphericalTensor.C
+primitives/SymmTensor/labelSymmTensor/labelSymmTensor.C
+primitives/SymmTensor/symmTensor/symmTensor.C
+primitives/Tensor/labelTensor/labelTensor.C
+primitives/Tensor/tensor/tensor.C
+primitives/Tensor/lists/sphericalTensorList.C
+primitives/Tensor/lists/symmTensorList.C
+primitives/Tensor/lists/tensorList.C
+
+
 LIB = $(FOAM_LIBBIN)/libOpenFOAM

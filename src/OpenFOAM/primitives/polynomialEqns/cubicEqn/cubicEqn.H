@@ -63,7 +63,8 @@ public:
         inline cubicEqn();
 
         //- Construct initialized to zero
-        inline cubicEqn(const Foam::zero);
+        // CoDiPack4OpenFOAM
+        //inline cubicEqn(const Foam::zero);
 
         //- Construct from components
         inline cubicEqn
