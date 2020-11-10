@@ -142,8 +142,8 @@ Istream& operator>>(Istream& is, Scalar& val)
 
     if (t.isNumber())
     {
-        // CoDiPack4OpenFOAM TODO: may need to change this
-        val = t.number();
+        // CoDiPack4OpenFOAM
+        val = Scalar(t.number());
     }
     else
     {

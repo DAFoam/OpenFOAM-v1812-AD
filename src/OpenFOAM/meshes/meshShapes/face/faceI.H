@@ -109,7 +109,8 @@ inline Foam::vector Foam::face::unitNormal(const UList<point>& p) const
 {
     const vector n(areaNormal(p));
     const scalar s(Foam::mag(n));
-    return s < ROOTVSMALL ? Zero : n/s;
+    // CoDiPack4OpenFOAM
+    return s < ROOTVSMALL ? vector::zero : n/s;
 }
 
 

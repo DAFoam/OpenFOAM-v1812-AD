@@ -24,10 +24,10 @@ Pstream/Allwmake $targetType $*
 
 OSspecific/"${WM_OSTYPE:-POSIX}"/Allwmake $targetType $*
 
+wmake $targetType OpenFOAM
+
 # CoDiPack4OpenFOAM exit here
 exit 1
-
-wmake $targetType OpenFOAM
 
 wmake $targetType fileFormats
 wmake $targetType surfMesh

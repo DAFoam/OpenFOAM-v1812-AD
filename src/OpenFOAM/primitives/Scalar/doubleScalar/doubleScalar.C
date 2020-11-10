@@ -55,7 +55,7 @@ Foam::Ostream& Foam::operator<<(Foam::Ostream& os, const double s)
 Foam::Istream& Foam::operator>>(Foam::Istream& is, double& val){
     Foam::doubleScalar d = val;
     operator>>(is,d);
-    val = dco::passive_value(d);
+    val = d.getValue();
     return is;
 }
 

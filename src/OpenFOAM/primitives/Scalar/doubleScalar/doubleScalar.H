@@ -120,6 +120,9 @@ inline Scalar func(const Scalar s) \
     return func(s);                \
 }
 
+// CoDiPack4OpenFOAM Explicit instantiation of operator<< for double
+Ostream& operator<<(Ostream& os, const double s);
+Istream& operator>>(Istream& is, double& val);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
