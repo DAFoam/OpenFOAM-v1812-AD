@@ -28,12 +28,13 @@ License
 inline Foam::quadraticEqn::quadraticEqn()
 {}
 
-
+// CodiPack4OpenFOAM
+/*
 inline Foam::quadraticEqn::quadraticEqn(const Foam::zero)
 :
     VectorSpace<quadraticEqn, scalar, 3>(Foam::zero())
 {}
-
+*/
 
 inline Foam::quadraticEqn::quadraticEqn
 (

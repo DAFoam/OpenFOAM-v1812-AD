@@ -69,5 +69,31 @@ primitives/Tensor/lists/sphericalTensorList.C
 primitives/Tensor/lists/symmTensorList.C
 primitives/Tensor/lists/tensorList.C
 
+primitives/Vector/complexVector/complexVector.C
+#if !defined(WM_DP)
+primitives/Vector/doubleVector/doubleVector.C
+primitives/Tensor/doubleTensor/doubleTensor.C
+#endif
+#if !defined(WM_SP)
+primitives/Vector/floatVector/floatVector.C
+primitives/Tensor/floatTensor/floatTensor.C
+#endif
+primitives/Vector/labelVector/labelVector.C
+primitives/Vector/vector/vector.C
+primitives/Vector/lists/vectorList.C
+primitives/Vector/lists/vectorIOList.C
+primitives/Vector/lists/vectorListIOList.C
+
+primitives/Tensor2D/tensor2D/tensor2D.C
+primitives/SphericalTensor2D/sphericalTensor2D/sphericalTensor2D.C
+primitives/SymmTensor2D/symmTensor2D/symmTensor2D.C
+primitives/Vector2D/vector2D/vector2D.C
+
+primitives/complex/complex.C
+primitives/globalIndexAndTransform/globalIndexAndTransform.C
+primitives/globalIndexAndTransform/vectorTensorTransform/vectorTensorTransform.C
+primitives/quaternion/quaternion.C
+primitives/septernion/septernion.C
+primitives/triad/triad.C
 
 LIB = $(FOAM_LIBBIN)/libOpenFOAM

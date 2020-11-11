@@ -67,7 +67,8 @@ inline Foam::quaternion::quaternion
 inline Foam::quaternion::quaternion(const scalar w)
 :
     w_(w),
-    v_(Zero)
+    // CodiPack4OpenFOAM
+    v_(vector::zero)
 {}
 
 
@@ -515,7 +516,8 @@ inline Foam::vector Foam::quaternion::eulerAngles
         default:
             FatalErrorInFunction
                 << "Unknown rotation sequence " << rs << abort(FatalError);
-            return Zero;
+            // CodiPack4OpenFOAM
+            return vector::zero;
             break;
     }
 }
