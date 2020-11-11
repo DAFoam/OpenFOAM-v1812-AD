@@ -62,7 +62,8 @@ public:
         inline linearEqn();
 
         //- Construct initialized to zero
-        inline linearEqn(const Foam::zero);
+        // CoDiPack4OpenFOAM
+        //inline linearEqn(const Foam::zero);
 
         //- Construct from components
         inline linearEqn(const scalar a, const scalar b);

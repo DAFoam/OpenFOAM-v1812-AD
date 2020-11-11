@@ -106,4 +106,55 @@ primitives/functions/Function1/quarterCosineRamp/quarterCosineRamp.C
 primitives/functions/Function1/halfCosineRamp/halfCosineRamp.C
 primitives/functions/Polynomial/polynomialFunction.C
 
+primitives/subModelBase/subModelBase.C
+
+strings = primitives/strings
+$(strings)/string/string.C
+$(strings)/string/stringIO.C
+$(strings)/string/stringIOList.C
+$(strings)/word/word.C
+$(strings)/word/wordIO.C
+$(strings)/word/wordIOList.C
+$(strings)/fileName/fileName.C
+$(strings)/fileName/fileNameIO.C
+$(strings)/keyType/keyType.C
+$(strings)/wordRe/wordRe.C
+$(strings)/wordRes/wordRes.C
+$(strings)/lists/CStringList.C
+$(strings)/lists/hashedWordList.C
+$(strings)/stringOps/stringOps.C
+$(strings)/stringOps/stringOpsSort.C
+$(strings)/parsing/parsing.C
+
+ops = primitives/ops
+$(ops)/flipOp.C
+
+primitives/predicates/scalar/scalarPredicates.C
+
+primitives/hashes/Hasher/Hasher.C
+
+sha1 = primitives/hashes/SHA1
+$(sha1)/SHA1.C
+$(sha1)/SHA1Digest.C
+
+primitives/random/Random/Random.C
+
+ranges = primitives/ranges
+$(ranges)/labelRange/labelRange.C
+$(ranges)/labelRange/labelRanges.C
+$(ranges)/scalarRange/scalarRange.C
+$(ranges)/scalarRange/scalarRanges.C
+$(ranges)/tableBounds/tableBounds.C
+
+spatialVectorAlgebra = primitives/spatialVectorAlgebra
+$(spatialVectorAlgebra)/SpatialVector/spatialVector/spatialVector.C
+$(spatialVectorAlgebra)/SpatialTensor/spatialTensor/spatialTensor.C
+$(spatialVectorAlgebra)/CompactSpatialTensor/compactSpatialTensor/compactSpatialTensor.C
+
+primitives/polynomialEqns/cubicEqn/cubicEqn.C
+primitives/polynomialEqns/quadraticEqn/quadraticEqn.C
+
+primitives/Barycentric/barycentric/barycentric.C
+primitives/Barycentric2D/barycentric2D/barycentric2D.C
+
 LIB = $(FOAM_LIBBIN)/libOpenFOAM

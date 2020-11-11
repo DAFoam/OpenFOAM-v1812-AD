@@ -28,12 +28,13 @@ License
 inline Foam::linearEqn::linearEqn()
 {}
 
-
+// CoDiPack4OpenFOAM
+/*
 inline Foam::linearEqn::linearEqn(const Foam::zero)
 :
     VectorSpace<linearEqn, scalar, 2>(Foam::zero())
 {}
-
+*/
 
 inline Foam::linearEqn::linearEqn(const scalar a, const scalar b)
 {
