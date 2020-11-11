@@ -31,13 +31,14 @@ template<class Cmpt>
 inline Foam::Tensor<Cmpt>::Tensor()
 {}
 
-
+// CoDiPack4OpenFOAM
+/*
 template<class Cmpt>
 inline Foam::Tensor<Cmpt>::Tensor(const Foam::zero)
 :
     Tensor::msType(Zero)
 {}
-
+*/
 
 template<class Cmpt>
 template<class Cmpt2>
