@@ -186,7 +186,7 @@ inline Foam::vector Foam::triFace::unitNormal(const UList<point>& points) const
 {
     const vector n(areaNormal(points));
     const scalar s(Foam::mag(n));
-    return s < ROOTVSMALL ? Zero : n/s;
+    return s < ROOTVSMALL ? vector::zero : n/s;
 }
 
 

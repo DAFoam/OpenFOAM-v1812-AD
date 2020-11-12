@@ -347,14 +347,14 @@ Type sum(const UList<Type>& f)
     if (f.size())
     {
         // CodiPack4OpenFOAM
-        Type Sum(Zero);
+        Type Sum = pTraits<Type>::zero;
         TFOR_ALL_S_OP_F(Type, Sum, +=, Type, f)
         return Sum;
     }
     else
     {
         // CodiPack4OpenFOAM
-        return Type(Zero);
+        return pTraits<Type>::zero;
     }
 }
 
@@ -382,7 +382,7 @@ Type maxMagSqr(const UList<Type>& f)
     else
     {
         // CodiPack4OpenFOAM
-        return Type(Zero);
+        return pTraits<Type>::zero;
     }
 }
 
@@ -437,7 +437,7 @@ Type sumCmptProd(const UList<Type>& f1, const UList<Type>& f2)
     if (f1.size() && (f1.size() == f2.size()))
     {
         // CodiPack4OpenFOAM
-        Type SumProd(Zero);
+        Type SumProd = pTraits<Type>::zero;
         TFOR_ALL_S_OP_FUNC_F_F
         (
             Type,
@@ -454,7 +454,7 @@ Type sumCmptProd(const UList<Type>& f1, const UList<Type>& f2)
     else
     {
         // CodiPack4OpenFOAM
-        return Type(Zero);
+        return pTraits<Type>::zero;
     }
 }
 
@@ -500,14 +500,14 @@ Type sumCmptMag(const UList<Type>& f)
     if (f.size())
     {
         // CodiPack4OpenFOAM
-        Type SumMag(Zero);
+        Type SumMag = pTraits<Type>::zero;
         TFOR_ALL_S_OP_FUNC_F(scalar, SumMag, +=, cmptMag, Type, f)
         return SumMag;
     }
     else
     {
         // CodiPack4OpenFOAM
-        return Type(Zero);
+        return pTraits<Type>::zero;
     }
 }
 
@@ -528,7 +528,7 @@ Type average(const UList<Type>& f)
             << "empty field, returning zero" << endl;
 
         // CodiPack4OpenFOAM
-        return Type(Zero);
+        return pTraits<Type>::zero;
     }
 }
 
@@ -606,7 +606,7 @@ Type gAverage
             << "empty field, returning zero." << endl;
 
         // CodiPack4OpenFOAM
-        return Type(Zero);
+        return pTraits<Type>::zero;
     }
 }
 

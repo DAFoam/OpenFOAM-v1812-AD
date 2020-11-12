@@ -333,7 +333,7 @@ inline Foam::treeBoundBox Foam::treeBoundBox::extend
 
     for (direction dir = 0; dir < vector::nComponents; ++dir)
     {
-        newSpan[dir] = Foam::max(newSpan[dir], minSpan);
+        newSpan[dir] = Foam::max(newSpan[dir].getValue(), minSpan.getValue());
     }
 
     bb.min() -= cmptMultiply(s*rndGen.sample01<vector>(), newSpan);

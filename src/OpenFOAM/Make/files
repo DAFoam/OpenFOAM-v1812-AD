@@ -364,4 +364,106 @@ $(lduInterfaceFields)/lduInterfaceField/lduInterfaceField.C
 $(lduInterfaceFields)/processorLduInterfaceField/processorLduInterfaceField.C
 $(lduInterfaceFields)/cyclicLduInterfaceField/cyclicLduInterfaceField.C
 
+GAMG = $(lduMatrix)/solvers/GAMG
+$(GAMG)/GAMGSolver.C
+$(GAMG)/GAMGSolverAgglomerateMatrix.C
+$(GAMG)/GAMGSolverInterpolate.C
+$(GAMG)/GAMGSolverScale.C
+$(GAMG)/GAMGSolverSolve.C
+
+GAMGInterfaces = $(GAMG)/interfaces
+$(GAMGInterfaces)/GAMGInterface/GAMGInterface.C
+$(GAMGInterfaces)/GAMGInterface/GAMGInterfaceNew.C
+$(GAMGInterfaces)/processorGAMGInterface/processorGAMGInterface.C
+$(GAMGInterfaces)/processorCyclicGAMGInterface/processorCyclicGAMGInterface.C
+$(GAMGInterfaces)/cyclicGAMGInterface/cyclicGAMGInterface.C
+
+GAMGInterfaceFields = $(GAMG)/interfaceFields
+$(GAMGInterfaceFields)/GAMGInterfaceField/GAMGInterfaceField.C
+$(GAMGInterfaceFields)/GAMGInterfaceField/GAMGInterfaceFieldNew.C
+$(GAMGInterfaceFields)/processorGAMGInterfaceField/processorGAMGInterfaceField.C
+$(GAMGInterfaceFields)/processorCyclicGAMGInterfaceField/processorCyclicGAMGInterfaceField.C
+$(GAMGInterfaceFields)/cyclicGAMGInterfaceField/cyclicGAMGInterfaceField.C
+
+GAMGAgglomerations = $(GAMG)/GAMGAgglomerations
+
+GAMGAgglomeration = $(GAMGAgglomerations)/GAMGAgglomeration
+$(GAMGAgglomeration)/GAMGAgglomeration.C
+$(GAMGAgglomeration)/GAMGAgglomerateLduAddressing.C
+
+pairGAMGAgglomeration = $(GAMGAgglomerations)/pairGAMGAgglomeration
+$(pairGAMGAgglomeration)/pairGAMGAgglomeration.C
+$(pairGAMGAgglomeration)/pairGAMGAgglomerate.C
+
+algebraicPairGAMGAgglomeration = $(GAMGAgglomerations)/algebraicPairGAMGAgglomeration
+$(algebraicPairGAMGAgglomeration)/algebraicPairGAMGAgglomeration.C
+
+dummyAgglomeration = $(GAMGAgglomerations)/dummyAgglomeration
+$(dummyAgglomeration)/dummyAgglomeration.C
+
+
+GAMGProcAgglomerations = $(GAMG)/GAMGProcAgglomerations
+
+GAMGProcAgglomeration = $(GAMGProcAgglomerations)/GAMGProcAgglomeration
+$(GAMGProcAgglomeration)/GAMGProcAgglomeration.C
+masterCoarsestGAMGProcAgglomeration = $(GAMGProcAgglomerations)/masterCoarsestGAMGProcAgglomeration
+$(masterCoarsestGAMGProcAgglomeration)/masterCoarsestGAMGProcAgglomeration.C
+manualGAMGProcAgglomeration = $(GAMGProcAgglomerations)/manualGAMGProcAgglomeration
+$(manualGAMGProcAgglomeration)/manualGAMGProcAgglomeration.C
+eagerGAMGProcAgglomeration = $(GAMGProcAgglomerations)/eagerGAMGProcAgglomeration
+$(eagerGAMGProcAgglomeration)/eagerGAMGProcAgglomeration.C
+noneGAMGProcAgglomeration = $(GAMGProcAgglomerations)/noneGAMGProcAgglomeration
+$(noneGAMGProcAgglomeration)/noneGAMGProcAgglomeration.C
+procFacesGAMGProcAgglomeration = $(GAMGProcAgglomerations)/procFacesGAMGProcAgglomeration
+$(procFacesGAMGProcAgglomeration)/procFacesGAMGProcAgglomeration.C
+
+meshes/lduMesh/lduMesh.C
+meshes/lduMesh/lduPrimitiveMesh.C
+
+LduMatrix = matrices/LduMatrix
+$(LduMatrix)/LduMatrix/lduMatrices.C
+$(LduMatrix)/LduMatrix/solverPerformance.C
+$(LduMatrix)/LduMatrix/LduInterfaceField/LduInterfaceFields.C
+$(LduMatrix)/Smoothers/lduSmoothers.C
+$(LduMatrix)/Preconditioners/lduPreconditioners.C
+$(LduMatrix)/Solvers/lduSolvers.C
+
+primitiveShapes = meshes/primitiveShapes
+
+$(primitiveShapes)/line/line.C
+$(primitiveShapes)/plane/plane.C
+$(primitiveShapes)/triangle/intersection.C
+$(primitiveShapes)/objectHit/pointIndexHitIOList.C
+
+meshShapes = meshes/meshShapes
+$(meshShapes)/edge/edge.C
+$(meshShapes)/edge/edgeIOList.C
+
+face = $(meshShapes)/face
+$(face)/face.C
+$(face)/faceIntersection.C
+$(face)/faceContactSphere.C
+$(face)/faceAreaInContact.C
+$(face)/faceIOList.C
+
+cell = $(meshShapes)/cell
+$(cell)/cell.C
+$(cell)/oppositeCellFace.C
+$(cell)/cellIOList.C
+
+tetCell = $(meshShapes)/tetCell
+$(tetCell)/tetCell.C
+
+cellModel = $(meshShapes)/cellModel
+$(cellModel)/cellModel.C
+$(cellModel)/cellModels.C
+$(cellModel)/cellModelIO.C
+
+cellShape = $(meshShapes)/cellShape
+$(cellShape)/cellShape.C
+$(cellShape)/cellShapeEqual.C
+$(cellShape)/cellShapeIO.C
+$(cellShape)/cellShapeIOList.C
+
+
 LIB = $(FOAM_LIBBIN)/libOpenFOAM

@@ -192,7 +192,7 @@ Foam::point Foam::cell::centre
 
     // first calculate the approximate cell centre as the average of all
     // face centres
-    vector cEst = Zero;
+    vector cEst = vector::zero;
     scalar sumArea = 0;
 
     const labelList& faces = *this;
@@ -208,7 +208,7 @@ Foam::point Foam::cell::centre
 
     // Calculate the centre by breaking the cell into pyramids and
     // volume-weighted averaging their centres
-    vector sumVc = Zero;
+    vector sumVc = vector::zero;
 
     scalar sumV = 0;
 
@@ -251,7 +251,7 @@ Foam::scalar Foam::cell::mag
 
     // first calculate the approximate cell centre as the average of all
     // face centres
-    vector cEst = Zero;
+    vector cEst = vector::zero;
     scalar nCellFaces = 0;
 
     const labelList& faces = *this;

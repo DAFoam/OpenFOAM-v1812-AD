@@ -188,8 +188,11 @@ Foam::PCICG<Type, DType, LUType>::solve(Field<Type>& psi) const
         );
     }
 
-    solverPerf.nIterations() =
-        pTraits<typename pTraits<Type>::labelType>::one*nIter;
+    solverPerf.nIterations() = pTraits<typename pTraits<Type>::labelType>::zero;
+    for(label i=0;i<nIter;i++)
+    {
+        solverPerf.nIterations() += pTraits<typename pTraits<Type>::labelType>::one;
+    }
 
     return solverPerf;
 }

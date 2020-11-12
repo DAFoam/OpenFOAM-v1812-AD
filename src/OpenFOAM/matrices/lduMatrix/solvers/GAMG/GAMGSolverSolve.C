@@ -666,7 +666,7 @@ void Foam::GAMGSolver::solveCoarsestLevel
     //}
     else
     {
-        coarsestCorrField = 0;
+        coarsestCorrField = scalar(0.0);
         solverPerformance coarseSolverPerf;
 
         if (matrixLevels_[coarsestLevel].asymmetric())

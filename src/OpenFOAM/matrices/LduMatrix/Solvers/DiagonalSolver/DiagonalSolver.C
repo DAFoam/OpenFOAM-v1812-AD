@@ -67,9 +67,9 @@ Foam::DiagonalSolver<Type, DType, LUType>::solve
     (
         typeName,
         this->fieldName_,
-        Zero,
-        Zero,
-        Zero,
+        pTraits<Type>::zero,
+        pTraits<Type>::zero,
+        pTraits<typename pTraits<Type>::labelType>::zero,
         true,
         false
     );

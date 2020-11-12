@@ -118,7 +118,7 @@ void Foam::plane::calcFromEmbeddedPoints
 Foam::plane::plane(const vector& normalVector)
 :
     normal_(normalVector),
-    origin_(Zero)
+    origin_(vector::zero)
 {
     makeUnitNormal(FUNCTION_NAME);
 }
@@ -172,8 +172,8 @@ Foam::plane::plane(const point& a, const point& b, const point& c)
 
 Foam::plane::plane(const dictionary& dict)
 :
-    normal_(Zero),
-    origin_(Zero)
+    normal_(vector::zero),
+    origin_(vector::zero)
 {
     const word planeType(dict.get<word>("planeType"));
 

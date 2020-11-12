@@ -46,7 +46,7 @@ void Foam::GAMGSolver::interpolate
     const scalar* const __restrict__ upperPtr = m.upper().begin();
     const scalar* const __restrict__ lowerPtr = m.lower().begin();
 
-    Apsi = 0;
+    Apsi = scalar(0.0);
     scalar* __restrict__ ApsiPtr = Apsi.begin();
 
     m.initMatrixInterfaces
