@@ -72,7 +72,8 @@ Foam::SVD::SVD(const scalarRectangularMatrix& A, const scalar minCondition)
                 }
 
                 scalar f = U_(i, i);
-                g = -sign(sqrt(s), f);
+                // CoDiPack4OpenFOAM
+                g = -sign(scalar(sqrt(s)), f);
                 scalar h = f*g - s;
                 U_(i, i) = f - g;
 
@@ -118,7 +119,8 @@ Foam::SVD::SVD(const scalarRectangularMatrix& A, const scalar minCondition)
                 }
 
                 scalar f = U_(i, l-1);
-                g = -sign(sqrt(s), f);
+                // CoDiPack4OpenFOAM
+                g = -sign(scalar(sqrt(s)), f);
                 scalar h = f*g - s;
                 U_(i, l-1) = f - g;
 
@@ -346,7 +348,8 @@ Foam::SVD::SVD(const scalarRectangularMatrix& A, const scalar minCondition)
 
                 z = sqrtSumSqr(f, h);
                 S_[j] = z;
-                if (z)
+                // CoDiPack4OpenFOAM
+                if (z.getValue())
                 {
                     z = 1.0/z;
                     c = f*z;

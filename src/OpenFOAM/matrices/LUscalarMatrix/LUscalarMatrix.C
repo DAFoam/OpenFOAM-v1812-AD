@@ -418,7 +418,11 @@ void Foam::LUscalarMatrix::inv(scalarSquareMatrix& M) const
 
     for (label j=0; j<m(); j++)
     {
-        source = Zero;
+        // CoDiPack4OpenFOAM
+        for(label k=0; k<m(); k++)
+        {
+            source[k] = 0.0;
+        }
         source[j] = 1;
         LUBacksubstitute(*this, pivotIndices_, source);
         for (label i=0; i<m(); i++)

@@ -177,11 +177,14 @@ bool Foam::timeControl::execute()
         {
             label executionIndex = label
             (
+                // CoDiPack4OpenFOAM
+                (
                 (
                     (time_.value() - time_.startTime().value())
                   + 0.5*time_.deltaTValue()
                 )
                /interval_
+               ).getValue()
             );
 
             if (executionIndex > executionIndex_)
@@ -196,8 +199,11 @@ bool Foam::timeControl::execute()
         {
             label executionIndex = label
             (
-                returnReduce(time_.elapsedCpuTime(), maxOp<double>())
+                // CoDiPack4OpenFOAM
+                (
+                returnReduce(scalar(time_.elapsedCpuTime()), maxOp<scalar>())
                /interval_
+                ).getValue()
             );
             if (executionIndex > executionIndex_)
             {
@@ -211,8 +217,11 @@ bool Foam::timeControl::execute()
         {
             label executionIndex = label
             (
-                returnReduce(time_.elapsedClockTime(), maxOp<double>())
+                // CoDiPack4OpenFOAM
+                (
+                returnReduce(scalar(time_.elapsedClockTime()), maxOp<scalar>())
                /interval_
+                ).getValue()
             );
             if (executionIndex > executionIndex_)
             {

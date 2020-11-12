@@ -141,22 +141,24 @@ dimensionedScalar pow025(const dimensionedScalar& ds)
 
 dimensionedScalar sqrt(const dimensionedScalar& ds)
 {
+    // CoDiPack4OpenFOAM
     return dimensionedScalar
     (
         "sqrt(" + ds.name() + ')',
         pow(ds.dimensions(), dimensionedScalar("0.5", dimless, 0.5)),
-        ::sqrt(ds.value())
+        sqrt(ds.value())
     );
 }
 
 
 dimensionedScalar cbrt(const dimensionedScalar& ds)
 {
+    // CoDiPack4OpenFOAM
     return dimensionedScalar
     (
         "cbrt(" + ds.name() + ')',
         pow(ds.dimensions(), dimensionedScalar("(1|3)", dimless, 1.0/3.0)),
-        ::cbrt(ds.value())
+        pow(ds.value(), 1.0/3.0)
     );
 }
 
@@ -167,11 +169,12 @@ dimensionedScalar hypot
     const dimensionedScalar& y
 )
 {
+    // CoDiPack4OpenFOAM
     return dimensionedScalar
     (
         "hypot(" + x.name() + ',' + y.name() + ')',
         x.dimensions() + y.dimensions(),
-        ::hypot(x.value(), y.value())
+        hypot(x.value(), y.value())
     );
 }
 
@@ -252,7 +255,7 @@ dimensionedScalar negPart(const dimensionedScalar& ds)
     );
 }
 
-
+// CoDiPack4OpenFOAM
 #define transFunc(func)                                                        \
 dimensionedScalar func(const dimensionedScalar& ds)                            \
 {                                                                              \
@@ -267,7 +270,7 @@ dimensionedScalar func(const dimensionedScalar& ds)                            \
     (                                                                          \
         #func "(" + ds.name() + ')',                                           \
         dimless,                                                               \
-        ::func(ds.value())                                                     \
+        func(ds.value())                                                     \
     );                                                                         \
 }
 
@@ -296,7 +299,7 @@ transFunc(y1)
 
 #undef transFunc
 
-
+// CoDiPack4OpenFOAM
 #define transFunc(func)                                                        \
 dimensionedScalar func(const int n, const dimensionedScalar& ds)               \
 {                                                                              \
@@ -311,7 +314,7 @@ dimensionedScalar func(const int n, const dimensionedScalar& ds)               \
     (                                                                          \
         #func "(" + name(n) + ',' + ds.name() + ')',                           \
         dimless,                                                               \
-        ::func(n, ds.value())                                                  \
+        func(n, ds.value())                                                  \
     );                                                                         \
 }
 
@@ -327,11 +330,12 @@ dimensionedScalar atan2
     const dimensionedScalar& y
 )
 {
+    // CoDiPack4OpenFOAM
     return dimensionedScalar
     (
         "atan2(" + x.name() + ',' + y.name() + ')',
         atan2(x.dimensions(), y.dimensions()),
-        ::atan2(x.value(), y.value())
+        atan2(x.value(), y.value())
     );
 }
 
