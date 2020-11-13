@@ -298,7 +298,7 @@ inline Cmpt tr(const SymmTensor<Cmpt>& st)
 template<class Cmpt>
 inline SphericalTensor<Cmpt> sph(const SymmTensor<Cmpt>& st)
 {
-    return (1.0/3.0)*tr(st);
+    return SphericalTensor<Cmpt>((1.0/3.0)*tr(st));
 }
 
 

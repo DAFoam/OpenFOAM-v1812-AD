@@ -600,9 +600,9 @@ Foam::cyclicPolyPatch::cyclicPolyPatch
     coupledPolyPatch(name, size, start, index, bm, patchType, transform),
     neighbPatchName_(word::null),
     neighbPatchID_(-1),
-    rotationAxis_(Zero),
-    rotationCentre_(Zero),
-    separationVector_(Zero),
+    rotationAxis_(vector::zero),
+    rotationCentre_(vector::zero),
+    separationVector_(vector::zero),
     coupledPointsPtr_(nullptr),
     coupledEdgesPtr_(nullptr)
 {
@@ -652,9 +652,9 @@ Foam::cyclicPolyPatch::cyclicPolyPatch
     neighbPatchName_(dict.lookupOrDefault("neighbourPatch", word::null)),
     coupleGroup_(dict),
     neighbPatchID_(-1),
-    rotationAxis_(Zero),
-    rotationCentre_(Zero),
-    separationVector_(Zero),
+    rotationAxis_(vector::zero),
+    rotationCentre_(vector::zero),
+    separationVector_(vector::zero),
     coupledPointsPtr_(nullptr),
     coupledEdgesPtr_(nullptr)
 {

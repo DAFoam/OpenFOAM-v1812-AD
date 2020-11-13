@@ -33,7 +33,7 @@ inline Foam::Vector<Cmpt>::Vector()
 template<class Cmpt>
 inline Foam::Vector<Cmpt>::Vector(const Foam::zero)
 :
-    Vector::vsType(Zero)
+    Vector::vsType(Vector<Cmpt>::zero)
 {}
 
 
@@ -128,7 +128,7 @@ inline Foam::Vector<Cmpt>& Foam::Vector<Cmpt>::normalise()
 
     if (s < ROOTVSMALL)
     {
-        *this = Zero;
+        *this = Vector<Cmpt>::zero;
     }
     else
     {
@@ -169,22 +169,6 @@ operator&(const Vector<Cmpt>& v1, const Vector<Cmpt>& v2)
 template<class Cmpt>
 inline Vector<Cmpt> operator^(const Vector<Cmpt>& v1, const Vector<Cmpt>& v2)
 {
-/*
-    scalar v1x = v1.x();
-    scalar v1y = v1.y();
-    scalar v1z = v1.z();
-    scalar v2x = v2.x();
-    scalar v2y = v2.y();
-    scalar v2z = v2.z();
-
-    return Vector<Cmpt>
-    (
-        v1y*v2z - v1z*v2y,
-        v1z*v2x - v1x*v2z,
-        v1x*v2y - v1y*v2x
-    );
-*/
-
     return Vector<Cmpt>
     (
         (v1.y()*v2.z() - v1.z()*v2.y()),

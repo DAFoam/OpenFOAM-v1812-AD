@@ -647,7 +647,7 @@ Foam::List<T> Foam::subsetList
     label count = 0;
     for (label i=0; i < len; ++i)
     {
-        if (pred(input[i]) ? !invert : invert)
+        if (pred(input[i]) != 0 ? !invert : invert)
         {
             output[count] = input[i];
             ++count;
@@ -673,7 +673,7 @@ void Foam::inplaceSubsetList
     label count = 0;
     for (label i=0; i < len; ++i)
     {
-        if (pred(input[i]) ? !invert : invert)
+        if (pred(input[i]) != 0 ? !invert : invert)
         {
             if (count != i)
             {

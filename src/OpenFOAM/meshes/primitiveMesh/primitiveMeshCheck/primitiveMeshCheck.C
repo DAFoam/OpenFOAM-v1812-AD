@@ -403,7 +403,7 @@ bool Foam::primitiveMesh::checkFaceOrthogonality
 
     // Severe nonorthogonality threshold
     const scalar severeNonorthogonalityThreshold =
-        ::cos(degToRad(nonOrthThreshold_));
+        cos(degToRad(nonOrthThreshold_));
 
     scalar minDDotS = min(ortho);
 
@@ -454,8 +454,8 @@ bool Foam::primitiveMesh::checkFaceOrthogonality
             if (debug || report)
             {
                 Info<< "    Mesh non-orthogonality Max: "
-                    << radToDeg(::acos(minDDotS))
-                    << " average: " << radToDeg(::acos(sumDDotS/neiSize))
+                    << radToDeg(acos(minDDotS))
+                    << " average: " << radToDeg(acos(sumDDotS/neiSize))
                     << endl;
             }
         }
@@ -720,7 +720,7 @@ bool Foam::primitiveMesh::checkFaceAngles
     if (nConcave > 0)
     {
         scalar maxConcaveDegr =
-            radToDeg(Foam::asin(Foam::min(1.0, maxEdgeSin)));
+            radToDeg(Foam::asin(Foam::min(1.0, maxEdgeSin.getValue())));
 
         if (debug || report)
         {

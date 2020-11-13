@@ -59,7 +59,7 @@ bool Foam::polyMesh::checkFaceOrthogonality
 
     // Severe nonorthogonality threshold
     const scalar severeNonorthogonalityThreshold =
-        ::cos(degToRad(primitiveMesh::nonOrthThreshold_));
+        cos(degToRad(primitiveMesh::nonOrthThreshold_));
 
 
     scalar minDDotS = GREAT;
@@ -101,7 +101,7 @@ bool Foam::polyMesh::checkFaceOrthogonality
                         << " between cells " << own[facei]
                         << " and " << nei[facei]
                         << ": Angle = "
-                        << radToDeg(::acos(min(1.0, max(-1.0, ortho[facei]))))
+                        << radToDeg(acos(min(1.0, max(-1.0, ortho[facei]))))
                         << " deg." << endl;
                 }
 
@@ -130,9 +130,9 @@ bool Foam::polyMesh::checkFaceOrthogonality
             if (debug || report)
             {
                 Info<< "    Mesh non-orthogonality Max: "
-                    << radToDeg(::acos(min(1.0, max(-1.0, minDDotS))))
+                    << radToDeg(acos(min(1.0, max(-1.0, minDDotS))))
                     << " average: "
-                    << radToDeg(::acos(min(1.0, max(-1.0, sumDDotS/nSummed))))
+                    << radToDeg(acos(min(1.0, max(-1.0, sumDDotS/nSummed))))
                     << endl;
             }
         }

@@ -115,6 +115,11 @@ BINARY_OPERATOR(scalar, scalar, scalar, /, divide)
 
 BINARY_TYPE_OPERATOR_SF(scalar, scalar, scalar, /, divide)
 
+inline scalar pow(const scalar& val, const scalar& p)
+{
+    return pow(val, p);
+}
+
 BINARY_FUNCTION(scalar, scalar, scalar, pow)
 BINARY_TYPE_FUNCTION(scalar, scalar, scalar, pow)
 

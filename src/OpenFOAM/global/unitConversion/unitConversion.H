@@ -42,76 +42,76 @@ namespace Foam
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 //- Conversion from degrees to radians
-inline constexpr scalar degToRad(const scalar deg) noexcept
+inline scalar degToRad(const scalar deg) noexcept
 {
     return (deg*M_PI/180.0);
 }
 
 //- Conversion from radians to degrees
-inline constexpr scalar radToDeg(const scalar rad) noexcept
+inline scalar radToDeg(const scalar rad) noexcept
 {
     return (rad*180.0/M_PI);
 }
 
 //- Multiplication factor for degrees to radians conversion
-inline constexpr scalar degToRad() noexcept
+inline scalar degToRad() noexcept
 {
     return (M_PI/180.0);
 }
 
 //- Multiplication factor for radians to degrees conversion
-inline constexpr scalar radToDeg() noexcept
+inline scalar radToDeg() noexcept
 {
     return (180.0/M_PI);
 }
 
 
 //- Conversion from revolutions/minute to radians/sec
-inline constexpr scalar rpmToRads(const scalar rpm) noexcept
+inline scalar rpmToRads(const scalar rpm) noexcept
 {
     return (rpm*M_PI/30.0);
 }
 
 //- Conversion from radians/sec to revolutions/minute
-inline constexpr scalar radsToRpm(const scalar rads) noexcept
+inline scalar radsToRpm(const scalar rads) noexcept
 {
     return (rads*30.0/M_PI);
 }
 
 //- Multiplication factor for revolutions/minute to radians/sec
-inline constexpr scalar rpmToRads() noexcept
+inline scalar rpmToRads() noexcept
 {
     return (M_PI/30.0);
 }
 
 //- Multiplication factor for radians/sec to revolutions/minute
-inline constexpr scalar radsToRpm() noexcept
+inline scalar radsToRpm() noexcept
 {
     return (30.0/M_PI);
 }
 
 
 //- Conversion from atm to Pa
-inline constexpr scalar atmToPa(const scalar atm) noexcept
+inline scalar atmToPa(const scalar atm) noexcept
 {
     return (atm*101325.0);
 }
 
 //- Conversion from atm to Pa
-inline constexpr scalar paToAtm(const scalar pa) noexcept
+inline scalar paToAtm(const scalar pa) noexcept
 {
     return (pa/101325.0);
 }
 
 
 //- User literal for degrees to radians conversion (integers)
-inline constexpr scalar operator "" _deg(unsigned long long int deg) noexcept
+inline scalar operator "" _deg(unsigned long long int deg) noexcept
 {
     return (deg*M_PI/180.0);
 }
 
 //- User literal for degrees to radians conversion (floats)
-inline constexpr scalar operator "" _deg(long double deg) noexcept
+inline scalar operator "" _deg(long double deg) noexcept
 {
     return (deg*M_PI/180.0);
 }

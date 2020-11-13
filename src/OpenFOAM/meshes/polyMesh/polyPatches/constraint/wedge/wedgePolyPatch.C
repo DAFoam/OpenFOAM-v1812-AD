@@ -144,8 +144,8 @@ Foam::wedgePolyPatch::wedgePolyPatch
     centreNormal_(vector::rootMax),
     n_(vector::rootMax),
     cosAngle_(0.0),
-    faceT_(Zero),
-    cellT_(Zero)
+    faceT_(tensor::zero),
+    cellT_(tensor::zero)
 {}
 
 
@@ -163,8 +163,8 @@ Foam::wedgePolyPatch::wedgePolyPatch
     centreNormal_(vector::rootMax),
     n_(vector::rootMax),
     cosAngle_(0.0),
-    faceT_(Zero),
-    cellT_(Zero)
+    faceT_(tensor::zero),
+    cellT_(tensor::zero)
 {}
 
 

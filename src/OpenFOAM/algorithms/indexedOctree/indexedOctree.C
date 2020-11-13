@@ -2223,8 +2223,8 @@ Foam::indexedOctree<Type>::indexedOctree
     }
 
     // Start off with one node with all shapes in it.
-    DynamicList<node> nodes(label(shapes.size() / maxLeafRatio));
-    DynamicList<labelList> contents(label(shapes.size() / maxLeafRatio));
+    DynamicList<node> nodes(label(shapes.size() / maxLeafRatio.getValue()));
+    DynamicList<labelList> contents(label(shapes.size() / maxLeafRatio.getValue()));
     contents.append(identity(shapes.size()));
 
     // Create topnode.
@@ -2273,7 +2273,7 @@ Foam::indexedOctree<Type>::indexedOctree
         label nOldNodes = nodes.size();
         splitNodes
         (
-            label(maxLeafRatio),
+            label(maxLeafRatio.getValue()),
             nodes,
             contents
         );

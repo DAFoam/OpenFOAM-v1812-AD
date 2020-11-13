@@ -27,7 +27,7 @@ License
 
 inline Foam::pointConstraint::pointConstraint()
 :
-    Tuple2<label, vector>(0, Zero)
+    Tuple2<label, vector>(0, vector::zero)
 {}
 
 
@@ -131,7 +131,7 @@ inline Foam::tensor Foam::pointConstraint::constraintTransformation() const
     }
     else
     {
-        return Zero;
+        return tensor::zero;
     }
 }
 
@@ -175,7 +175,7 @@ inline void Foam::pointConstraint::unconstrainedDirections
     // Knock out remaining vectors
     for (direction dir = n; dir < vecs.size(); dir++)
     {
-        vecs[dir] = Zero;
+        vecs[dir] = vector::zero;
     }
 
     tt = tensor(vecs[0], vecs[1], vecs[2]);
@@ -205,7 +205,7 @@ inline Foam::vector Foam::pointConstraint::constrainDisplacement
     }
     else
     {
-        cd = Zero;
+        cd = vector::zero;
     }
     return cd;
 }

@@ -185,9 +185,9 @@ inline Foam::quaternion::quaternion
 
     if (trace > 0)
     {
-        scalar s = 0.5/Foam::sqrt(trace + 1.0);
+        scalar s = 0.5/sqrt(trace + 1.0);
 
-        w_ = 0.25/s;
+        w_ = scalar(0.25)/s;
         v_[0] = (rotationTensor.zy() - rotationTensor.yz())*s;
         v_[1] = (rotationTensor.xz() - rotationTensor.zx())*s;
         v_[2] = (rotationTensor.yx() - rotationTensor.xy())*s;
@@ -200,7 +200,7 @@ inline Foam::quaternion::quaternion
          && rotationTensor.xx() > rotationTensor.zz()
         )
         {
-            scalar s = 2.0*Foam::sqrt
+            scalar s = 2.0*sqrt
             (
                 1.0
               + rotationTensor.xx()
@@ -218,7 +218,7 @@ inline Foam::quaternion::quaternion
             rotationTensor.yy() > rotationTensor.zz()
         )
         {
-            scalar s = 2.0*Foam::sqrt
+            scalar s = 2.0*sqrt
             (
                 1.0
               + rotationTensor.yy()
@@ -233,7 +233,7 @@ inline Foam::quaternion::quaternion
         }
         else
         {
-            scalar s = 2.0*Foam::sqrt
+            scalar s = 2.0*sqrt
             (
                 1.0
               + rotationTensor.zz()

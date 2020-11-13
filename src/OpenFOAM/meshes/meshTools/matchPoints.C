@@ -66,7 +66,7 @@ bool Foam::matchPoints
 
         scalar matchDist = matchDistances[face0I];
 
-        label startI = findLower(pts1MagSqr, 0.99999*dist0 - 2*matchDist);
+        label startI = findLower(pts1MagSqr, scalar(0.99999*dist0 - 2*matchDist));
 
         if (startI == -1)
         {
@@ -178,7 +178,7 @@ bool Foam::matchPoints
 
         scalar matchDist = matchDistances[face0I];
 
-        label startI = findLower(pts1MagSqr, 0.99999*dist0 - 2*matchDist);
+        label startI = findLower(pts1MagSqr, scalar(0.99999*dist0 - 2*matchDist));
 
         if (startI == -1)
         {
