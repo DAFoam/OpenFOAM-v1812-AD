@@ -231,7 +231,7 @@ inline Foam::scalar Foam::tetrahedron<Point, PointRef>::quality() const
     return
         mag()
        /(
-            8.0/(9.0*sqrt(3.0))
+            8.0/(9.0*std::sqrt(3.0))
            *pow3(min(circumRadius(), GREAT))
           + ROOTVSMALL
         );

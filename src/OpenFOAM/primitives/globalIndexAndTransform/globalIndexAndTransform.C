@@ -78,7 +78,7 @@ Foam::label Foam::globalIndexAndTransform::matchTransform
         {
             tensorDiff =
                 mag(refTransform.R() - testTransform.R())
-               /sqrt(3.0)
+               /sqrt(static_cast<scalar>(3.0))
                /tolerance;
         }
 
@@ -107,7 +107,7 @@ Foam::label Foam::globalIndexAndTransform::matchTransform
             {
                 tensorDiff =
                     mag(refTransform.R() - testTransform.R().T())
-                   /sqrt(3.0)
+                   /sqrt(static_cast<scalar>(3.0))
                    /tolerance;
             }
 

@@ -150,7 +150,7 @@ void Foam::functionObjects::timeControl::calcDeltaTCoeff
     }
 
     // Recalculate new deltaTCoeff_ based on rounded steps
-    requiredDeltaTCoeff = Foam::exp(Foam::log(wantedDT/newDeltaT)/nSteps);
+    requiredDeltaTCoeff = codi::exp(codi::log(wantedDT/newDeltaT)/nSteps);
 
     // Calculate total time required with given dT increment
     // to reach specified dT value
@@ -592,7 +592,7 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
                     requiredDeltaTCoeff = seriesDTCoeff_;
                 }
                 // Avoid divide by zero if we need ratio = 1
-                if (1/Foam::log(requiredDeltaTCoeff)> labelMax)
+                if (1/codi::log(requiredDeltaTCoeff)> labelMax)
                 {
                     requiredDeltaTCoeff = deltaTCoeff_;
                 }
@@ -611,8 +611,8 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
                     (
                         floor
                         (
-                            Foam::log(wantedDT/deltaT0_)
-                           /Foam::log(requiredDeltaTCoeff + SMALL)
+                            codi::log(wantedDT/deltaT0_)
+                           /codi::log(requiredDeltaTCoeff + SMALL)
                         )
                     );
                 }
@@ -622,8 +622,8 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
                     (
                         ceil
                         (
-                            Foam::log(wantedDT/deltaT0_)
-                           /Foam::log(requiredDeltaTCoeff + SMALL)
+                            codi::log(wantedDT/deltaT0_)
+                           /codi::log(requiredDeltaTCoeff + SMALL)
                         )
                     );
                 }

@@ -92,7 +92,7 @@ bool Foam::primitiveMesh::checkPointNearness
     {
         if (report)
         {
-            Info<< "  <<Points closer than " << Foam::sqrt(reportDistSqr)
+            Info<< "  <<Points closer than " << sqrt(reportDistSqr)
                 << " together found, number: " << nClose
                 << endl;
         }

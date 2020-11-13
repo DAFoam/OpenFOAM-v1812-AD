@@ -229,7 +229,7 @@ Foam::scalarField Foam::coupledPolyPatch::calcFaceTol
         tols[facei] = max
         (
             SMALL,
-            max(SMALL*maxCmpt, Foam::sqrt(maxLenSqr))
+            max(SMALL*maxCmpt, sqrt(maxLenSqr))
         );
     }
     return tols;
@@ -258,7 +258,7 @@ Foam::label Foam::coupledPolyPatch::getRotation
         }
     }
 
-    if (anchorFp == -1 || Foam::sqrt(minDistSqr) > tol)
+    if (anchorFp == -1 || sqrt(minDistSqr) > tol)
     {
         return -1;
     }
@@ -277,7 +277,7 @@ Foam::label Foam::coupledPolyPatch::getRotation
                     << endl
                     << "Both at index " << anchorFp << " and " << fp
                     << " the vertices have the same distance "
-                    << Foam::sqrt(minDistSqr)
+                    << sqrt(minDistSqr)
                     << " to the anchor " << anchor
                     << ". Continuing but results might be wrong."
                     << nl << endl;
@@ -330,7 +330,7 @@ void Foam::coupledPolyPatch::calcTransformTensors
     }
     else
     {
-        scalar error = absTol*Foam::sqrt(1.0*Cf.size());
+        scalar error = absTol*std::sqrt(1.0*Cf.size());
 
         if (debug)
         {

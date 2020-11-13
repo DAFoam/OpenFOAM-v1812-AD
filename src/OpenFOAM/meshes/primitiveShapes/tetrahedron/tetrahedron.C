@@ -45,7 +45,7 @@ Foam::pointHit Foam::tetrahedron<Point, PointRef>::containmentSphere
     const scalar fac = 1 + tol;
 
     // Halve order of tolerance for comparisons of sqr.
-    const scalar facSqr = Foam::sqrt(fac);
+    const scalar facSqr = sqrt(fac);
 
 
     // 1. Circumcentre itself.

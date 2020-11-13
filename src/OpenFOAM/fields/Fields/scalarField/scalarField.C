@@ -120,6 +120,21 @@ inline scalar pow(const scalar& val, const scalar& p)
     return pow(val, p);
 }
 
+inline scalar sqrt(const scalar& val)
+{
+    return sqrt(val);
+}
+
+inline scalar log(const scalar& val)
+{
+    return log(val);
+}
+
+inline scalar log10(const scalar& val)
+{
+    return log10(val);
+}
+
 BINARY_FUNCTION(scalar, scalar, scalar, pow)
 BINARY_TYPE_FUNCTION(scalar, scalar, scalar, pow)
 

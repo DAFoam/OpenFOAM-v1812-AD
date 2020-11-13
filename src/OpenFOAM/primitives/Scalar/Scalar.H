@@ -153,12 +153,12 @@ Ostream& operator<<(Ostream& os, const Scalar val);
 
 // Standard C++ transcendental functions
 // CoDiPack4OpenFOAM TODO: might need to comment this out to use the sqrt function in CoDiPack
-transFunc(sqrt)
+// transFunc(sqrt)
 
 transFunc(cbrt)
 transFunc(exp)
-transFunc(log)
-transFunc(log10)
+//transFunc(log)
+//transFunc(log10)
 transFunc(sin)
 transFunc(cos)
 transFunc(tan)
