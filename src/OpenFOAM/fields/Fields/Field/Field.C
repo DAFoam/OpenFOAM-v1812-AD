@@ -295,6 +295,18 @@ void Foam::Field<Type>::map
     tmapF.clear();
 }
 
+// if T != S
+template <typename R, typename S, typename T>
+typename std::enable_if<!std::is_same<R, S>::value, R>::type
+passive_if_type(const T& t) {
+    return t;
+}
+// if T == S
+template <typename R, typename S, typename T>
+typename std::enable_if<std::is_same<R, S>::value, R>::type
+passive_if_type(const T& t) {
+    return t.getValue();
+}
 
 template<class Type>
 void Foam::Field<Type>::map
@@ -327,7 +339,7 @@ void Foam::Field<Type>::map
 
         forAll(localAddrs, j)
         {
-            f[i] += localWeights[j]*mapF[localAddrs[j]];
+	    f[i] += passive_if_type<Type,label>(localWeights[j]*mapF[localAddrs[j]]);
         }
     }
 }

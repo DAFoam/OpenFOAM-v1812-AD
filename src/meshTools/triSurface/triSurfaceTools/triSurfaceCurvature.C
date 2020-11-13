@@ -300,7 +300,7 @@ Foam::triSurfaceTools::curvatures
         }
     }
 
-    auto tcurvatureAtPoints = tmp<scalarField>::New(points.size(), Zero);
+    auto tcurvatureAtPoints = tmp<scalarField>::New(points.size(), scalar(0.0));
     scalarField& curvatureAtPoints = tcurvatureAtPoints.ref();
 
     forAll(curvatureAtPoints, pI)

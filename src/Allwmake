@@ -26,12 +26,12 @@ OSspecific/"${WM_OSTYPE:-POSIX}"/Allwmake $targetType $*
 
 wmake $targetType OpenFOAM
 
-# CoDiPack4OpenFOAM exit here
-exit 1
-
 wmake $targetType fileFormats
 wmake $targetType surfMesh
 wmake $targetType meshTools
+
+# CoDiPack4OpenFOAM exit here
+exit 1
 
 # Decomposition methods needed by dummyThirdParty
 # (dummy metisDecomp, scotchDecomp etc) needed by e.g. meshTools

@@ -188,7 +188,7 @@ tmp<Field<Type>> PrimitivePatchInterpolation<Patch>::faceToPointInterpolate
     (
         new Field<Type>
         (
-            patch_.nPoints(), Zero
+            patch_.nPoints(), pTraits<Type>::zero
         )
     );
 
@@ -245,7 +245,7 @@ tmp<Field<Type>> PrimitivePatchInterpolation<Patch>::pointToFaceInterpolate
         new Field<Type>
         (
             patch_.size(),
-            Zero
+            pTraits<Type>::zero
         )
     );
 
@@ -300,7 +300,7 @@ tmp<Field<Type>> PrimitivePatchInterpolation<Patch>::faceToEdgeInterpolate
 
     tmp<Field<Type>> tresult
     (
-        new Field<Type>(patch_.nEdges(), Zero)
+        new Field<Type>(patch_.nEdges(), pTraits<Type>::zero)
     );
 
     Field<Type>& result = tresult.ref();

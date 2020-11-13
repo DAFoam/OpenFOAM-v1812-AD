@@ -53,13 +53,24 @@ Foam::PatchFunction1Types::ConstantField<Type>::integrate
     const scalar x2
 ) const
 {
+    Field<Type> tmpField = value_;
+    Field<Type> transField = this->transform(value_);
+
     if (this->coordSys_.active())
     {
-        return (x2 - x1)* this->transform(value_);
+	forAll(tmpField, idxI)
+        {
+	    tmpField[idxI] = (x2-x1).getValue()*transField[idxI];
+	}
+        return tmpField;
     }
     else
     {
-        return (x2 - x1)*value_;
+        forAll(tmpField, idxI)
+        {
+            tmpField[idxI] = (x2-x1).getValue()*value_[idxI];
+        }
+        return tmpField;
     }
 }
 

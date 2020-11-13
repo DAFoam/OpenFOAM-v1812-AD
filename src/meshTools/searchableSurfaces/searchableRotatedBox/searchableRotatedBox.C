@@ -312,7 +312,7 @@ void Foam::searchableRotatedBox::findLineAll
     const scalarField magSqrDirVec(magSqr(dirVec));
     const vectorField smallVec
     (
-        Foam::sqrt(SMALL)*dirVec
+        sqrt(SMALL)*dirVec
       + vector(ROOTVSMALL,ROOTVSMALL,ROOTVSMALL)
     );
 

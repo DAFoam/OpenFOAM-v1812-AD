@@ -301,7 +301,7 @@ Foam::vtk::formatter& Foam::vtk::formatter::writeTimeValue(scalar timeValue)
     beginDataArray<float,1,1>("TimeValue");
     writeSize(payLoad);
 
-    write(timeValue);
+    write(timeValue.getValue());
     flush();
 
     endDataArray();

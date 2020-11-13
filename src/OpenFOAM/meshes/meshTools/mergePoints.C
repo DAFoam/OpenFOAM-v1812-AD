@@ -62,7 +62,7 @@ Foam::label Foam::mergePoints
         {
             compareOrigin += points[pointi];
         }
-        compareOrigin /= nPoints;
+	compareOrigin /= nPoints;
     }
 
     // We're comparing distance squared to origin first.

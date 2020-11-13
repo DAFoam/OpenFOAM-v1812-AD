@@ -98,7 +98,7 @@ void Foam::searchableSphere::findLineAll
         const vector toCentre(origin_ - start);
         scalar magSqrToCentre = magSqr(toCentre);
 
-        dir /= Foam::sqrt(magSqrDir);
+        dir /= sqrt(magSqrDir);
 
         scalar v = (toCentre & dir);
 
@@ -106,7 +106,7 @@ void Foam::searchableSphere::findLineAll
 
         if (disc >= 0)
         {
-            scalar d = Foam::sqrt(disc);
+            scalar d = sqrt(disc);
 
             scalar nearParam = v-d;
 

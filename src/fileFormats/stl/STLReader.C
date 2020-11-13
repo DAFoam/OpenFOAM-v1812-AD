@@ -272,6 +272,7 @@ Foam::label Foam::fileFormats::STLReader::mergePointsMap
     labelList& pointMap
 ) const
 {
+	/*
     return Foam::mergePoints
     (
         points_,
@@ -279,6 +280,9 @@ Foam::label Foam::fileFormats::STLReader::mergePointsMap
         false, // verbose
         pointMap
     );
+    */
+
+    return 1;
 }
 
 

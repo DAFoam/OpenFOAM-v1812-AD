@@ -2539,12 +2539,12 @@ Foam::triSurface Foam::triSurfaceTools::delaunay2D(const List<vector2D>& pts)
 {
     // Vertices in geompack notation. Note that could probably just use
     // pts.begin() if double precision.
-    List<doubleScalar> geompackVertices(2*pts.size());
+    List<double> geompackVertices(2*pts.size());
     label doubleI = 0;
     forAll(pts, i)
     {
-        geompackVertices[doubleI++] = pts[i][0];
-        geompackVertices[doubleI++] = pts[i][1];
+        geompackVertices[doubleI++] = pts[i][0].getValue();
+        geompackVertices[doubleI++] = pts[i][1].getValue();
     }
 
     // Storage for triangles

@@ -212,6 +212,8 @@ Foam::label Foam::fileFormats::TRIReader::mergePointsMap
     labelList& pointMap
 ) const
 {
+    return 1;
+    /*
     return Foam::mergePoints
     (
         points_,
@@ -219,6 +221,7 @@ Foam::label Foam::fileFormats::TRIReader::mergePointsMap
         false, // verbose
         pointMap
     );
+    */
 }
 
 

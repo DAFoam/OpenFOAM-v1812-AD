@@ -158,7 +158,7 @@ inline void Foam::vtk::legacy::writeTimeValue
 )
 {
     legacy::floatField<1>(fmt, "TimeValue", 1);
-    fmt.write(timeValue);
+    fmt.write(timeValue.getValue());
     fmt.flush();
 }
 

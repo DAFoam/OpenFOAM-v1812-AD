@@ -549,12 +549,12 @@ void Foam::cyclicPeriodicAMIPolyPatch::resetAMI
 
         if (nFace)
         {
-            scalarField srcWghtSum(size(), Zero);
+            scalarField srcWghtSum(size(), scalar(0.0));
             forAll(srcWghtSum, faceI)
             {
                 srcWghtSum[faceI] = sum(AMIPtr_->srcWeights()[faceI]);
             }
-            scalarField tgtWghtSum(neighbPatch().size(), Zero);
+            scalarField tgtWghtSum(neighbPatch().size(), scalar(0.0));
             forAll(tgtWghtSum, faceI)
             {
                 tgtWghtSum[faceI] = sum(AMIPtr_->tgtWeights()[faceI]);

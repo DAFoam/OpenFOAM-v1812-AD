@@ -89,14 +89,14 @@ void Foam::faceTriangulation::calcHalfAngle
     if (sin < -ROOTVSMALL)
     {
         // 3rd or 4th quadrant
-        cosHalfAngle = - Foam::sqrt(0.5*(1 + cos));
-        sinHalfAngle = Foam::sqrt(0.5*(1 - cos));
+        cosHalfAngle = - sqrt(0.5*(1 + cos));
+        sinHalfAngle = sqrt(0.5*(1 - cos));
     }
     else
     {
         // 1st or 2nd quadrant
-        cosHalfAngle = Foam::sqrt(0.5*(1 + cos));
-        sinHalfAngle = Foam::sqrt(0.5*(1 - cos));
+        cosHalfAngle = sqrt(0.5*(1 + cos));
+        sinHalfAngle = sqrt(0.5*(1 - cos));
     }
 }
 

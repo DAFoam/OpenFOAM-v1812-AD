@@ -38,7 +38,7 @@ inline void Foam::vtk::write
     const direction nCmpt = pTraits<Type>::nComponents;
     for (direction cmpt=0; cmpt < nCmpt; ++cmpt)
     {
-        fmt.write(component(val, cmpt));
+        fmt.write(component(val, cmpt).getValue());
     }
 }
 

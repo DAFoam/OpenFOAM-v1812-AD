@@ -158,7 +158,7 @@ void Foam::patchPatchDist::correct()
     {
         if (allFaceInfo[facei].valid(calc.data()))
         {
-            operator[](facei) =  Foam::sqrt(allFaceInfo[facei].distSqr());
+            operator[](facei) =  sqrt(allFaceInfo[facei].distSqr());
         }
         else
         {

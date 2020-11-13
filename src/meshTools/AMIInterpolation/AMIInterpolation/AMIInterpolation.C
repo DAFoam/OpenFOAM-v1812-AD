@@ -59,7 +59,7 @@ Foam::AMIInterpolation<SourcePatch, TargetPatch>::patchMagSf
     const faceAreaIntersect::triangulationMode triMode
 )
 {
-    tmp<scalarField> tResult(new scalarField(patch.size(), Zero));
+    tmp<scalarField> tResult(new scalarField(patch.size(), scalar(0.0)));
     scalarField& result = tResult.ref();
 
     const pointField& patchPoints = patch.localPoints();
@@ -1467,7 +1467,7 @@ Foam::AMIInterpolation<SourcePatch, TargetPatch>::interpolateToSource
         new Field<Type>
         (
             srcAddress_.size(),
-            Zero
+            pTraits<Type>::zero
         )
     );
 
@@ -1512,7 +1512,7 @@ Foam::AMIInterpolation<SourcePatch, TargetPatch>::interpolateToTarget
         new Field<Type>
         (
             tgtAddress_.size(),
-            Zero
+            pTraits<Type>::zero
         )
     );
 

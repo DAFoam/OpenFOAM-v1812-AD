@@ -48,9 +48,9 @@ void Foam::fileFormats::VTKedgeFormat::writeHeader
     os  << "POINTS " << pointLst.size() << " double" << nl;
     for (const point& pt : pointLst)
     {
-        os  << float(pt.x()) << ' '
-            << float(pt.y()) << ' '
-            << float(pt.z()) << nl;
+        os  << float(pt.x().getValue()) << ' '
+            << float(pt.y().getValue()) << ' '
+            << float(pt.z().getValue()) << nl;
     }
 }
 

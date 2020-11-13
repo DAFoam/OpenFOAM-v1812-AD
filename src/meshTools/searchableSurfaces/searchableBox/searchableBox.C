@@ -266,7 +266,7 @@ void Foam::searchableBox::boundingSpheres
         {
             const point& pt = pts[pointi];
 
-            radiusSqr[i] = Foam::max
+            radiusSqr[i] = codi::max
             (
                 radiusSqr[i],
                 Foam::magSqr(pt-centres[i])

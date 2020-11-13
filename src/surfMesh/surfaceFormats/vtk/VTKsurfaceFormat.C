@@ -154,7 +154,7 @@ bool Foam::fileFormats::VTKsurfaceFormat<Face>::read
             label i = 0;
             for (const auto& region : *sptr)
             {
-                zones[i++] = label(region);
+                zones[i++] = label(region.getValue());
             }
             break;
         }

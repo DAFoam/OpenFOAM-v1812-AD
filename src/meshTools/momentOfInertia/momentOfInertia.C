@@ -199,8 +199,8 @@ void Foam::momentOfInertia::massPropertiesShell
     // Reset properties for accumulation
 
     mass = 0.0;
-    cM = Zero;
-    J = Zero;
+    cM = vector::zero;
+    J = tensor::zero;
 
     // Find centre of mass
 
@@ -384,8 +384,8 @@ Foam::tensor Foam::momentOfInertia::meshInertia
     }
 
     scalar m = 0.0;
-    vector cM = Zero;
-    tensor J = Zero;
+    vector cM = vector::zero;
+    tensor J = tensor::zero;
 
     massPropertiesSolid(mesh.points(), faces, 1.0, m, cM, J);
 

@@ -98,7 +98,7 @@ void Foam::cyclicAMIPolyPatch::calcTransforms
     {
         case ROTATIONAL:
         {
-            tensor revT = Zero;
+            tensor revT = tensor::zero;
 
             if (rotationAngleDefined_)
             {
@@ -183,8 +183,8 @@ void Foam::cyclicAMIPolyPatch::calcTransforms
             }
             else
             {
-                point n0 = Zero;
-                point n1 = Zero;
+                point n0 = vector::zero;
+                point n1 = vector::zero;
                 if (half0Ctrs.size())
                 {
                     n0 = findFaceNormalMaxRadius(half0Ctrs);
@@ -487,11 +487,11 @@ Foam::cyclicAMIPolyPatch::cyclicAMIPolyPatch
     coupledPolyPatch(name, size, start, index, bm, patchType, transform),
     nbrPatchName_(word::null),
     nbrPatchID_(-1),
-    rotationAxis_(Zero),
-    rotationCentre_(Zero),
+    rotationAxis_(vector::zero),
+    rotationCentre_(vector::zero),
     rotationAngleDefined_(false),
     rotationAngle_(0.0),
-    separationVector_(Zero),
+    separationVector_(vector::zero),
     AMIPtr_(nullptr),
     AMIMethod_(AMIPatchToPatchInterpolation::imFaceAreaWeight),
     AMIReverse_(false),
@@ -518,11 +518,11 @@ Foam::cyclicAMIPolyPatch::cyclicAMIPolyPatch
     nbrPatchName_(dict.lookupOrDefault<word>("neighbourPatch", "")),
     coupleGroup_(dict),
     nbrPatchID_(-1),
-    rotationAxis_(Zero),
-    rotationCentre_(Zero),
+    rotationAxis_(vector::zero),
+    rotationCentre_(vector::zero),
     rotationAngleDefined_(false),
     rotationAngle_(0.0),
-    separationVector_(Zero),
+    separationVector_(vector::zero),
     AMIPtr_(nullptr),
     AMIMethod_
     (

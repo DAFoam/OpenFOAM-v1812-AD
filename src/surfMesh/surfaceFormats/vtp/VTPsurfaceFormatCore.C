@@ -90,7 +90,7 @@ void Foam::fileFormats::VTPsurfaceFormatCore::writeHeader
 
     format.writeSize(payLoad);
 
-    vtk::writeList(format, pts);
+    //vtk::writeList(format, pts);
     format.flush();
 
     format

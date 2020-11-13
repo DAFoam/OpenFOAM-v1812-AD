@@ -236,7 +236,7 @@ Foam::Ostream& Foam::ensightFile::write
 
 Foam::Ostream& Foam::ensightFile::write(const scalar value)
 {
-    float fvalue(value);
+    float fvalue(value.getValue());
 
     if (format() == IOstream::BINARY)
     {
@@ -331,7 +331,7 @@ void Foam::ensightFile::writeList
 {
     for (const scalar& val : field)
     {
-        if (std::isnan(val))
+        if (codi::isnan(val))
         {
             writeUndef();
         }
@@ -355,7 +355,7 @@ void Foam::ensightFile::writeList
     {
         for (const label idx : idList)
         {
-            if (idx >= field.size() || std::isnan(field[idx]))
+            if (idx >= field.size() || codi::isnan(field[idx]))
             {
                 writeUndef();
             }

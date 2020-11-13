@@ -69,6 +69,16 @@ public:
             floatVector(float(p.x()), float(p.y()), float(p.z()))
         {}
 
+	//- Construct from double-precision point
+        inline STLpoint(const Vector<scalar>& p)
+        :
+            floatVector(
+                float(p.x().getValue()),
+                float(p.y().getValue()),
+                float(p.z().getValue())
+            )
+        {}
+
         //- Construct from single-precision components
         inline STLpoint(float x, float y, float z)
         :
@@ -81,6 +91,10 @@ public:
             floatVector(float(x), float(y), float(z))
         {}
 
+	inline STLpoint(scalar x, scalar y, scalar z)
+        :
+            floatVector(float(x.getValue()), float(y.getValue()), float(z.getValue()))
+        {}
 
     // Member Operators
 

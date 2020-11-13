@@ -109,10 +109,10 @@ bool Foam::triSurfaceSearch::checkUniqueHit
                             surface().faceNormals()[edgeFacei];
 
                         const label signCurrHit =
-                            pos0(currHitNormal & lineVec);
+                            pos0(currHitNormal & lineVec).getValue();
 
                         const label signExistingHit =
-                            pos0(existingHitNormal & lineVec);
+                            pos0(existingHitNormal & lineVec).getValue();
 
                         if (signCurrHit == signExistingHit)
                         {

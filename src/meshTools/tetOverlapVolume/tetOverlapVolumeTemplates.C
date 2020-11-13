@@ -76,7 +76,7 @@ void Foam::tetOverlapVolume::tetTetOverlap
 
     // Face 0
     {
-        vector n = tetBFaceAreas[0]/Foam::sqrt(tetBMag2FaceAreas[0]);
+        vector n = tetBFaceAreas[0]/sqrt(tetBMag2FaceAreas[0]);
         plane pl0(tetBTet.tri(0).a(), n, false);
 
         tetA.tet().sliceWithPlane(pl0, cutInside, outside);
@@ -88,7 +88,7 @@ void Foam::tetOverlapVolume::tetTetOverlap
 
     // Face 1
     {
-        vector n = tetBFaceAreas[1]/Foam::sqrt(tetBMag2FaceAreas[1]);
+        vector n = tetBFaceAreas[1]/sqrt(tetBMag2FaceAreas[1]);
         plane pl1(tetBTet.tri(1).a(), n, false);
 
         nInside = 0;
@@ -105,7 +105,7 @@ void Foam::tetOverlapVolume::tetTetOverlap
 
     // Face 2
     {
-        vector n = tetBFaceAreas[2]/Foam::sqrt(tetBMag2FaceAreas[2]);
+        vector n = tetBFaceAreas[2]/sqrt(tetBMag2FaceAreas[2]);
         plane pl2(tetBTet.tri(2).a(), n, false);
 
         nCutInside = 0;
@@ -122,7 +122,7 @@ void Foam::tetOverlapVolume::tetTetOverlap
 
     // Face 3
     {
-        vector n = tetBFaceAreas[3]/Foam::sqrt(tetBMag2FaceAreas[3]);
+        vector n = tetBFaceAreas[3]/sqrt(tetBMag2FaceAreas[3]);
         plane pl3(tetBTet.tri(3).a(), n, false);
         for (label i = 0; i < nCutInside; i++)
         {

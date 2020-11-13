@@ -150,12 +150,13 @@ void Foam::cyclicACMIPolyPatch::resetAMI
                 << ", " << nCovered << endl;
         }
 
-        srcMask_ =
-            min(scalar(1) - tolerance_, max(tolerance_, AMI.srcWeightsSum()));
-
-        tgtMask_ =
-            min(scalar(1) - tolerance_, max(tolerance_, AMI.tgtWeightsSum()));
-
+        forAll(srcMask_, idxI)
+	{
+	    srcMask_[idxI] = 
+                min(scalar(1) - tolerance_, max(tolerance_, AMI.srcWeightsSum()[idxI]));
+	    tgtMask_[idxI] =
+                min(scalar(1) - tolerance_, max(tolerance_, AMI.tgtWeightsSum()[idxI]));
+	}
 
         // Adapt owner side areas. Note that in uncoupled situations (e.g.
         // decomposePar) srcMask, tgtMask can be zero size.
