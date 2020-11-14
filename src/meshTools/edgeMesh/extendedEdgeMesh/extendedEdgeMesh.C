@@ -85,7 +85,7 @@ Foam::extendedEdgeMesh::sideVolumeTypeNames_
 
 
 Foam::scalar Foam::extendedEdgeMesh::cosNormalAngleTol_ =
-    Foam::cos(degToRad(0.1));
+    cos(degToRad(0.1));
 
 
 Foam::label Foam::extendedEdgeMesh::convexStart_ = 0;

@@ -685,7 +685,7 @@ bool Foam::primitiveMesh::checkFaceAngles
             << exit(FatalError);
     }
 
-    const scalar maxSin = Foam::sin(degToRad(maxDeg));
+    const scalar maxSin = sin(degToRad(maxDeg));
 
 
     tmp<scalarField> tfaceAngles = primitiveMeshTools::faceConcavity

@@ -750,7 +750,7 @@ bool Foam::primitiveMeshGeometry::checkFaceAngles
             << abort(FatalError);
     }
 
-    const scalar maxSin = Foam::sin(degToRad(maxDeg));
+    const scalar maxSin = sin(degToRad(maxDeg));
 
     const faceList& fcs = mesh.faces();
 

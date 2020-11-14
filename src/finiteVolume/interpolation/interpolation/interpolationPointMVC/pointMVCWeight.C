@@ -222,7 +222,7 @@ void Foam::pointMVCWeight::calcWeights
                 vNorm
               / sum
               / dist[pid]
-              / Foam::sin(theta[j])
+              / sin(theta[j])
               * (Foam::tan(alpha[j]/2.0) + Foam::tan(alpha[jMin1]/2.0));
         }
     }

@@ -127,13 +127,13 @@ Foam::triSurfaceTools::writeCloseness
     const scalar span = searchSurf.bounds().mag();
 
     const scalar externalToleranceCosAngle =
-        Foam::cos
+        cos
         (
             degToRad(180 - externalAngleTolerance)
         );
 
     const scalar internalToleranceCosAngle =
-        Foam::cos
+        cos
         (
             degToRad(180 - internalAngleTolerance)
         );

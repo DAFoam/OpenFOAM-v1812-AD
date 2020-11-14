@@ -135,6 +135,16 @@ inline scalar log10(const scalar& val)
     return log10(val);
 }
 
+inline scalar cos(const scalar& val)
+{
+    return cos(val);
+}
+
+inline scalar sin(const scalar& val)
+{
+    return sin(val);
+}
+
 BINARY_FUNCTION(scalar, scalar, scalar, pow)
 BINARY_TYPE_FUNCTION(scalar, scalar, scalar, pow)
 

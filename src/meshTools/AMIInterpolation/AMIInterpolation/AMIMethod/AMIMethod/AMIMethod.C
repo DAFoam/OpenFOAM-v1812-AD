@@ -265,7 +265,7 @@ void Foam::AMIMethod<SourcePatch, TargetPatch>::appendNbrFaces
     DynamicList<label>& faceIDs
 ) const
 {
-    static const scalar thetaCos = Foam::cos(degToRad(89.0));
+    static const scalar thetaCos = cos(degToRad(89.0));
 
     const labelList& nbrFaces = patch.faceFaces()[facei];
 
