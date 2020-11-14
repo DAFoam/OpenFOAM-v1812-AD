@@ -28,7 +28,7 @@ License
 #include "volFields.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-
+/*
 Foam::variableHeightFlowRateInletVelocityFvPatchVectorField
 ::variableHeightFlowRateInletVelocityFvPatchVectorField
 (
@@ -148,6 +148,6 @@ namespace Foam
        variableHeightFlowRateInletVelocityFvPatchVectorField
    );
 }
-
+*/
 
 // ************************************************************************* //

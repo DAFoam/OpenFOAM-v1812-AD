@@ -35,7 +35,7 @@ inline Type Foam::pointMVCWeight::interpolate
 {
     const labelList& vertices = psip.mesh()().cellPoints()[cellIndex_];
 
-    Type t = Zero;
+    Type t = pTraits<Type>::zero;
     forAll(vertices, i)
     {
         t += psip[vertices[i]]*weights_[i];

@@ -73,14 +73,14 @@ Foam::porosityModels::DarcyForchheimer::DarcyForchheimer
 void Foam::porosityModels::DarcyForchheimer::calcTransformModelData()
 {
     // The Darcy coefficient as a tensor
-    tensor darcyCoeff(Zero);
+    tensor darcyCoeff(tensor::zero);
     darcyCoeff.xx() = dXYZ_.value().x();
     darcyCoeff.yy() = dXYZ_.value().y();
     darcyCoeff.zz() = dXYZ_.value().z();
 
     // The Forchheimer coefficient as a tensor
     // - the leading 0.5 is from 1/2*rho
-    tensor forchCoeff(Zero);
+    tensor forchCoeff(tensor::zero);
     forchCoeff.xx() = 0.5*fXYZ_.value().x();
     forchCoeff.yy() = 0.5*fXYZ_.value().y();
     forchCoeff.zz() = 0.5*fXYZ_.value().z();
@@ -125,7 +125,7 @@ void Foam::porosityModels::DarcyForchheimer::calcTransformModelData()
                 IOobject::NO_WRITE
             ),
             mesh_,
-            dimensionedTensor(dXYZ_.dimensions(), Zero)
+            dimensionedTensor(typeName + ":F",dXYZ_.dimensions(), tensor::zero)
         );
         volTensorField Fout
         (
@@ -138,7 +138,7 @@ void Foam::porosityModels::DarcyForchheimer::calcTransformModelData()
                 IOobject::NO_WRITE
             ),
             mesh_,
-            dimensionedTensor(fXYZ_.dimensions(), Zero)
+            dimensionedTensor(typeName + ":F",fXYZ_.dimensions(), tensor::zero)
         );
 
 
@@ -172,8 +172,8 @@ void Foam::porosityModels::DarcyForchheimer::calcForce
     vectorField& force
 ) const
 {
-    scalarField Udiag(U.size(), Zero);
-    vectorField Usource(U.size(), Zero);
+    scalarField Udiag(U.size(), scalar(0.0));
+    vectorField Usource(U.size(), vector::zero);
     const scalarField& V = mesh_.V();
 
     apply(Udiag, Usource, V, rho, mu, U);

@@ -32,7 +32,7 @@ License
 #include "globalIndex.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
-
+/*
 Foam::label Foam::turbulentDFSEMInletFvPatchVectorField::seedIterMax_ = 1000;
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
@@ -1154,6 +1154,6 @@ namespace Foam
        turbulentDFSEMInletFvPatchVectorField
    );
 }
-
+*/
 
 // ************************************************************************* //

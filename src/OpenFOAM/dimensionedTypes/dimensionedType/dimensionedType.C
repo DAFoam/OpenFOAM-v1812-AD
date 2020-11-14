@@ -74,7 +74,7 @@ Foam::dimensioned<Type>::dimensioned()
 :
     name_("0"),
     dimensions_(dimless),
-    value_(Zero)
+    value_(pTraits<Type>::zero)
 {}
 
 
@@ -83,7 +83,7 @@ Foam::dimensioned<Type>::dimensioned(const dimensionSet& dims)
 :
     name_("0"),
     dimensions_(dims),
-    value_(Zero)
+    value_(pTraits<Type>::zero)
 {}
 
 
@@ -92,7 +92,7 @@ Foam::dimensioned<Type>::dimensioned(const dimensionSet& dims, const zero)
 :
     name_("0"),
     dimensions_(dims),
-    value_(Zero)
+    value_(pTraits<Type>::zero)
 {}
 
 
@@ -162,7 +162,7 @@ Foam::dimensioned<Type>::dimensioned
 :
     name_(name),
     dimensions_(dims),
-    value_(Zero)
+    value_(pTraits<Type>::zero)
 {
     initialize(is, true);  // checkDims
 }
@@ -190,7 +190,7 @@ Foam::dimensioned<Type>::dimensioned
 :
     name_(name),
     dimensions_(dims),
-    value_(Zero)
+    value_(pTraits<Type>::zero)
 {
     // Like dictionary::lookup(), but in two stages to detect input errors
     const entry& e = dict.lookupEntry(name, keyType::REGEX);

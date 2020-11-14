@@ -41,7 +41,7 @@ Type Foam::mappedPatchFieldBase<Type>::getAverage
         return dict.get<Type>("average");
     }
 
-    return Zero;
+    return pTraits<Type>::zero;
 }
 
 
@@ -107,7 +107,7 @@ Foam::mappedPatchFieldBase<Type>::mappedPatchFieldBase
     patchField_(patchField),
     fieldName_(patchField_.internalField().name()),
     setAverage_(false),
-    average_(Zero),
+    average_(pTraits<Type>::zero),
     interpolationScheme_(interpolationCell<Type>::typeName)
 {}
 
@@ -269,7 +269,7 @@ Foam::mappedPatchFieldBase<Type>::mappedField() const
         }
         case mappedPatchBase::NEARESTFACE:
         {
-            Field<Type> allValues(nbrMesh.nFaces(), Zero);
+            Field<Type> allValues(nbrMesh.nFaces(), pTraits<Type>::zero);
 
             const fieldType& nbrField = sampleField();
 

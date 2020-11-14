@@ -31,7 +31,7 @@ License
 #include "gravityMeshObject.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-
+/*
 Foam::phaseHydrostaticPressureFvPatchScalarField::
 phaseHydrostaticPressureFvPatchScalarField
 (
@@ -195,5 +195,5 @@ namespace Foam
         phaseHydrostaticPressureFvPatchScalarField
     );
 }
-
+*/
 // ************************************************************************* //

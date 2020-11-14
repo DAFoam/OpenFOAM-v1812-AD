@@ -181,7 +181,7 @@ public:
             {
                 if (!sfCorrbf[pi].coupled())
                 {
-                    sfCorrbf[pi] = Zero;
+                    sfCorrbf[pi] = pTraits<Type>::zero;
                 }
             }
 

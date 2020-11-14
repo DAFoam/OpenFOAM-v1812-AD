@@ -35,7 +35,7 @@ Foam::tmp<Foam::Field<Type>> Foam::lduMatrix::H(const Field<Type>& psi) const
 {
     tmp<Field<Type>> tHpsi
     (
-        new Field<Type>(lduAddr().size(), Zero)
+        new Field<Type>(lduAddr().size(), pTraits<Type>::zero)
     );
 
     if (lowerPtr_ || upperPtr_)

@@ -406,9 +406,9 @@ Foam::scalar Foam::isoCutFace::timeIntegratedFaceFlux
         forAll(pTimes, pi)
         {
             const label oldEdgeSign =
-                sign(pTimes[(pi + 1) % nPoints] - pTimes[pi]);
+                (sign(pTimes[(pi + 1) % nPoints] - pTimes[pi])).getValue();
             const label newEdgeSign =
-                sign(pTimes[(pi + 2) % nPoints] - pTimes[(pi + 1) % nPoints]);
+                (sign(pTimes[(pi + 2) % nPoints] - pTimes[(pi + 1) % nPoints])).getValue();
 
             if (newEdgeSign != oldEdgeSign)
             {

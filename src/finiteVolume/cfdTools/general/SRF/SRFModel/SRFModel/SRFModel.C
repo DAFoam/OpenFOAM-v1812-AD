@@ -128,7 +128,7 @@ Foam::SRF::SRFModel::Fcoriolis() const
                 IOobject::NO_READ,
                 IOobject::NO_WRITE
             ),
-            2.0*omega_ ^ Urel_
+            scalar(2.0)*omega_ ^ Urel_
         )
     );
 }

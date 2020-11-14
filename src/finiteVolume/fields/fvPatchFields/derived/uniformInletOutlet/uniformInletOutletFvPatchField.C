@@ -26,7 +26,6 @@ License
 #include "uniformInletOutletFvPatchField.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-
 template<class Type>
 Foam::uniformInletOutletFvPatchField<Type>::uniformInletOutletFvPatchField
 (
@@ -37,8 +36,8 @@ Foam::uniformInletOutletFvPatchField<Type>::uniformInletOutletFvPatchField
     mixedFvPatchField<Type>(p, iF),
     phiName_("phi")
 {
-    this->refValue() = Zero;
-    this->refGrad() = Zero;
+    this->refValue() = pTraits<Type>::zero;
+    this->refGrad() = pTraits<Type>::zero;
     this->valueFraction() = 0.0;
 }
 
@@ -71,7 +70,7 @@ Foam::uniformInletOutletFvPatchField<Type>::uniformInletOutletFvPatchField
         fvPatchField<Type>::operator=(this->refValue());
     }
 
-    this->refGrad() = Zero;
+    this->refGrad() = pTraits<Type>::zero;
     this->valueFraction() = 0.0;
 }
 
@@ -95,7 +94,7 @@ Foam::uniformInletOutletFvPatchField<Type>::uniformInletOutletFvPatchField
     this->refValue() =
         uniformInletValue_->value(this->db().time().timeOutputValue());
 
-    this->refGrad() = Zero;
+    this->refGrad() = pTraits<Type>::zero;
     this->valueFraction() = 0.0;
 
     // Initialize the patch value to the refValue
@@ -129,7 +128,6 @@ Foam::uniformInletOutletFvPatchField<Type>::uniformInletOutletFvPatchField
     uniformInletValue_(ptf.uniformInletValue_.clone())
 {}
 
-
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 template<class Type>
@@ -139,7 +137,7 @@ void Foam::uniformInletOutletFvPatchField<Type>::updateCoeffs()
     {
         return;
     }
-
+/*
     // Update the uniform value as a function of time
     const scalar t = this->db().time().timeOutputValue();
     this->refValue() = uniformInletValue_->value(t);
@@ -153,8 +151,8 @@ void Foam::uniformInletOutletFvPatchField<Type>::updateCoeffs()
     this->valueFraction() = 1.0 - pos0(phip);
 
     mixedFvPatchField<Type>::updateCoeffs();
+    */
 }
-
 
 template<class Type>
 void Foam::uniformInletOutletFvPatchField<Type>::write(Ostream& os) const
@@ -164,7 +162,6 @@ void Foam::uniformInletOutletFvPatchField<Type>::write(Ostream& os) const
     this->uniformInletValue_->writeData(os);
     this->writeEntry("value", os);
 }
-
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
 
@@ -211,6 +208,5 @@ void Foam::uniformInletOutletFvPatchField<Type>::operator=
         + (1 - this->valueFraction())*ptf
     );
 }
-
 
 // ************************************************************************* //

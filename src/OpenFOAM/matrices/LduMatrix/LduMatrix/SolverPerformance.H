@@ -113,9 +113,9 @@ public:
 
         SolverPerformance()
         :
-            initialResidual_(Zero),
-            finalResidual_(Zero),
-            nIterations_(Zero),
+            initialResidual_(pTraits<Type>::zero),
+            finalResidual_(pTraits<Type>::zero),
+            nIterations_(pTraits<labelType>::zero),
             converged_(false),
             singular_(false)
         {}

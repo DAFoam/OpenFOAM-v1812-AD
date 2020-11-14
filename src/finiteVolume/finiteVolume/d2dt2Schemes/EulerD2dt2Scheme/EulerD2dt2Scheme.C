@@ -209,7 +209,7 @@ EulerD2dt2Scheme<Type>::fvcD2dt2
     }
     else
     {
-        dimensionedScalar halfRdeltaT2 = 0.5*rDeltaT2;
+        dimensionedScalar halfRdeltaT2 = scalar(0.5)*rDeltaT2;
 
         const volScalarField rhoRho0(rho + rho.oldTime());
         const volScalarField rho0Rho00(rho.oldTime() +rho.oldTime().oldTime());

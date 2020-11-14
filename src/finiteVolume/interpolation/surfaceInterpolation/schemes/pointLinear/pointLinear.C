@@ -166,7 +166,7 @@ correction
         }
         else
         {
-            pSfCorr = Zero;
+            forAll(pSfCorr, idxI) pSfCorr[idxI] = pTraits<Type>::zero;
         }
     }
 

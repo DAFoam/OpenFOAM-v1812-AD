@@ -51,7 +51,7 @@ Foam::linearUpwind<Type>::correction
                 false
             ),
             mesh,
-            dimensioned<Type>(vf.name(), vf.dimensions(), Zero)
+            dimensioned<Type>(vf.name(), vf.dimensions(), pTraits<Type>::zero)
         )
     );
 
@@ -162,7 +162,7 @@ Foam::linearUpwind<Foam::vector>::correction
                 false
             ),
             mesh,
-            dimensioned<vector>(vf.name(), vf.dimensions(), Zero)
+            dimensioned<vector>(vf.name(), vf.dimensions(), pTraits<vector>::zero)
         )
     );
 

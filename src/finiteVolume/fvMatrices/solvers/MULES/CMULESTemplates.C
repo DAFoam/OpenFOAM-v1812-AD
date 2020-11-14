@@ -287,15 +287,16 @@ void Foam::MULES::limiterCorr
         }
     }
 
-    psiMaxn = min(psiMaxn + extremaCoeff*(psiMax - psiMin), psiMax);
-    psiMinn = max(psiMinn - extremaCoeff*(psiMax - psiMin), psiMin);
+    // TODO
+    //psiMaxn = min(psiMaxn + extremaCoeff*(psiMax - psiMin), psiMax);
+    //psiMinn = max(psiMinn - extremaCoeff*(psiMax - psiMin), psiMin);
 
     if (smoothLimiter > SMALL)
     {
-        psiMaxn =
-            min(smoothLimiter*psiIf + (1.0 - smoothLimiter)*psiMaxn, psiMax);
-        psiMinn =
-            max(smoothLimiter*psiIf + (1.0 - smoothLimiter)*psiMinn, psiMin);
+        //psiMaxn =
+        //    min(smoothLimiter*psiIf + (1.0 - smoothLimiter)*psiMaxn, psiMax);
+        //psiMinn =
+        //    max(smoothLimiter*psiIf + (1.0 - smoothLimiter)*psiMinn, psiMin);
     }
 
     psiMaxn =
@@ -319,8 +320,8 @@ void Foam::MULES::limiterCorr
 
     for (int j=0; j<nLimiterIter; j++)
     {
-        sumlPhip = 0;
-        mSumlPhim = 0;
+        sumlPhip = scalar(0.0);
+        mSumlPhim = scalar(0.0);
 
         forAll(lambdaIf, facei)
         {

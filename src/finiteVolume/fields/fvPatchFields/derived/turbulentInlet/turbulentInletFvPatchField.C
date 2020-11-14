@@ -24,7 +24,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "turbulentInletFvPatchField.H"
-
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template<class Type>
@@ -34,13 +33,9 @@ Foam::turbulentInletFvPatchField<Type>::turbulentInletFvPatchField
     const DimensionedField<Type, volMesh>& iF
 )
 :
-    fixedValueFvPatchField<Type>(p, iF),
-    ranGen_(label(0)),
-    fluctuationScale_(Zero),
-    referenceField_(p.size()),
-    alpha_(0.1),
-    curTimeIndex_(-1)
-{}
+    fixedValueFvPatchField<Type>(p, iF)
+{
+}
 
 
 template<class Type>
@@ -51,12 +46,7 @@ Foam::turbulentInletFvPatchField<Type>::turbulentInletFvPatchField
     const dictionary& dict
 )
 :
-    fixedValueFvPatchField<Type>(p, iF, dict, false),
-    ranGen_(label(0)),
-    fluctuationScale_(dict.get<Type>("fluctuationScale")),
-    referenceField_("referenceField", dict, p.size()),
-    alpha_(dict.lookupOrDefault<scalar>("alpha", 0.1)),
-    curTimeIndex_(-1)
+    fixedValueFvPatchField<Type>(p, iF, dict, false)
 {
     if (dict.found("value"))
     {
@@ -81,12 +71,7 @@ Foam::turbulentInletFvPatchField<Type>::turbulentInletFvPatchField
     const fvPatchFieldMapper& mapper
 )
 :
-    fixedValueFvPatchField<Type>(ptf, p, iF, mapper),
-    ranGen_(label(0)),
-    fluctuationScale_(ptf.fluctuationScale_),
-    referenceField_(ptf.referenceField_, mapper),
-    alpha_(ptf.alpha_),
-    curTimeIndex_(-1)
+    fixedValueFvPatchField<Type>(ptf, p, iF, mapper)
 {}
 
 
@@ -96,12 +81,7 @@ Foam::turbulentInletFvPatchField<Type>::turbulentInletFvPatchField
     const turbulentInletFvPatchField<Type>& ptf
 )
 :
-    fixedValueFvPatchField<Type>(ptf),
-    ranGen_(ptf.ranGen_),
-    fluctuationScale_(ptf.fluctuationScale_),
-    referenceField_(ptf.referenceField_),
-    alpha_(ptf.alpha_),
-    curTimeIndex_(-1)
+    fixedValueFvPatchField<Type>(ptf)
 {}
 
 
@@ -112,14 +92,8 @@ Foam::turbulentInletFvPatchField<Type>::turbulentInletFvPatchField
     const DimensionedField<Type, volMesh>& iF
 )
 :
-    fixedValueFvPatchField<Type>(ptf, iF),
-    ranGen_(ptf.ranGen_),
-    fluctuationScale_(ptf.fluctuationScale_),
-    referenceField_(ptf.referenceField_),
-    alpha_(ptf.alpha_),
-    curTimeIndex_(-1)
+    fixedValueFvPatchField<Type>(ptf, iF)
 {}
-
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
@@ -157,7 +131,7 @@ void Foam::turbulentInletFvPatchField<Type>::updateCoeffs()
     {
         return;
     }
-
+/*
     if (curTimeIndex_ != this->db().time().timeIndex())
     {
         Field<Type>& patchField = *this;
@@ -189,8 +163,8 @@ void Foam::turbulentInletFvPatchField<Type>::updateCoeffs()
     }
 
     fixedValueFvPatchField<Type>::updateCoeffs();
+    */
 }
-
 
 template<class Type>
 void Foam::turbulentInletFvPatchField<Type>::write(Ostream& os) const
@@ -201,6 +175,5 @@ void Foam::turbulentInletFvPatchField<Type>::write(Ostream& os) const
     os.writeEntry("alpha", alpha_);
     this->writeEntry("value", os);
 }
-
 
 // ************************************************************************* //

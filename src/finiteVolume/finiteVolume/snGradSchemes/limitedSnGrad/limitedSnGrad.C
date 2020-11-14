@@ -62,16 +62,16 @@ limitedSnGrad<Type>::correction
 
     const surfaceScalarField limiter
     (
-        min
-        (
+        //min
+        //(
             limitCoeff_
            *mag(snGradScheme<Type>::snGrad(vf, deltaCoeffs(vf), "SndGrad"))
            /(
                 (1 - limitCoeff_)*mag(corr)
               + dimensionedScalar("small", corr.dimensions(), SMALL)
-            ),
-            dimensionedScalar("one", dimless, 1.0)
-        )
+            )
+           // dimensionedScalar("one", dimless, 1.0)
+       // )
     );
 
     if (fv::debug)

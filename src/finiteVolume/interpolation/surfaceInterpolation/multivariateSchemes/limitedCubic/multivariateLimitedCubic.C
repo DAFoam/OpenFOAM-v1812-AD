@@ -29,7 +29,7 @@ License
 #include "limitedCubic.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
+/*
 namespace Foam
 {
     makeLimitedMultivariateSurfaceInterpolationScheme
@@ -39,5 +39,5 @@ namespace Foam
     )
 }
 
-
+*/
 // ************************************************************************* //

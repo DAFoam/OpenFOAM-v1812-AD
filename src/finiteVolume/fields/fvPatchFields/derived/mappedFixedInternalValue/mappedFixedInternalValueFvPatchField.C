@@ -145,7 +145,7 @@ void Foam::mappedFixedInternalValueFvPatchField<Type>::updateCoeffs()
         }
         case mappedPatchBase::NEARESTFACE:
         {
-            Field<Type> allValues(nbrMesh.nFaces(), Zero);
+            Field<Type> allValues(nbrMesh.nFaces(), pTraits<Type>::zero);
 
             const FieldType& nbrField = this->sampleField();
 

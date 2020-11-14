@@ -539,7 +539,7 @@ void Foam::isoAdvection::limitFluxes()
                 // Change to treat boundaries consistently
                 scalar phi = faceValue(phi_, facei);
                 scalar dVcorr = faceValue(dVfcorrected, facei);
-                setFaceValue(dVf_, facei, phi*dt - dVcorr);
+		setFaceValue(dVf_, facei, scalar(phi*dt - dVcorr));
             }
 
             syncProcPatches(dVf_, phi_);
@@ -549,10 +549,10 @@ void Foam::isoAdvection::limitFluxes()
         {
             // Check if still unbounded
             scalarField alphaNew(alpha1In_ - fvc::surfaceIntegrate(dVf_)());
-            label maxAlphaMinus1 = max(alphaNew - 1);
+            label maxAlphaMinus1 = max(alphaNew - 1).getValue();
             scalar minAlpha = min(alphaNew);
-            label nUndershoots = sum(neg0(alphaNew + aTol));
-            label nOvershoots = sum(pos0(alphaNew - 1 - aTol));
+            label nUndershoots = sum(neg0(alphaNew + aTol)).getValue();
+            label nOvershoots = sum(pos0(alphaNew - 1 - aTol)).getValue();
             Info<< "After bounding number " << n + 1 << " of time "
                 << mesh_.time().value() << ":" << endl;
             Info<< "nOvershoots = " << nOvershoots << " with max(alphaNew-1) = "
@@ -661,7 +661,7 @@ void Foam::isoAdvection::boundFromAbove
                         fluidToPassOn*mag(phi[fi]*dt)/dVftot;
 
                     nFacesToPassFluidThrough +=
-                        pos0(dVfmax[fi] - fluidToPassThroughFace);
+                        pos0(dVfmax[fi] - fluidToPassThroughFace).getValue();
 
                     fluidToPassThroughFace =
                         min(fluidToPassThroughFace, dVfmax[fi]);
@@ -874,7 +874,7 @@ void Foam::isoAdvection::advect()
 
     advectionTime_ += (mesh_.time().elapsedCpuTime() - advectionStartTime);
     Info << "isoAdvection: time consumption = "
-        << label(100*advectionTime_/(mesh_.time().elapsedCpuTime() + SMALL))
+        << label((100*advectionTime_/(mesh_.time().elapsedCpuTime() + SMALL)).getValue())
         << "%" << endl;
 }
 
@@ -897,7 +897,7 @@ void Foam::isoAdvection::applyBruteForceBounding()
 
     if (dict_.lookupOrDefault("clip", true))
     {
-        alpha1_ = min(scalar(1), max(scalar(0), alpha1_));
+        //alpha1_ = min(scalar(1), max(scalar(0), alpha1_));
         alpha1Changed = true;
     }
 

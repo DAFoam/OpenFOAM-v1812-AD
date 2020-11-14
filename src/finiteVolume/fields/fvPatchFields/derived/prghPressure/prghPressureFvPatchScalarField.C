@@ -30,7 +30,7 @@ License
 #include "gravityMeshObject.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-
+/*
 Foam::prghPressureFvPatchScalarField::
 prghPressureFvPatchScalarField
 (
@@ -187,5 +187,5 @@ namespace Foam
         prghPressureFvPatchScalarField
     );
 }
-
+*/
 // ************************************************************************* //

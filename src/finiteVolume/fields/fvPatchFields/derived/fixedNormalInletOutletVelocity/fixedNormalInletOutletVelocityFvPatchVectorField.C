@@ -30,7 +30,7 @@ License
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-
+/*
 Foam::fixedNormalInletOutletVelocityFvPatchVectorField::
 fixedNormalInletOutletVelocityFvPatchVectorField
 (
@@ -215,5 +215,5 @@ namespace Foam
         fixedNormalInletOutletVelocityFvPatchVectorField
     );
 }
-
+*/
 // ************************************************************************* //

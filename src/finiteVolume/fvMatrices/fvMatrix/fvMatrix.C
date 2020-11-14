@@ -249,10 +249,10 @@ void Foam::fvMatrix<Type>::setValuesFromList
                             mesh.boundaryMesh()[patchi].whichFace(facei);
 
                         internalCoeffs_[patchi][patchFacei] =
-                            Zero;
+                            pTraits<Type>::zero;
 
                         boundaryCoeffs_[patchi][patchFacei] =
-                            Zero;
+                            pTraits<Type>::zero;
                     }
                 }
             }
@@ -273,7 +273,7 @@ Foam::fvMatrix<Type>::fvMatrix
     lduMatrix(psi.mesh()),
     psi_(psi),
     dimensions_(ds),
-    source_(psi.size(), Zero),
+    source_(psi.size(), pTraits<Type>::zero),
     internalCoeffs_(psi.mesh().boundary().size()),
     boundaryCoeffs_(psi.mesh().boundary().size()),
     faceFluxCorrectionPtr_(nullptr)
@@ -293,7 +293,7 @@ Foam::fvMatrix<Type>::fvMatrix
             new Field<Type>
             (
                 psi.mesh().boundary()[patchi].size(),
-                Zero
+                pTraits<Type>::zero
             )
         );
 
@@ -303,7 +303,7 @@ Foam::fvMatrix<Type>::fvMatrix
             new Field<Type>
             (
                 psi.mesh().boundary()[patchi].size(),
-                Zero
+                pTraits<Type>::zero
             )
         );
     }
@@ -433,7 +433,7 @@ Foam::fvMatrix<Type>::fvMatrix
             new Field<Type>
             (
                 psi.mesh().boundary()[patchi].size(),
-                Zero
+                pTraits<Type>::zero
             )
         );
 
@@ -443,7 +443,7 @@ Foam::fvMatrix<Type>::fvMatrix
             new Field<Type>
             (
                 psi.mesh().boundary()[patchi].size(),
-                Zero
+                pTraits<Type>::zero
             )
         );
     }
@@ -865,7 +865,7 @@ Foam::fvMatrix<Type>::H() const
             Hphi.replace
             (
                 cmpt,
-                dimensionedScalar(Hphi.dimensions(), Zero)
+                dimensionedScalar(Hphi.dimensions(), scalar(0.0))
             );
         }
     }
@@ -2359,7 +2359,7 @@ Foam::operator&
     }
     else
     {
-        Mphi.primitiveFieldRef() = Zero;
+        Mphi.primitiveFieldRef() = pTraits<Type>::zero;
     }
 
     Mphi.primitiveFieldRef() += M.lduMatrix::H(psi.field()) + M.source();

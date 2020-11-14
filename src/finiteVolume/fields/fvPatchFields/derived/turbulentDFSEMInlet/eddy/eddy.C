@@ -27,7 +27,7 @@ License
 #include "mathematicalConstants.H"
 
 using namespace Foam::constant;
-
+/*
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 Foam::label Foam::eddy::Gamma2Values[] = {1, 2, 3, 4, 5, 6, 7, 8};
@@ -351,6 +351,6 @@ Foam::label Foam::eddy::writeSurfaceOBJ
 
     return nEddyPoints;
 }
-
+*/
 
 // ************************************************************************* //

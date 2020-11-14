@@ -148,7 +148,14 @@ void Foam::matchedFlowRateOutletVelocityFvPatchVectorField::updateValues
     Up -= nUp*n;
 
     // Remove any reverse flow
-    nUp = max(nUp, scalar(0));
+    forAll(nUp, idxI)
+    {
+        if(nUp[idxI] < 0.0)
+        {
+            nUp[idxI] = scalar(0.0);
+        }
+
+    }
 
     // Lookup non-const access to velocity field
     volVectorField& U

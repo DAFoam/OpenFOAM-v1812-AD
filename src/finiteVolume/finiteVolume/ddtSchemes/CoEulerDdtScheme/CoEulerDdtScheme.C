@@ -118,7 +118,7 @@ tmp<surfaceScalarField> CoEulerDdtScheme<Type>::CofrDeltaT() const
            *deltaT
         );
 
-        return max(Co/maxCo_, scalar(1))/deltaT;
+        return Co/maxCo_/deltaT; // max(Co/maxCo_, scalar(1))/deltaT;
     }
     else if (phi.dimensions() == dimensionSet(1, 0, -1, 0, 0))
     {
@@ -133,7 +133,7 @@ tmp<surfaceScalarField> CoEulerDdtScheme<Type>::CofrDeltaT() const
            *deltaT
         );
 
-        return max(Co/maxCo_, scalar(1))/deltaT;
+        return Co/maxCo_/deltaT; // max(Co/maxCo_, scalar(1))/deltaT;
     }
 
     FatalErrorInFunction

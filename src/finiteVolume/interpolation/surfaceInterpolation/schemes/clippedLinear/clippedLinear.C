@@ -27,10 +27,10 @@ License
 #include "clippedLinear.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
+/*
 namespace Foam
 {
     makeSurfaceInterpolationScheme(clippedLinear)
 }
-
+*/
 // ************************************************************************* //

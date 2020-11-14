@@ -156,8 +156,8 @@ public:
             surfaceScalarField& clippedLinearWeights =
                 tclippedLinearWeights.ref();
 
-            clippedLinearWeights.primitiveFieldRef() =
-                max(min(cdWeights.primitiveField(), 1 - wfLimit_), wfLimit_);
+            clippedLinearWeights.primitiveFieldRef() =cdWeights.primitiveField();
+//                max(min(cdWeights.primitiveField(), 1 - wfLimit_), wfLimit_);
 
             surfaceScalarField::Boundary& clwbf =
                 clippedLinearWeights.boundaryFieldRef();
@@ -166,7 +166,8 @@ public:
             {
                 if (clwbf[patchi].coupled())
                 {
-                    clwbf[patchi] =
+                    clwbf[patchi] = cdWeights.boundaryField()[patchi];
+		    /*
                         max
                         (
                             min
@@ -176,6 +177,7 @@ public:
                             ),
                             wfLimit_
                         );
+			*/
                 }
                 else
                 {

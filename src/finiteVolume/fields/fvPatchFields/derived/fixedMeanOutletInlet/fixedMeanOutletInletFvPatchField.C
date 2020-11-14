@@ -60,7 +60,7 @@ Foam::fixedMeanOutletInletFvPatchField<Type>::fixedMeanOutletInletFvPatchField
     );
 
     this->refValue() = *this;
-    this->refGrad() = Zero;
+    this->refGrad() = pTraits<Type>::zero;
     this->valueFraction() = 0.0;
 }
 

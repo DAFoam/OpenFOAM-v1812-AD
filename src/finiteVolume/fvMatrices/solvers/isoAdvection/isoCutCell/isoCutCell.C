@@ -528,9 +528,10 @@ Foam::label Foam::isoCutCell::vofCutCell
     // Finding the two vertices inbetween which the isovalue giving alpha1 lies
     label L1 = 0;
     label L2 = fvert.size() - 1;
+    label L3;
     scalar a1 = 1;
     scalar a2 = 0;
-    scalar L3, f3, a3;
+    scalar f3, a3;
 
     while (L2 - L1 > 1)
     {

@@ -35,7 +35,7 @@ Foam::fixedJumpFvPatchField<Type>::fixedJumpFvPatchField
 )
 :
     jumpCyclicFvPatchField<Type>(p, iF),
-    jump_(this->size(), Zero)
+    jump_(this->size(), pTraits<Type>::zero)
 {}
 
 
@@ -62,7 +62,7 @@ Foam::fixedJumpFvPatchField<Type>::fixedJumpFvPatchField
 )
 :
     jumpCyclicFvPatchField<Type>(p, iF),
-    jump_(p.size(), Zero)
+    jump_(p.size(), pTraits<Type>::zero)
 {
     if (this->cyclicPatch().owner())
     {

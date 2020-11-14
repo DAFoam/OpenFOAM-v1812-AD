@@ -63,7 +63,7 @@ inline bool wallPointYPlus::update
     // Either *this is not yet valid or w2 is closer
     {
         // only propagate if interesting (i.e. y+ < 100)
-        scalar yPlus = Foam::sqrt(dist2)/w2.data();
+        scalar yPlus = sqrt(dist2)/w2.data();
 
         if (yPlus < yPlusCutOff)
         {

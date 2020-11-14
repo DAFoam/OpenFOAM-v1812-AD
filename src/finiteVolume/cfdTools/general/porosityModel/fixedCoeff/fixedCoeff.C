@@ -128,13 +128,13 @@ Foam::porosityModels::fixedCoeff::fixedCoeff
 void Foam::porosityModels::fixedCoeff::calcTransformModelData()
 {
     // The alpha coefficient as a tensor
-    tensor alphaCoeff(Zero);
+    tensor alphaCoeff(tensor::zero);
     alphaCoeff.xx() = alphaXYZ_.value().x();
     alphaCoeff.yy() = alphaXYZ_.value().y();
     alphaCoeff.zz() = alphaXYZ_.value().z();
 
     // The beta coefficient as a tensor
-    tensor betaCoeff(Zero);
+    tensor betaCoeff(tensor::zero);
     betaCoeff.xx() = betaXYZ_.value().x();
     betaCoeff.yy() = betaXYZ_.value().y();
     betaCoeff.zz() = betaXYZ_.value().z();
@@ -175,8 +175,8 @@ void Foam::porosityModels::fixedCoeff::calcForce
     vectorField& force
 ) const
 {
-    scalarField Udiag(U.size(), 0.0);
-    vectorField Usource(U.size(), Zero);
+    scalarField Udiag(U.size(), scalar(0.0));
+    vectorField Usource(U.size(), vector::zero);
     const scalarField& V = mesh_.V();
     const scalar rhoRef = coeffs_.get<scalar>("rhoRef");
 

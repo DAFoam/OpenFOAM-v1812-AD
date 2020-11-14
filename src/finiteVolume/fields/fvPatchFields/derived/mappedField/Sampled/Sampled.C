@@ -41,7 +41,7 @@ Type Foam::PatchFunction1Types::Sampled<Type>::getAverage
         return dict.get<Type>("average");
     }
 
-    return Zero;
+    return pTraits<Type>::zero;
 }
 
 
@@ -173,7 +173,7 @@ Foam::PatchFunction1Types::Sampled<Type>::value
         // Restore tag
         UPstream::msgType() = oldTag;
         newValues.setSize(this->mappedPatchBase::patch_.size());
-        newValues = Zero;
+	forAll(newValues, idxI) newValues[idxI] = pTraits<Type>::zero;
         return this->transform(tnewValues);
     }
 
@@ -252,7 +252,7 @@ Foam::PatchFunction1Types::Sampled<Type>::value
         }
         case mappedPatchBase::NEARESTFACE:
         {
-            Field<Type> allValues(nbrMesh.nFaces(), Zero);
+            Field<Type> allValues(nbrMesh.nFaces(), pTraits<Type>::zero);
 
             const fieldType& nbrField = sampleField();
 

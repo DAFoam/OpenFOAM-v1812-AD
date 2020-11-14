@@ -68,7 +68,7 @@ Type Foam::interpolationCellPointFace<Type>::interpolate
     scalar phi[4], phiCandidate[4];
     label tetLabelCandidate[2], tetPointLabels[2];
 
-    Type t = Zero;
+    Type t = pTraits<Type>::zero;
 
     // only use face information when the position is on a face
     if (facei < 0)

@@ -30,7 +30,6 @@ License
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-
 Foam::pressureInletOutletVelocityFvPatchVectorField::
 pressureInletOutletVelocityFvPatchVectorField
 (
@@ -41,9 +40,9 @@ pressureInletOutletVelocityFvPatchVectorField
     directionMixedFvPatchVectorField(p, iF),
     phiName_("phi")
 {
-    refValue() = Zero;
-    refGrad() = Zero;
-    valueFraction() = Zero;
+    refValue() = vector::zero;
+    refGrad() = vector::zero;
+    //valueFraction() = Zero;
 }
 
 
@@ -89,11 +88,11 @@ pressureInletOutletVelocityFvPatchVectorField
     }
     else
     {
-        refValue() = Zero;
+        refValue() = vector::zero;
     }
 
-    refGrad() = Zero;
-    valueFraction() = Zero;
+    refGrad() = vector::zero;
+    //valueFraction() = Zero;
 }
 
 
@@ -120,7 +119,6 @@ pressureInletOutletVelocityFvPatchVectorField
     phiName_(pivpvf.phiName_),
     tangentialVelocity_(pivpvf.tangentialVelocity_)
 {}
-
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
@@ -220,5 +218,4 @@ namespace Foam
         pressureInletOutletVelocityFvPatchVectorField
     );
 }
-
 // ************************************************************************* //

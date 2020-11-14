@@ -30,7 +30,7 @@ License
 #include "surfaceFields.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-
+/*
 Foam::outletPhaseMeanVelocityFvPatchVectorField
 ::outletPhaseMeanVelocityFvPatchVectorField
 (
@@ -183,6 +183,6 @@ namespace Foam
        outletPhaseMeanVelocityFvPatchVectorField
    );
 }
-
+*/
 
 // ************************************************************************* //
