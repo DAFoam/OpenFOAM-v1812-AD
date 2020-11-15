@@ -39,6 +39,7 @@ wmakeLnInclude -u fvOptions
 
 wmake $targetType finiteVolume
 
+TurbulenceModels/Allwmake $targetType $*
 
 # CoDiPack4OpenFOAM exit here
 exit 1

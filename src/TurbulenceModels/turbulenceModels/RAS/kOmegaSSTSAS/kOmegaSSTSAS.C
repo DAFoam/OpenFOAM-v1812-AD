@@ -73,7 +73,7 @@ tmp<fvScalarMatrix> kOmegaSSTSAS<BasicTurbulenceModel>::Qsas
             max
             (
                 zeta2_*kappa_*S2*sqr(L/Lvk)
-              - (2*C_/sigmaPhi_)*this->k_()
+              - (scalar(2)*C_/sigmaPhi_)*this->k_()
                *max
                 (
                     magSqr(fvc::grad(this->omega_)()())/sqr(this->omega_()),
@@ -83,7 +83,7 @@ tmp<fvScalarMatrix> kOmegaSSTSAS<BasicTurbulenceModel>::Qsas
             ),
             // Limit SAS production of omega for numerical stability,
             // particularly during start-up
-            this->omega_()/(0.1*this->omega_.time().deltaT())
+            this->omega_()/(scalar(0.1)*this->omega_.time().deltaT())
         ),
         this->omega_
     );

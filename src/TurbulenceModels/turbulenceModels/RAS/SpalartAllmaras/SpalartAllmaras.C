@@ -75,6 +75,19 @@ tmp<volScalarField> SpalartAllmaras<BasicTurbulenceModel>::Stilda
 {
     volScalarField Omega(::sqrt(2.0)*mag(skew(fvc::grad(this->U_))));
 
+    volScalarField tmp1 =  Omega + fv2(chi, fv1)*nuTilda_/sqr(kappa_*y_);
+    volScalarField tmp2 =  Cs_*Omega;
+
+    forAll(tmp1, idxI)
+    {
+	if(tmp2[idxI] > tmp1[idxI])
+	{
+	    tmp1[idxI] = tmp2[idxI];
+	}
+    }
+
+    return tmp1;
+/*
     return
     (
         max
@@ -84,6 +97,7 @@ tmp<volScalarField> SpalartAllmaras<BasicTurbulenceModel>::Stilda
             Cs_*Omega
         )
     );
+*/
 }
 
 

@@ -49,11 +49,17 @@ Foam::nutUBlendedWallFunctionFvPatchScalarField::calcNut() const
     const tmp<scalarField> tnuw = turbModel.nu(patchi);
     const scalarField& nuw = tnuw();
 
-    return max
-    (
-        scalar(0),
-        sqr(calcUTau(magGradU))/(magGradU + ROOTVSMALL) - nuw
-    );
+    scalarField nutNew = sqr(calcUTau(magGradU))/(magGradU + ROOTVSMALL) - nuw;
+
+    forAll(nutNew, idxI)
+    {
+        if(nutNew[idxI] < 0)
+        {
+            nutNew[idxI] = 0.0;
+        }
+    }
+    return nutNew;
+
 }
 
 

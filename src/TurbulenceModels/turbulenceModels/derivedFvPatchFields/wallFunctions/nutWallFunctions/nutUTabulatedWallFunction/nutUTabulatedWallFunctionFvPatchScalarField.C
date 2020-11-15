@@ -55,14 +55,19 @@ tmp<scalarField> nutUTabulatedWallFunctionFvPatchScalarField::calcNut() const
     const tmp<scalarField> tnuw = turbModel.nu(patchi);
     const scalarField& nuw = tnuw();
 
-    return
-        max
-        (
-            scalar(0),
-            sqr(magUp/(calcUPlus(magUp*y/nuw) + ROOTVSMALL))
+    scalarField nutNew = sqr(magUp/(calcUPlus(magUp*y/nuw) + ROOTVSMALL))
            /(magGradU + ROOTVSMALL)
-          - nuw
-        );
+          - nuw;
+
+    forAll(nutNew, idxI)
+    {
+        if(nutNew[idxI] < 0)
+        {
+            nutNew[idxI] = 0.0;
+        }
+    }
+    return nutNew;
+
 }
 
 

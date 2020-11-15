@@ -136,14 +136,18 @@ kOmegaSSTLM<BasicTurbulenceModel>::ReThetac() const
         ReThetac[celli] =
             ReThetat <= 1870
           ?
-            ReThetat
-          - 396.035e-2
-          + 120.656e-4*ReThetat
-          - 868.230e-6*sqr(ReThetat)
-          + 696.506e-9*pow3(ReThetat)
-          - 174.105e-12*pow4(ReThetat)
+          scalar(
+              ReThetat
+            - 396.035e-2
+            + 120.656e-4*ReThetat
+            - 868.230e-6*sqr(ReThetat)
+            + 696.506e-9*pow3(ReThetat)
+            - 174.105e-12*pow4(ReThetat)
+          )
           :
-            ReThetat - 593.11 - 0.482*(ReThetat - 1870);
+          scalar(
+            ReThetat - 593.11 - 0.482*(ReThetat - 1870)
+          );
     }
 
     return tReThetac;
@@ -267,16 +271,21 @@ tmp<volScalarField::Internal> kOmegaSSTLM<BasicTurbulenceModel>::ReThetat0
                 const scalar Flambda =
                     dUsds[celli] <= 0
                   ?
-                    1
-                  - (
-                     - 12.986*lambda
-                     - 123.66*sqr(lambda)
-                     - 405.689*pow3(lambda)
-                    )*exp(-pow(Tu/1.5, 1.5))
+                    scalar
+                    (
+                        1
+                      - (
+                         - 12.986*lambda
+                         - 123.66*sqr(lambda)
+                         - 405.689*pow3(lambda)
+                        )*exp(-pow(Tu/1.5, 1.5))
+                  )
                   :
-                    1
-                  + 0.275*(1 - exp(-35*lambda))
-                   *exp(-Tu/0.5);
+                    scalar(
+                        1
+                        + 0.275*(1 - exp(-35*lambda))
+                        *exp(-Tu/0.5)
+                    );
 
                 thetat =
                     (1173.51 - 589.428*Tu + 0.2196/sqr(Tu))
@@ -288,16 +297,22 @@ tmp<volScalarField::Internal> kOmegaSSTLM<BasicTurbulenceModel>::ReThetat0
                 const scalar Flambda =
                     dUsds[celli] <= 0
                   ?
-                    1
-                  - (
-                      -12.986*lambda
-                      -123.66*sqr(lambda)
-                      -405.689*pow3(lambda)
-                    )*exp(-pow(Tu/1.5, 1.5))
+                    scalar
+                    (
+                        1
+                        - (
+                            -12.986*lambda
+                            -123.66*sqr(lambda)
+                            -405.689*pow3(lambda)
+                          )*exp(-pow(Tu/1.5, 1.5))
+                    )
                   :
-                    1
-                  + 0.275*(1 - exp(-35*lambda))
-                   *exp(-2*Tu);
+                    scalar
+                    (
+                        1
+                        + 0.275*(1 - exp(-35*lambda))
+                        *exp(-2*Tu)
+                    );
 
                 thetat =
                     331.50*pow((Tu - 0.5658), -0.671)
@@ -563,7 +578,7 @@ void kOmegaSSTLM<BasicTurbulenceModel>::correctReThetatGammaInt()
         fvOptions.constrain(ReThetatEqn.ref());
         solve(ReThetatEqn);
         fvOptions.correct(ReThetat_);
-        bound(ReThetat_, 0);
+        bound(ReThetat_, scalar(0));
     }
 
     const volScalarField::Internal ReThetac(this->ReThetac());
@@ -600,7 +615,7 @@ void kOmegaSSTLM<BasicTurbulenceModel>::correctReThetatGammaInt()
         fvOptions.constrain(gammaIntEqn.ref());
         solve(gammaIntEqn);
         fvOptions.correct(gammaInt_);
-        bound(gammaInt_, 0);
+        bound(gammaInt_, scalar(0));
     }
 
     const volScalarField::Internal Freattach(exp(-pow4(RT/20.0)));

@@ -183,7 +183,7 @@ tmp<volScalarField> kOmegaSSTDES<BasicTurbulenceModel>::LESRegion() const
 
     const volScalarField CDkOmega
     (
-        (2*this->alphaOmega2_)*(fvc::grad(k) & fvc::grad(omega))/omega
+        (scalar(2)*this->alphaOmega2_)*(fvc::grad(k) & fvc::grad(omega))/omega
     );
 
     const volScalarField F1(this->F1(CDkOmega));

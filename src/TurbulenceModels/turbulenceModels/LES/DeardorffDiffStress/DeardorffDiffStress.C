@@ -198,7 +198,7 @@ void DeardorffDiffStress<BasicTurbulenceModel>::correct()
      ==
         alpha*rho*P
       + (4.0/5.0)*alpha*rho*k*D
-      - ((2.0/3.0)*(1.0 - Cm_/this->Ce_)*I)*(alpha*rho*this->epsilon())
+      - (scalar(2.0/3.0)*(scalar(1.0) - Cm_/this->Ce_)*I)*(alpha*rho*this->epsilon())
       + fvOptions(alpha, rho, R)
     );
 

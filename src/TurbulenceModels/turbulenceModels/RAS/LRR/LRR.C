@@ -346,7 +346,7 @@ void LRR<BasicTurbulenceModel>::correct()
       + fvm::Sp(C1_*alpha*rho*epsilon_/k_, R)
       ==
         alpha*rho*P
-      - (2.0/3.0*(1 - C1_)*I)*alpha*rho*epsilon_
+      - (scalar(2.0/3.0)*(scalar(1) - C1_)*I)*alpha*rho*epsilon_
       - C2_*alpha*rho*dev(P)
       + fvOptions(alpha, rho, R)
     );
@@ -363,7 +363,7 @@ void LRR<BasicTurbulenceModel>::correct()
         );
 
         REqn.ref() +=
-            ((3*pow(Cmu_, 0.75)/kappa_)*(alpha*rho*sqrt(k_)/y_))
+            ((scalar(3)*pow(Cmu_, scalar(0.75))/kappa_)*(alpha*rho*sqrt(k_)/y_))
            *dev(symm((n_ & reflect)*n_));
     }
 

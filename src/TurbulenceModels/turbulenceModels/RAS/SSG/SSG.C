@@ -357,7 +357,7 @@ void SSG<BasicTurbulenceModel>::correct()
         fvm::ddt(alpha, rho, R)
       + fvm::div(alphaRhoPhi, R)
       - fvm::laplacian(alpha*rho*DREff(), R)
-      + fvm::Sp(((C1_/2)*epsilon_ + (C1s_/2)*G)*alpha*rho/k_, R)
+      + fvm::Sp(((C1_/scalar(2))*epsilon_ + (C1s_/scalar(2))*G)*alpha*rho/k_, R)
      ==
         alpha*rho*P
       - ((1.0/3.0)*I)*(((2.0 - C1_)*epsilon_ - C1s_*G)*alpha*rho)

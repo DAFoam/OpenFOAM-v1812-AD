@@ -49,7 +49,7 @@ tmp<volScalarField> realizableKE<BasicTurbulenceModel>::rCmu
 
     volScalarField W
     (
-        (2*sqrt(2.0))*((S&S)&&S)
+        (2*codi::sqrt(2.0))*((S&S)&&S)
        /(
             magS*S2
           + dimensionedScalar("small", dimensionSet(0, 0, -3, 0, 0), SMALL)
@@ -60,9 +60,9 @@ tmp<volScalarField> realizableKE<BasicTurbulenceModel>::rCmu
 
     volScalarField phis
     (
-        (1.0/3.0)*acos(min(max(sqrt(6.0)*W, -scalar(1)), scalar(1)))
+        scalar(1.0/3.0)*acos(min(max(codi::sqrt(6.0)*W, scalar(-1)), scalar(1)))
     );
-    volScalarField As(sqrt(6.0)*cos(phis));
+    volScalarField As(codi::sqrt(6.0)*cos(phis));
     volScalarField Us(sqrt(S2/2.0 + magSqr(skew(gradU))));
 
     return 1.0/(A0_ + As*Us*k_/epsilon_);

@@ -80,7 +80,7 @@ tmp<volScalarField> SpalartAllmarasDES<BasicTurbulenceModel>::Omega
     const volTensorField& gradU
 ) const
 {
-    return sqrt(2.0)*mag(skew(gradU));
+    return codi::sqrt(2.0)*mag(skew(gradU));
 }
 
 
@@ -187,7 +187,7 @@ tmp<volScalarField> SpalartAllmarasDES<BasicTurbulenceModel>::psi
                 (
                     scalar(100),
                     (1 - Cb1_/(Cw1_*sqr(kappa_)*fwStar_)*(ft2 + (1 - ft2)*fv2))
-                   /max(SMALL, (fv1*max(scalar(1e-10), 1 - ft2)))
+                   /max(scalar(SMALL), (fv1*max(scalar(1e-10), 1 - ft2)))
                 )
             );
     }

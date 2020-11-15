@@ -216,7 +216,7 @@ void kOmega<BasicTurbulenceModel>::correct()
       - fvm::laplacian(alpha*rho*DomegaEff(), omega_)
      ==
         gamma_*alpha*rho*G*omega_/k_
-      - fvm::SuSp(((2.0/3.0)*gamma_)*alpha*rho*divU, omega_)
+      - fvm::SuSp((scalar(2.0/3.0)*gamma_)*alpha*rho*divU, omega_)
       - fvm::Sp(beta_*alpha*rho*omega_, omega_)
       + fvOptions(alpha, rho, omega_)
     );

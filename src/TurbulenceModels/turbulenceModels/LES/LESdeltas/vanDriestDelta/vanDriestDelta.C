@@ -83,12 +83,13 @@ void Foam::LESModels::vanDriestDelta::calcDelta()
     wallPointYPlus::yPlusCutOff = 500;
     wallDistData<wallPointYPlus> y(mesh, ystar);
     wallPointYPlus::yPlusCutOff = cutOff;
-
+/*
     delta_ = min
     (
         static_cast<const volScalarField&>(geometricDelta_()),
         (kappa_/Cdelta_)*((scalar(1) + SMALL) - exp(-y/ystar/Aplus_))*y
     );
+    */
 }
 
 

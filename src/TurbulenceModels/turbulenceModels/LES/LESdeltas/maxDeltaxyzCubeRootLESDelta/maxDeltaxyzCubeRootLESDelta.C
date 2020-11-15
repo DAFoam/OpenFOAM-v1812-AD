@@ -49,14 +49,14 @@ void Foam::LESModels::maxDeltaxyzCubeRootLESDelta::calcDelta()
 {
     maxDeltaxyz_.calcDelta();
     cubeRootVolDelta_.calcDelta();
-
+/*
     delta_ =
         max
         (
             static_cast<const volScalarField&>(maxDeltaxyz_),
             static_cast<const volScalarField&>(cubeRootVolDelta_)
         );
-
+*/
     // Handle coupled boundaries
     delta_.correctBoundaryConditions();
 }

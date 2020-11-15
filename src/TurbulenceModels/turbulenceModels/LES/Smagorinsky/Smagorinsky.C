@@ -45,7 +45,7 @@ tmp<volScalarField> Smagorinsky<BasicTurbulenceModel>::k
 
     volScalarField a(this->Ce_/this->delta());
     volScalarField b((2.0/3.0)*tr(D));
-    volScalarField c(2*Ck_*this->delta()*(dev(D) && D));
+    volScalarField c(scalar(2)*Ck_*this->delta()*(dev(D) && D));
 
     return tmp<volScalarField>
     (

@@ -102,8 +102,8 @@ tmp<scalarField> nutURoughWallFunctionFvPatchScalarField::calcYPlus
         // Rough Walls
         const scalar c_1 = 1/(90 - 2.25) + roughnessConstant_;
         static const scalar c_2 = 2.25/(90 - 2.25);
-        static const scalar c_3 = 2.0*atan(1.0)/log(90/2.25);
-        static const scalar c_4 = c_3*log(2.25);
+        static const scalar c_3 = 2.0*atan(1.0)/codi::log(90/2.25);
+        static const scalar c_4 = c_3*codi::log(2.25);
 
         //if (KsPlusBasedOnYPlus_)
         {
@@ -140,21 +140,21 @@ tmp<scalarField> nutURoughWallFunctionFvPatchScalarField::calcYPlus
                     if (KsPlus >= 90)
                     {
                         const scalar t_1 = 1 + roughnessConstant_*KsPlus;
-                        G = log(t_1);
+                        G = codi::log(t_1);
                         yPlusGPrime = roughnessConstant_*KsPlus/t_1;
                     }
                     else if (KsPlus > 2.25)
                     {
                         const scalar t_1 = c_1*KsPlus - c_2;
-                        const scalar t_2 = c_3*log(KsPlus) - c_4;
+                        const scalar t_2 = c_3*codi::log(KsPlus) - c_4;
                         const scalar sint_2 = sin(t_2);
-                        const scalar logt_1 = log(t_1);
+                        const scalar logt_1 = codi::log(t_1);
                         G = logt_1*sint_2;
                         yPlusGPrime =
                             (c_1*sint_2*KsPlus/t_1) + (c_3*logt_1*cos(t_2));
                     }
 
-                    scalar denom = 1.0 + log(E_*yp) - G - yPlusGPrime;
+                    scalar denom = 1.0 + codi::log(E_*yp) - G - yPlusGPrime;
                     if (mag(denom) > VSMALL)
                     {
                         yp = (kappaRe + yp*(1 - yPlusGPrime))/denom;
@@ -188,7 +188,7 @@ tmp<scalarField> nutURoughWallFunctionFvPatchScalarField::calcYPlus
             do
             {
                 yPlusLast = yp;
-                yp = (kappaRe + yp)/(1.0 + log(E_*yp));
+                yp = (kappaRe + yp)/(1.0 + codi::log(E_*yp));
 
             } while (mag(ryPlusLam*(yp - yPlusLast)) > 0.0001 && ++iter < 10);
 
