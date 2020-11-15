@@ -91,7 +91,7 @@ public:
         inline Tensor();
 
         //- Construct initialized to zero
-        // CoDiPack4OpenFOAM
+        // CoDiPack4OpenFOAM TODO commented out for know
         //inline Tensor(const Foam::zero);
 
         //- Construct given MatrixSpace of the same rank

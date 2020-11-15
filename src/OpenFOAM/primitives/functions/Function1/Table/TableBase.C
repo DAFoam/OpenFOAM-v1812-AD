@@ -176,7 +176,6 @@ bool Foam::Function1Types::TableBase<Type>::checkMinBounds
 
                 xDash =
                 (
-                    // CoDiPack4OpenFOAM
                     fmod((x - table_.first().first()).getValue(), span.getValue())
                   + table_.first().first()
                 );
@@ -236,7 +235,6 @@ bool Foam::Function1Types::TableBase<Type>::checkMaxBounds
 
                 xDash =
                 (
-                    // CoDiPack4OpenFOAM
                     fmod((x - table_.first().first()).getValue(), span.getValue())
                   + table_.first().first()
                 );
@@ -333,7 +331,6 @@ Foam::tmp<Foam::scalarField> Foam::Function1Types::TableBase<Type>::x() const
 template<class Type>
 Foam::tmp<Foam::Field<Type>> Foam::Function1Types::TableBase<Type>::y() const
 {
-    // CoDiPack4OpenFOAM
     tmp<Field<Type>> tfld(new Field<Type>(table_.size(), pTraits<Type>::zero));
     Field<Type>& fld = tfld.ref();
 

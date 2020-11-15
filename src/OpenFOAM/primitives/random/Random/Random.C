@@ -67,7 +67,6 @@ Foam::scalar Foam::Random::sample01()
 template<>
 Foam::label Foam::Random::sample01()
 {
-    // CoDiPack4OpenFOAM
     return round(scalar01().getValue());
 }
 
@@ -104,7 +103,6 @@ Foam::scalar Foam::Random::GaussNormal()
 template<>
 Foam::label Foam::Random::GaussNormal()
 {
-    // CoDiPack4OpenFOAM
     return round(GaussNormal<scalar>().getValue());
 }
 
@@ -136,7 +134,6 @@ Foam::label Foam::Random::position(const label& start, const label& end)
     // Since the range is non-negative, can use integer truncation
     // instead using floor().
     
-    // CoDiPack4OpenFOAM
     const label val = start + label((scalar01()*(end - start + 1)).getValue());
 
     // Rare case when scalar01() returns exactly 1.000 and the truncated
@@ -168,7 +165,6 @@ Foam::label Foam::Random::globalSample01()
 
     if (Pstream::master())
     {
-        // CoDiPack4OpenFOAM
         value = round(scalar01().getValue());
     }
 

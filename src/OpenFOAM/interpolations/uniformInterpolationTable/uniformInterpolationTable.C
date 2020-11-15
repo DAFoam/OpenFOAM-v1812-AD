@@ -194,7 +194,7 @@ Type Foam::uniformInterpolationTable<Type>::interpolateLog10
     {
         if (x > 0)
         {
-	    x = log(x)/log(scalar(10.0));//log10(x);
+	    x = log(x)/log(scalar(10.0));
         }
         else if (bound_ && (x <= 0))
         {

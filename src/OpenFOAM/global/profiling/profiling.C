@@ -96,7 +96,6 @@ Foam::profilingInformation* Foam::profiling::endTimer()
 {
     Information *info = stack_.remove();
     clockValue clockval = times_.remove();
-    // CoDiPack4OpenFOAM
     info->update(static_cast<double>(clockval.elapsed()));   // Update elapsed time
     info->setActive(false);             // Mark as off stack
 

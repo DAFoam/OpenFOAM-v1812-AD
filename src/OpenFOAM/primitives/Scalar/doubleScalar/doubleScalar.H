@@ -38,7 +38,7 @@ SourceFiles
 #include "doubleFloat.H"
 #include "direction.H"
 #include "word.H"
-// CoDiPack4OpenFOAM  Add CoDiPack header
+// Add CoDiPack header
 #include "codi.hpp"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -48,13 +48,12 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// CoDiPack4OpenFOAM  Replace double with codi::RealReverse
+// Replace double with codi::RealReverse
 typedef codi::RealReverse doubleScalar;
 
 // Largest and smallest scalar values allowed in certain parts of the code.
 // (15 is the number of significant figures in an
 //  IEEE double precision number.  See limits.h or float.h)
-// CoDiPack4OpenFOAM  Change doubleScalar to double
 constexpr double doubleScalarGREAT = 1.0e+15;
 constexpr double doubleScalarVGREAT = 1.0e+300;
 constexpr double doubleScalarROOTVGREAT = 1.0e+150;
@@ -74,7 +73,6 @@ constexpr double doubleScalarROOTVSMALL = 1.0e-150;
 
 inline Scalar mag(const Scalar s)
 {
-    // CoDiPack4OpenFOAM
     return fabs(s);
 }
 
@@ -87,24 +85,20 @@ inline Scalar hypot(const Scalar x, const Scalar y)
 
 inline Scalar atan2(const Scalar y, const Scalar x)
 {
-    // CoDiPack4OpenFOAM
     return atan2(y, x);
 }
 
 inline Scalar jn(const int n, const Scalar s)
 {
-    // CoDiPack4OpenFOAM
     return jn(n, s);
 }
 
 inline Scalar yn(const int n, const Scalar s)
 {
-    // CoDiPack4OpenFOAM
     return yn(n, s);
 }
 
 // Normal (double-precision) transcendental functions
-// CoDiPack4OpenFOAM
 #define transFunc(func)            \
 inline Scalar func(const Scalar s) \
 {                                  \
@@ -113,14 +107,13 @@ inline Scalar func(const Scalar s) \
 
 
 // Double-precision bessel functions
-// CoDiPack4OpenFOAM
 #define besselFunc(func)           \
 inline Scalar func(const Scalar s) \
 {                                  \
     return func(s);                \
 }
 
-// CoDiPack4OpenFOAM Explicit instantiation of operator<< for double
+// Explicit instantiation of operator<< for double
 Ostream& operator<<(Ostream& os, const double s);
 Istream& operator>>(Istream& is, double& val);
 

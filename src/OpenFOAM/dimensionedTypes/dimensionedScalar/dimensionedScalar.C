@@ -74,7 +74,6 @@ dimensionedScalar pow
     const dimensionedScalar& expt
 )
 {
-    // CoDiPack4OpenFOAM
     return dimensionedScalar
     (
         "pow(" + ds.name() + ',' + expt.name() + ')',
@@ -141,7 +140,6 @@ dimensionedScalar pow025(const dimensionedScalar& ds)
 
 dimensionedScalar sqrt(const dimensionedScalar& ds)
 {
-    // CoDiPack4OpenFOAM
     return dimensionedScalar
     (
         "sqrt(" + ds.name() + ')',
@@ -153,7 +151,6 @@ dimensionedScalar sqrt(const dimensionedScalar& ds)
 
 dimensionedScalar cbrt(const dimensionedScalar& ds)
 {
-    // CoDiPack4OpenFOAM
     return dimensionedScalar
     (
         "cbrt(" + ds.name() + ')',
@@ -169,7 +166,6 @@ dimensionedScalar hypot
     const dimensionedScalar& y
 )
 {
-    // CoDiPack4OpenFOAM
     return dimensionedScalar
     (
         "hypot(" + x.name() + ',' + y.name() + ')',
@@ -255,7 +251,6 @@ dimensionedScalar negPart(const dimensionedScalar& ds)
     );
 }
 
-// CoDiPack4OpenFOAM
 #define transFunc(func)                                                        \
 dimensionedScalar func(const dimensionedScalar& ds)                            \
 {                                                                              \
@@ -299,7 +294,6 @@ transFunc(y1)
 
 #undef transFunc
 
-// CoDiPack4OpenFOAM
 #define transFunc(func)                                                        \
 dimensionedScalar func(const int n, const dimensionedScalar& ds)               \
 {                                                                              \
@@ -330,7 +324,6 @@ dimensionedScalar atan2
     const dimensionedScalar& y
 )
 {
-    // CoDiPack4OpenFOAM
     return dimensionedScalar
     (
         "atan2(" + x.name() + ',' + y.name() + ')',

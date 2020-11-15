@@ -48,7 +48,6 @@ SourceFiles
 namespace Foam
 {
     typedef floatScalar scalar;
-    // CoDiPack4OpenFOAM
     static const scalar GREAT = floatScalarGREAT;
     static const scalar VGREAT = floatScalarVGREAT;
     static const scalar ROOTVGREAT = floatScalarROOTVGREAT;
@@ -87,7 +86,6 @@ namespace Foam
 namespace Foam
 {
     typedef doubleScalar scalar;
-    // CoDiPack4OpenFOAM
     static const scalar GREAT = doubleScalarGREAT;
     static const scalar VGREAT = doubleScalarVGREAT;
     static const scalar ROOTVGREAT = doubleScalarROOTVGREAT;

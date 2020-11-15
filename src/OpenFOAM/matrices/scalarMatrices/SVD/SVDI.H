@@ -28,7 +28,6 @@ License
 template<class T>
 inline const T Foam::SVD::sign(const T& a, const T& b)
 {
-    // CoDiPack4OpenFOAM
     //return b >= 0 ? (a >= 0 ? a : -a) : (a >= 0 ? -a : a);
     return b >= 0 ? a : T(-a);
 }

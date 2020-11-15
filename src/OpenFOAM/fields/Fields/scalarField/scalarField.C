@@ -145,6 +145,16 @@ inline scalar sin(const scalar& val)
     return sin(val);
 }
 
+inline scalar max(const scalar& valA, const scalar& valB)
+{
+    return max(valA, valB);
+}
+
+inline scalar min(const scalar& valA, const scalar& valB)
+{
+    return min(valA, valB);
+}
+
 BINARY_FUNCTION(scalar, scalar, scalar, pow)
 BINARY_TYPE_FUNCTION(scalar, scalar, scalar, pow)
 

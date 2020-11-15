@@ -63,7 +63,7 @@ template<class Type>
 Type Foam::Function1<Type>::value(const scalar x) const
 {
     NotImplemented;
-    // CoDiPack4OpenFOAM
+
     return pTraits<Type>::zero;
 }
 
@@ -82,7 +82,7 @@ template<class Type>
 Type Foam::Function1<Type>::integrate(const scalar x1, const scalar x2) const
 {
     NotImplemented;
-    // CoDiPack4OpenFOAM
+
     return pTraits<Type>::zero;
 }
 

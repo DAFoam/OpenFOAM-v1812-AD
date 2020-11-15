@@ -31,7 +31,7 @@ template<class Cmpt>
 inline Foam::Tensor<Cmpt>::Tensor()
 {}
 
-// CoDiPack4OpenFOAM
+// CoDiPack4OpenFOAM TODO commented out for now
 /*
 template<class Cmpt>
 inline Foam::Tensor<Cmpt>::Tensor(const Foam::zero)

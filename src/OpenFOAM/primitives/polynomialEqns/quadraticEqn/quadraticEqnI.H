@@ -28,7 +28,7 @@ License
 inline Foam::quadraticEqn::quadraticEqn()
 {}
 
-// CodiPack4OpenFOAM
+// CodiPack4OpenFOAM TODO commented out for now
 /*
 inline Foam::quadraticEqn::quadraticEqn(const Foam::zero)
 :

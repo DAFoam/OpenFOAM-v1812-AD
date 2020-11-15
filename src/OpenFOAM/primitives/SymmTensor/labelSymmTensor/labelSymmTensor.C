@@ -65,14 +65,12 @@ const Foam::labelSymmTensor Foam::labelSymmTensor::vsType::min
 template<>
 const Foam::labelSymmTensor Foam::labelSymmTensor::vsType::rootMax
 (
-    // CoDiPack4OpenFOAM
     labelSymmTensor::uniform(sqrt(scalar(labelMax)).getValue())
 );
 
 template<>
 const Foam::labelSymmTensor Foam::labelSymmTensor::vsType::rootMin
 (
-    // CoDiPack4OpenFOAM
     labelSymmTensor::uniform(-sqrt(scalar(labelMax)).getValue())
 );
 

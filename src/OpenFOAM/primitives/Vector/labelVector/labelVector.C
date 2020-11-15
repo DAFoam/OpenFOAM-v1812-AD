@@ -63,14 +63,12 @@ const Foam::labelVector Foam::labelVector::vsType::min
 template<>
 const Foam::labelVector Foam::labelVector::vsType::rootMax
 (
-    // CodiPack4OpenFOAM
     labelVector::uniform(sqrt(scalar(labelMax)).getValue())
 );
 
 template<>
 const Foam::labelVector Foam::labelVector::vsType::rootMin
 (
-    // CodiPack4OpenFOAM
     labelVector::uniform(-sqrt(scalar(labelMax)).getValue())
 );
 

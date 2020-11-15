@@ -202,7 +202,7 @@ public:
         inline MatrixSpace();
 
         //- Construct initialized to zero
-        // CoDiPack4OpenFOAM
+        // CoDiPack4OpenFOAM TODO commented out for now
         //inline MatrixSpace(const Foam::zero);
 
         //- Construct as copy of a VectorSpace with the same size

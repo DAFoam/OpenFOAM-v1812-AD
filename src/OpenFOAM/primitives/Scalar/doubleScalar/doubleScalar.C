@@ -45,7 +45,7 @@ License
 #define ScalarConvert ::strtold
 
 #include "Scalar.C"
-// CoDiPack4OpenFOAM  Explicit instantiation of operator<< for double
+// Explicit instantiation of operator<< for double
 Foam::Ostream& Foam::operator<<(Foam::Ostream& os, const double s)
 {
     os.write(static_cast<Foam::doubleScalar>(s));

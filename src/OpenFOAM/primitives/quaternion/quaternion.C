@@ -100,7 +100,6 @@ Foam::quaternion Foam::exp(const quaternion& q)
 
     if (magV == 0)
     {
-        // CodiPack4OpenFOAM
         return quaternion(1, vector::zero);
     }
 

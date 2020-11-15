@@ -67,14 +67,12 @@ const Foam::labelSphericalTensor Foam::labelSphericalTensor::vsType::min
 template<>
 const Foam::labelSphericalTensor Foam::labelSphericalTensor::vsType::rootMax
 (
-    // CoDiPack4OpenFOAM
     labelSphericalTensor::uniform(sqrt(scalar(labelMax)).getValue())
 );
 
 template<>
 const Foam::labelSphericalTensor Foam::labelSphericalTensor::vsType::rootMin
 (
-    // CoDiPack4OpenFOAM
     labelSphericalTensor::uniform(-sqrt(scalar(labelMax)).getValue())
 );
 

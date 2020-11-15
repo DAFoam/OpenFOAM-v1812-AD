@@ -46,8 +46,8 @@ Foam::Function1Types::Constant<Type>::Constant
     const dictionary& dict
 )
 :
-    // CoDiPack4OpenFOAM
-    Function1<Type>(entryName)
+    Function1<Type>(entryName),
+    value_(pTraints<Type>::zero)
 {
     Istream& is(dict.lookup(entryName));
     word entryType(is);
@@ -93,8 +93,7 @@ Foam::tmp<Foam::Field<Type>> Foam::Function1Types::Constant<Type>::value
     return tmp<Field<Type>>::New(x.size(), value_);
 }
 
-// CoDiPack4OpenFOAM
-// all return types except label
+// CoDiPack4OpenFOAM Check this all return types except label
 template <typename R, typename T>
 typename std::enable_if<!std::is_same<R, Foam::tmp<Foam::Field<Foam::label>>>::value, R>::type
     passive_if_label(const T& t) {
@@ -119,7 +118,7 @@ Foam::tmp<Foam::Field<Type>> Foam::Function1Types::Constant<Type>::integrate
     const scalarField& x2
 ) const
 {
-    // CoDiPack4OpenFOAM
+    // CoDiPack4OpenFOAM check this
     return passive_if_label<Foam::tmp<Foam::Field<Type>>>((x2 - x1)*value_);
 }
 

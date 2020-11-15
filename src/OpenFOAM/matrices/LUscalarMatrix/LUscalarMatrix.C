@@ -418,7 +418,6 @@ void Foam::LUscalarMatrix::inv(scalarSquareMatrix& M) const
 
     for (label j=0; j<m(); j++)
     {
-        // CoDiPack4OpenFOAM
         for(label k=0; k<m(); k++)
         {
             source[k] = 0.0;

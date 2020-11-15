@@ -47,14 +47,12 @@ namespace mathematical
 
     constexpr const char* const group = "mathematical";
 
-    // CoDiPack4OpenFOAM
     const scalar e(M_E);
     const scalar pi(M_PI);
     const scalar twoPi(2*M_PI);
     const scalar piByTwo(0.5*M_PI);
 
     //- Euler's constant
-    // CoDiPack4OpenFOAM
     const scalar Eu(0.57721566490153286060651209);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

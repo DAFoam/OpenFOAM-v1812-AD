@@ -194,6 +194,7 @@ Foam::PBiCICG<Type, DType, LUType>::solve(Field<Type>& psi) const
         );
     }
 
+    // CoDiPack4OpenFOAM TODO This could be slow, we need to fix this!
     solverPerf.nIterations() = pTraits<typename pTraits<Type>::labelType>::zero;
     for(label i=0;i<nIter;i++)
     {

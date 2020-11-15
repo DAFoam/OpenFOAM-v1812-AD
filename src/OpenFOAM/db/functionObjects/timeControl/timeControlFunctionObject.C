@@ -351,13 +351,11 @@ void Foam::functionObjects::timeControl::calcDeltaTCoeff
                 }
                 // Situations where we achieve wantedDT but fail to achieve
                 // multiple of writeInterval
-                // CoDiPack4OpenFOAM
                 scalar jumpError =
                    remainder((Sn + presentTime).getValue(), wantedDT.getValue()) / wantedDT;
 
                 if (mag(jumpError) > ROOTSMALL)
                 {
-                    // CoDiPack4OpenFOAM
                     requiredSteps = label((timeToNextWrite/wantedDT).getValue());
                     firstDeltaRatio = timeToNextWrite/requiredSteps/deltaT0_;
                 }
@@ -531,7 +529,6 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
             // calculation and give priority to writeInterval.
             // Note looser tolerance on the relative intervalError - SMALL is
             // too strict.
-            // CoDiPack4OpenFOAM
             scalar intervalError =
                 remainder(writeInterval.getValue(), wantedDT.getValue())/writeInterval;
             if
@@ -554,7 +551,6 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
                 )
                 {
                     // nSteps can be < 1 so make sure at least 1
-                    // CoDiPack4OpenFOAM
                     label nStepsToNextWrite = max(1, round(nSteps.getValue()));
                     scalar newDeltaT = timeToNextWrite/nStepsToNextWrite;
 

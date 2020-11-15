@@ -63,7 +63,7 @@ public:
         inline quadraticEqn();
 
         //- Construct initialized to zero
-        // CodiPack4OpenFOAM
+        // CodiPack4OpenFOAM TODO commented out for now
         //inline quadraticEqn(const Foam::zero);
 
         //- Construct from components

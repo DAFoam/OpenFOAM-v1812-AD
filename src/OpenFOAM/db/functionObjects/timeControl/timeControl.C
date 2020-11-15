@@ -177,7 +177,6 @@ bool Foam::timeControl::execute()
         {
             label executionIndex = label
             (
-                // CoDiPack4OpenFOAM
                 (
                 (
                     (time_.value() - time_.startTime().value())
@@ -199,7 +198,6 @@ bool Foam::timeControl::execute()
         {
             label executionIndex = label
             (
-                // CoDiPack4OpenFOAM
                 (
                 returnReduce(scalar(time_.elapsedCpuTime()), maxOp<scalar>())
                /interval_
@@ -217,7 +215,6 @@ bool Foam::timeControl::execute()
         {
             label executionIndex = label
             (
-                // CoDiPack4OpenFOAM
                 (
                 returnReduce(scalar(time_.elapsedClockTime()), maxOp<scalar>())
                /interval_

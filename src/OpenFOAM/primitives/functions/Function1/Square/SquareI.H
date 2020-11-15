@@ -34,11 +34,9 @@ inline Type Foam::Function1Types::Square<Type>::value(const scalar t) const
     scalar waves = frequency_->value(t)*(t - t0_);
 
     // Number of complete waves
-    // CoDiPack4OpenFOAM
     double nWaves;
 
     // Fraction of last incomplete wave
-    // CoDiPack4OpenFOAM
     scalar waveFrac = std::modf(waves.getValue(), &nWaves);
 
     // Mark fraction of a wave

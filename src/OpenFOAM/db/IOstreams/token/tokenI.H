@@ -127,7 +127,6 @@ inline void Foam::token::clear()
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-// CoDiPack4OpenFOAM
 inline Foam::token::token() noexcept
 :
     data_(), // bit-wise zero for union content

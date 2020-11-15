@@ -56,6 +56,7 @@ Foam::algebraicPairGAMGAgglomeration::algebraicPairGAMGAgglomeration
 
     if (matrix.hasLower())
     {
+/*
         scalarField weightField(matrix.lower().size());
         forAll(weightField, idxI)
         {
@@ -69,7 +70,8 @@ Foam::algebraicPairGAMGAgglomeration::algebraicPairGAMGAgglomeration
             }
         }
         agglomerate(mesh, weightField);
-        //agglomerate(mesh, max(mag(matrix.upper()), mag(matrix.lower())));
+*/
+        agglomerate(mesh, max(mag(matrix.upper()), mag(matrix.lower())));
     }
     else
     {

@@ -252,7 +252,6 @@ public:
 private:
 
     //- A %union of token types
-    // CoDiPack4OpenFOAM
     struct content
     {
         // Fundamental values. Largest first for any {} initialization.

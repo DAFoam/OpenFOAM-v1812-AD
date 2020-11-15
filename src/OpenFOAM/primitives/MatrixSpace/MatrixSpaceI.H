@@ -31,7 +31,7 @@ template<class Form, class Cmpt, Foam::direction Mrows, Foam::direction Ncols>
 inline Foam::MatrixSpace<Form, Cmpt, Mrows, Ncols>::MatrixSpace()
 {}
 
-// CoDiPack4OpenFOAM
+// CoDiPack4OpenFOAM TODO commented out for now
 /*
 template<class Form, class Cmpt, Foam::direction Mrows, Foam::direction Ncols>
 inline Foam::MatrixSpace<Form, Cmpt, Mrows, Ncols>::MatrixSpace
@@ -274,7 +274,6 @@ inline Foam::MatrixSpace<Form, Cmpt, Mrows, Ncols>
 Foam::MatrixSpace<Form, Cmpt, Mrows, Ncols>::identity()
 {
     static_assert(Mrows == Ncols, "Matrix is not square");
-    // CoDiPack4OpenFOAM
     msType result(pTraits< Foam::MatrixSpace<Form, Cmpt, Mrows, Ncols> >::zero);
 
     for (direction i=0; i<Ncols; ++i)

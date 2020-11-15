@@ -32,7 +32,7 @@ template<class Cmpt>
 inline Foam::SymmTensor<Cmpt>::SymmTensor()
 {}
 
-// CoDiPack4OpenFOAM
+// CoDiPack4OpenFOAM TODO commented out for now
 /*
 template<class Cmpt>
 inline Foam::SymmTensor<Cmpt>::SymmTensor(const Foam::zero)

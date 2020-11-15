@@ -28,7 +28,7 @@ License
 inline Foam::cubicEqn::cubicEqn()
 {}
 
-// CoDiPack4OpenFOAM
+// CoDiPack4OpenFOAM TODO commented out for now
 /*
 inline Foam::cubicEqn::cubicEqn(const Foam::zero)
 :

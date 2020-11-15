@@ -73,7 +73,6 @@ Foam::Time::writeControlNames
 Foam::Time::fmtflags Foam::Time::format_(Foam::Time::general);
 
 int Foam::Time::precision_(6);
-// CoDiPack4OpenFOAM
 const int Foam::Time::maxPrecision_((3 - log10(SMALL)).getValue());
 
 Foam::word Foam::Time::controlDictName("controlDict");
@@ -117,7 +116,6 @@ void Foam::Time::adjustDeltaT()
         if (nSteps < labelMax)
         {
             // nSteps can be < 1 so make sure at least 1
-            // CoDiPack4OpenFOAM
             label nStepsToNextWrite = max(1, round(nSteps.getValue()));
 
             scalar newDeltaT = timeToNextWrite/nStepsToNextWrite;
@@ -1136,7 +1134,6 @@ Foam::Time& Foam::Time::operator++()
 
         switch (writeControl_)
         {
-            // CoDiPack4OpenFOAM
             case wcTimeStep:
                 writeTime_ = !(timeIndex_ % label(writeInterval_.getValue()));
             break;
@@ -1146,7 +1143,6 @@ Foam::Time& Foam::Time::operator++()
             {
                 const label writeIndex = label
                 (
-                    // CoDiPack4OpenFOAM
                     (
                     ((value() - startTime_) + 0.5*deltaT_)
                   / writeInterval_.getValue()
@@ -1165,7 +1161,6 @@ Foam::Time& Foam::Time::operator++()
             {
                 const label writeIndex = label
                 (
-                    // CoDiPack4OpenFOAM
                     returnReduce(static_cast<doubleScalar>(elapsedCpuTime()), maxOp<doubleScalar>()).getValue()
                   / writeInterval_.getValue()
                 );
@@ -1181,7 +1176,6 @@ Foam::Time& Foam::Time::operator++()
             {
                 const label writeIndex = label
                 (
-                    // CoDiPack4OpenFOAM
                     (
                     returnReduce(scalar(elapsedClockTime()), maxOp<scalar>())
                   / writeInterval_

@@ -66,14 +66,12 @@ const Foam::labelTensor Foam::labelTensor::vsType::min
 template<>
 const Foam::labelTensor Foam::labelTensor::vsType::rootMax
 (
-    // CoDiPack4OpenFOAM
     labelTensor::uniform(sqrt(scalar(labelMax)).getValue())
 );
 
 template<>
 const Foam::labelTensor Foam::labelTensor::vsType::rootMin
 (
-    // CoDiPack4OpenFOAM
     labelTensor::uniform(-sqrt(scalar(labelMax)).getValue())
 );
 

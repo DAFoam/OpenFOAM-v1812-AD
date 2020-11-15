@@ -152,7 +152,7 @@ Ostream& operator<<(Ostream& os, const Scalar val);
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 // Standard C++ transcendental functions
-// CoDiPack4OpenFOAM TODO: might need to comment this out to use the sqrt function in CoDiPack
+//CoDiPack4OpenFOAM NOTE Need to comment these functions out since they cause seg fault in codi
 // transFunc(sqrt)
 
 transFunc(cbrt)
@@ -381,12 +381,10 @@ inline Scalar sqrtSumSqr(const Scalar a, const Scalar b)
 
     if (maga > magb)
     {
-        // CoDiPack4OpenFOAM
         return maga*sqrt(Scalar(1.0) + sqr(magb/maga));
     }
     else
     {
-        // CoDiPack4OpenFOAM
         return magb < ScalarVSMALL ? Scalar(0.0) : magb*sqrt(Scalar(1.0) + sqr(maga/magb));
     }
 }
@@ -425,7 +423,6 @@ struct compareOp<Scalar>
 
     Scalar operator()(const Scalar& a, const Scalar& b) const
     {
-        // CoDiPack4OpenFOAM
         return (mag(a - b) <= tolerance) ? Scalar(0) : Scalar(a - b);
     }
 };

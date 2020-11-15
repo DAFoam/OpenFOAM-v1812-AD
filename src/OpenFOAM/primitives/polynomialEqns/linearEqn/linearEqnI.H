@@ -28,7 +28,7 @@ License
 inline Foam::linearEqn::linearEqn()
 {}
 
-// CoDiPack4OpenFOAM
+// CoDiPack4OpenFOAM TODO commented out for now
 /*
 inline Foam::linearEqn::linearEqn(const Foam::zero)
 :

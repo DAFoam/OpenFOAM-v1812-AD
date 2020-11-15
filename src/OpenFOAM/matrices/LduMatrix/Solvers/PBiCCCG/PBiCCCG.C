@@ -196,6 +196,7 @@ Foam::PBiCCCG<Type, DType, LUType>::solve
         );
     }
 
+    // CoDiPack4OpenFOAM TODO This could be slow, we need to fix this!
     solverPerf.nIterations() = pTraits<typename pTraits<Type>::labelType>::zero;
     for(label i=0;i<nIter;i++)
     {

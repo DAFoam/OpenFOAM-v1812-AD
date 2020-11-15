@@ -172,7 +172,6 @@ namespace Foam
 
     template<> inline double argList::get<double>(const label index) const
     {
-        // CoDiPack4OpenFOAM
         return Foam::readDouble(args_[index]).getValue();
     }
 
@@ -194,7 +193,6 @@ namespace Foam
 
     template<> inline double argList::opt<double>(const word& optName) const
     {
-        // CoDiPack4OpenFOAM
         return Foam::readDouble(options_[optName]).getValue();
     }
 

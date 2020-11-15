@@ -30,7 +30,6 @@ License
 
 Foam::TimeState::TimeState()
 :
-    // CoDiPack4OpenFOAM
     dimensionedScalar(Time::timeName(0), dimTime, scalar(0.0)),
     timeIndex_(0),
     writeTimeIndex_(0),
