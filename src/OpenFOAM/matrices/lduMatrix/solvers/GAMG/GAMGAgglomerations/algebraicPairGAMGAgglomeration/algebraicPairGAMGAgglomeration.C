@@ -58,7 +58,7 @@ Foam::algebraicPairGAMGAgglomeration::algebraicPairGAMGAgglomeration
     {
 	const scalarField& tmp1 = mag(matrix.upper());
 	const scalarField& tmp2 = mag(matrix.lower());
-        agglomerate(mesh, max(tmp1, tmp2));
+        agglomerate(mesh, max(mag(matrix.upper()), mag(matrix.lower())));
     }
     else
     {
