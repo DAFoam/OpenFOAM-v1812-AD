@@ -43,16 +43,7 @@ void Foam::fanFvPatchField<Foam::scalar>::calcFanJump()
         const fvsPatchField<scalar>& phip =
             patch().patchField<surfaceScalarField, scalar>(phi);
 
-    scalarField tmpW = phip/patch().magSf();
-    forAll(tmpW, idxI)
-    {
-        if(tmpW[idxI] < 0.0)
-        {
-            tmpW[idxI] = scalar(0.0);
-        }
-
-    }
-        scalarField Un = tmpW;
+        scalarField Un(max(phip/patch().magSf(), scalar(0)));	
         if (uniformJump_)
         {
             scalar area = gSum(patch().magSf());

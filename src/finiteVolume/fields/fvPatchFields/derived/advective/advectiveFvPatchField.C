@@ -208,16 +208,7 @@ void Foam::advectiveFvPatchField<Type>::updateCoeffs()
 
     // Calculate the advection speed of the field wave
     // If the wave is incoming set the speed to 0.
-    scalarField tmpW = advectionSpeed();
-    forAll(tmpW, idxI)
-    {
-	if(tmpW[idxI] < 0.0)
-	{
-	    tmpW[idxI] = scalar(0.0);
-	}
-
-    }
-    const scalarField w = tmpW;
+    const scalarField w(Foam::max(advectionSpeed(), scalar(0)));
 
     // Calculate the field wave coefficient alpha (See notes)
     const scalarField alpha(w*deltaT*this->patch().deltaCoeffs());

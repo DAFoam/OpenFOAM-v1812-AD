@@ -228,7 +228,6 @@ Foam::pressureControl::pressureControl
 
 bool Foam::pressureControl::limit(volScalarField& p) const
 {
-	/*
     if (limitMaxP_ || limitMinP_)
     {
         if (limitMaxP_)
@@ -255,7 +254,7 @@ bool Foam::pressureControl::limit(volScalarField& p) const
 
         return true;
     }
-*/
+
     return false;
 }
 

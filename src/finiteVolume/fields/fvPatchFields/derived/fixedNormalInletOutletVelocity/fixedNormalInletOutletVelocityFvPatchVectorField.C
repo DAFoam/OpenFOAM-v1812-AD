@@ -30,7 +30,6 @@ License
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-/*
 Foam::fixedNormalInletOutletVelocityFvPatchVectorField::
 fixedNormalInletOutletVelocityFvPatchVectorField
 (
@@ -46,9 +45,9 @@ fixedNormalInletOutletVelocityFvPatchVectorField
         fvPatchVectorField::New("fixedValue", p, iF)
     )
 {
-    refValue() = Zero;
-    refGrad() = Zero;
-    valueFraction() = Zero;
+    refValue() = vector::zero;
+    refGrad() = vector::zero;
+    ASSIGN_ZERO_FIELD(valueFraction(), symmTensor::zero);
 }
 
 
@@ -71,8 +70,8 @@ fixedNormalInletOutletVelocityFvPatchVectorField
     patchType() = dict.lookupOrDefault<word>("patchType", word::null);
     fvPatchVectorField::operator=(vectorField("value", dict, p.size()));
     refValue() = normalVelocity();
-    refGrad() = Zero;
-    valueFraction() = Zero;
+    refGrad() = vector::zero;
+    ASSIGN_ZERO_FIELD(valueFraction(), symmTensor::zero);
 }
 
 
@@ -215,5 +214,4 @@ namespace Foam
         fixedNormalInletOutletVelocityFvPatchVectorField
     );
 }
-*/
 // ************************************************************************* //

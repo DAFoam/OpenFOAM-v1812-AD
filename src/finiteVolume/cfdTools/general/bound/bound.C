@@ -32,7 +32,6 @@ License
 Foam::volScalarField&
 Foam::bound(volScalarField& vsf, const dimensionedScalar& lowerBound)
 {
-	/*
     const scalar minVsf = min(vsf).value();
 
     if (minVsf < lowerBound.value())
@@ -56,7 +55,6 @@ Foam::bound(volScalarField& vsf, const dimensionedScalar& lowerBound)
 
         vsf.boundaryFieldRef() = max(vsf.boundaryField(), lowerBound.value());
     }
-*/
     return vsf;
 }
 

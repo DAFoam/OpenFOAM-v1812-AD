@@ -32,6 +32,9 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// CodiPack4OpenFOAM NOTE we need to add Foam:: for Func to prevent
+// calling Func from system header
+
 #define UNARY_FUNCTION(ReturnType, Type1, Func, Dfunc)                         \
                                                                                \
 TEMPLATE                                                                       \

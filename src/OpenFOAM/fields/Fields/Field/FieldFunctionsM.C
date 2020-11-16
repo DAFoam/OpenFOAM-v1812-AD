@@ -28,6 +28,16 @@ License
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// CodiPack4OpenFOAM NOTE we need to add Foam:: for Func to prevent
+// calling Func from system header
+
+// assign zeros to a field
+#define ASSIGN_ZERO_FIELD(Field, Zero) \
+forAll(Field, idxI)                    \
+{                                      \
+    Field[idxI] = Zero;                \
+}
+
 #define UNARY_FUNCTION(ReturnType, Type, Func)                                 \
                                                                                \
 TEMPLATE                                                                       \
@@ -40,7 +50,7 @@ TEMPLATE                                                                       \
 tmp<Field<ReturnType>> Func(const UList<Type>& f)                              \
 {                                                                              \
     tmp<Field<ReturnType>> tRes(new Field<ReturnType>(f.size()));              \
-    Func(tRes.ref(), f);                                                       \
+    Foam::Func(tRes.ref(), f);                                                       \
     return tRes;                                                               \
 }                                                                              \
                                                                                \
@@ -48,7 +58,7 @@ TEMPLATE                                                                       \
 tmp<Field<ReturnType>> Func(const tmp<Field<Type>>& tf)                        \
 {                                                                              \
     tmp<Field<ReturnType>> tRes = reuseTmp<ReturnType, Type>::New(tf);         \
-    Func(tRes.ref(), tf());                                                    \
+    Foam::Func(tRes.ref(), tf());                                                    \
     tf.clear();                                                                \
     return tRes;                                                               \
 }
@@ -68,7 +78,7 @@ TEMPLATE                                                                       \
 tmp<Field<ReturnType>> operator Op(const UList<Type>& f)                       \
 {                                                                              \
     tmp<Field<ReturnType>> tRes(new Field<ReturnType>(f.size()));              \
-    OpFunc(tRes.ref(), f);                                                     \
+    Foam::OpFunc(tRes.ref(), f);                                                     \
     return tRes;                                                               \
 }                                                                              \
                                                                                \
@@ -76,16 +86,13 @@ TEMPLATE                                                                       \
 tmp<Field<ReturnType>> operator Op(const tmp<Field<Type>>& tf)                 \
 {                                                                              \
     tmp<Field<ReturnType>> tRes = reuseTmp<ReturnType, Type>::New(tf);         \
-    OpFunc(tRes.ref(), tf());                                                  \
+    Foam::OpFunc(tRes.ref(), tf());                                                  \
     tf.clear();                                                                \
     return tRes;                                                               \
 }
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-// CodiPack4OpenFOAM NOTE we need to add Foam:: for Func to prevent
-// calling Func from system header
 
 #define BINARY_FUNCTION(ReturnType, Type1, Type2, Func)                        \
                                                                                \
