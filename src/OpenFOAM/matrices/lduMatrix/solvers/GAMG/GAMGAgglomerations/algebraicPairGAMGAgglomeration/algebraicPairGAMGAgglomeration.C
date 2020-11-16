@@ -56,22 +56,9 @@ Foam::algebraicPairGAMGAgglomeration::algebraicPairGAMGAgglomeration
 
     if (matrix.hasLower())
     {
-/*
-        scalarField weightField(matrix.lower().size());
-        forAll(weightField, idxI)
-        {
-            if (mag(matrix.upper()[idxI]) > mag(matrix.lower()[idxI]))
-            {
-                weightField[idxI] = mag(matrix.upper()[idxI]);
-            }
-            else
-            {
-                weightField[idxI] = mag(matrix.lower()[idxI]);
-            }
-        }
-        agglomerate(mesh, weightField);
-*/
-        agglomerate(mesh, max(mag(matrix.upper()), mag(matrix.lower())));
+	const scalarField& tmp1 = mag(matrix.upper());
+	const scalarField& tmp2 = mag(matrix.upper());
+        agglomerate(mesh, max(tmp1, tmp2));
     }
     else
     {
