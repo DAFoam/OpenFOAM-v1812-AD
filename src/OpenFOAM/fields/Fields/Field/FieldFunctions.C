@@ -605,6 +605,19 @@ TMP_UNARY_FUNCTION(Type, gAverage)
 
 #undef TMP_UNARY_FUNCTION
 
+// CodiPack4OpenFOAM these functions are for functions with const Type& 
+inline scalar max(const scalar& valA, const scalar& valB)
+{
+    if (valA > valB) return valA;
+    else return valB;
+}
+
+inline scalar min(const scalar& valA, const scalar& valB)
+{
+    if (valA < valB) return valA;
+    else return valB;
+}
+
 
 BINARY_FUNCTION(Type, Type, Type, max)
 BINARY_FUNCTION(Type, Type, Type, min)

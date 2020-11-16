@@ -99,7 +99,7 @@ void Func                                                                      \
 {                                                                              \
     TFOR_ALL_F_OP_FUNC_F_F                                                     \
     (                                                                          \
-        ReturnType, res, =, ::Foam::Func, Type1, f1, Type2, f2                 \
+        ReturnType, res, =, Foam::Func, Type1, f1, Type2, f2                   \
     )                                                                          \
 }                                                                              \
                                                                                \

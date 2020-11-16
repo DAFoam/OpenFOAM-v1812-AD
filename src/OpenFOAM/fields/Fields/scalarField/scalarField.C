@@ -115,6 +115,7 @@ BINARY_OPERATOR(scalar, scalar, scalar, /, divide)
 
 BINARY_TYPE_OPERATOR_SF(scalar, scalar, scalar, /, divide)
 
+// CodiPack4OpenFOAM NOTE these functions are for const Type& inputs
 inline scalar pow(const scalar& val, const scalar& p)
 {
     return pow(val, p);
@@ -143,16 +144,6 @@ inline scalar cos(const scalar& val)
 inline scalar sin(const scalar& val)
 {
     return sin(val);
-}
-
-inline scalar max(const scalar& valA, const scalar& valB)
-{
-    return max(valA, valB);
-}
-
-inline scalar min(const scalar& valA, const scalar& valB)
-{
-    return min(valA, valB);
 }
 
 BINARY_FUNCTION(scalar, scalar, scalar, pow)
