@@ -360,7 +360,6 @@ void Foam::sumReduce
     reduce(twoScalars, sumOp<vector2D>(), tag, communicator);
 
     Value = twoScalars.x();
-    // CoDiPack4OpenFOAM 
     Count = twoScalars.y().getValue();
 }
 
