@@ -44,10 +44,7 @@ inletOutletTotalTemperatureFvPatchScalarField
     gamma_(0.0),
     T0_(p.size(), 0.0)
 {
-    forAll(this->refValue(), idxI)
-    {
-        this->refValue()[idxI] = pTraits<scalar>::zero;
-    } 
+    ASSIGN_ZERO_FIELD(this->refValue(), pTraits<scalar>::zero);
     this->refGrad() = pTraits<scalar>::zero;
     this->valueFraction() = 0.0;
 }
@@ -88,10 +85,7 @@ inletOutletTotalTemperatureFvPatchScalarField
 
     this->phiName_ = dict.lookupOrDefault<word>("phi", "phi");
 
-    forAll(this->refValue(), idxI)
-    {
-        this->refValue()[idxI] = pTraits<scalar>::zero;
-    }
+    ASSIGN_ZERO_FIELD(this->refValue(), pTraits<scalar>::zero);
     if (dict.found("value"))
     {
         fvPatchField<scalar>::operator=

@@ -173,7 +173,7 @@ Foam::PatchFunction1Types::Sampled<Type>::value
         // Restore tag
         UPstream::msgType() = oldTag;
         newValues.setSize(this->mappedPatchBase::patch_.size());
-	forAll(newValues, idxI) newValues[idxI] = pTraits<Type>::zero;
+        ASSIGN_ZERO_FIELD(newValues, pTraits<Type>::zero);
         return this->transform(tnewValues);
     }
 
