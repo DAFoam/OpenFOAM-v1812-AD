@@ -47,7 +47,7 @@ Foam::Function1Types::Constant<Type>::Constant
 )
 :
     Function1<Type>(entryName),
-    value_(pTraints<Type>::zero)
+    value_(pTraits<Type>::zero)
 {
     Istream& is(dict.lookup(entryName));
     word entryType(is);
