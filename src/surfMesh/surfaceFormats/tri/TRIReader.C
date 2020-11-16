@@ -213,6 +213,7 @@ Foam::label Foam::fileFormats::TRIReader::mergePointsMap
 ) const
 {
     return 1;
+    // CoDiPack4OpenFOAM TODO Need to fix this!
     /*
     return Foam::mergePoints
     (
