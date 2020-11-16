@@ -27,7 +27,6 @@ License
 #include "mathematicalConstants.H"
 
 using namespace Foam::constant;
-/*
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 Foam::label Foam::eddy::Gamma2Values[] = {1, 2, 3, 4, 5, 6, 7, 8};
@@ -50,7 +49,7 @@ bool Foam::eddy::setScales
     static const scalar gamma2VsC2[8] =
         {2, 1.875, 1.737, 1.75, 0.91, 0.825, 0.806, 1.5};
 
-    scalar gamma = Foam::sqrt(scalar(gamma2));
+    scalar gamma = sqrt(scalar(gamma2));
 
     // c2 coefficient retrieved from array
     scalar c2 = gamma2VsC2[gamma2 - 1];
@@ -351,6 +350,4 @@ Foam::label Foam::eddy::writeSurfaceOBJ
 
     return nEddyPoints;
 }
-*/
-
 // ************************************************************************* //

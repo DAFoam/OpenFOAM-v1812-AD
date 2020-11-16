@@ -31,7 +31,7 @@ License
 #include "gravityMeshObject.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-/*
+
 Foam::phaseHydrostaticPressureFvPatchScalarField::
 phaseHydrostaticPressureFvPatchScalarField
 (
@@ -43,7 +43,7 @@ phaseHydrostaticPressureFvPatchScalarField
     phaseFraction_("alpha"),
     rho_(0.0),
     pRefValue_(0.0),
-    pRefPoint_(Zero)
+    pRefPoint_(vector::zero)
 {
     this->refValue() = 0.0;
     this->refGrad() = 0.0;
@@ -195,5 +195,5 @@ namespace Foam
         phaseHydrostaticPressureFvPatchScalarField
     );
 }
-*/
+
 // ************************************************************************* //

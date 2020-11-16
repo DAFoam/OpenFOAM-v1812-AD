@@ -30,7 +30,7 @@ License
 #include "gravityMeshObject.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-/*
+
 Foam::prghPressureFvPatchScalarField::
 prghPressureFvPatchScalarField
 (
@@ -159,7 +159,7 @@ void Foam::prghPressureFvPatchScalarField::updateCoeffs()
     (
         mag(g.value()) > SMALL
       ? g & (cmptMag(g.value())/mag(g.value()))*hRef
-      : dimensionedScalar("ghRef", g.dimensions()*dimLength, 0)
+      : dimensionedScalar("ghRef", g.dimensions()*dimLength, scalar(0))
     );
 
     operator==(p_ - rhop*((g.value() & patch().Cf()) - ghRef.value()));
@@ -187,5 +187,5 @@ namespace Foam
         prghPressureFvPatchScalarField
     );
 }
-*/
+
 // ************************************************************************* //

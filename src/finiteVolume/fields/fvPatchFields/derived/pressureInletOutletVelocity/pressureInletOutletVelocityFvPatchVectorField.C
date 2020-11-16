@@ -42,7 +42,7 @@ pressureInletOutletVelocityFvPatchVectorField
 {
     refValue() = vector::zero;
     refGrad() = vector::zero;
-    //valueFraction() = Zero;
+    ASSIGN_ZERO_FIELD(valueFraction(), symmTensor::zero);
 }
 
 
@@ -92,7 +92,7 @@ pressureInletOutletVelocityFvPatchVectorField
     }
 
     refGrad() = vector::zero;
-    //valueFraction() = Zero;
+    ASSIGN_ZERO_FIELD(valueFraction(), symmTensor::zero);
 }
 
 

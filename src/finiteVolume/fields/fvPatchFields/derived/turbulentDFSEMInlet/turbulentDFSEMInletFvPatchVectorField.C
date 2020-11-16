@@ -32,7 +32,6 @@ License
 #include "globalIndex.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
-/*
 Foam::label Foam::turbulentDFSEMInletFvPatchVectorField::seedIterMax_ = 1000;
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
@@ -326,7 +325,7 @@ void Foam::turbulentDFSEMInletFvPatchVectorField::initialiseEddyBox()
     const scalarField& magSf = patch().magSf();
 
     //const scalarField cellDx(Foam::sqrt(magSf));
-    const scalarField cellDx(max(Foam::sqrt(magSf), 2/patch().deltaCoeffs()));
+    const scalarField cellDx(max(sqrt(magSf), 2/patch().deltaCoeffs()));
 
     // Inialise eddy box extents
     forAll(*this, faceI)
@@ -1035,7 +1034,7 @@ void Foam::turbulentDFSEMInletFvPatchVectorField::updateCoeffs()
         // Apply second part of normalisation coefficient
         // Note: factor of 2 required to match reference stresses?
         const scalar FACTOR = 2;
-        const scalar c = FACTOR*Foam::sqrt(10*v0_)/Foam::sqrt(scalar(nEddy_));
+        const scalar c = FACTOR*sqrt(10*v0_)/sqrt(scalar(nEddy_));
 
         // In parallel, need to collect all eddies that will interact with
         // local faces
@@ -1154,6 +1153,5 @@ namespace Foam
        turbulentDFSEMInletFvPatchVectorField
    );
 }
-*/
 
 // ************************************************************************* //
