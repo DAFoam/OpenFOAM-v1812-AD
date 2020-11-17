@@ -165,7 +165,7 @@ Foam::interfaceProperties::interfaceProperties
     deltaN_
     (
         "deltaN",
-        1e-8/pow(average(alpha1.mesh().V()), 1.0/3.0)
+        1e-8/pow(average(alpha1.mesh().V()), scalar(1.0/3.0))
     ),
 
     alpha1_(alpha1),

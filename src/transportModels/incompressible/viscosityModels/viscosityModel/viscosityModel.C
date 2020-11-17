@@ -57,7 +57,7 @@ Foam::viscosityModel::viscosityModel
 
 Foam::tmp<Foam::volScalarField> Foam::viscosityModel::strainRate() const
 {
-    return sqrt(2.0)*mag(symm(fvc::grad(U_)));
+    return codi::sqrt(2.0)*mag(symm(fvc::grad(U_)));
 }
 
 
