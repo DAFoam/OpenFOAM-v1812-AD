@@ -61,6 +61,9 @@ Foam::PBiCICG<Type, DType, LUType>::solve(Field<Type>& psi) const
 
     label nIter = 0;
 
+    typename pTraits<Type>::labelType nIterLabelType = 
+        pTraits<typename pTraits<Type>::labelType>::zero;
+
     label nCells = psi.size();
 
     Type* __restrict__ psiPtr = psi.begin();
@@ -187,6 +190,8 @@ Foam::PBiCICG<Type, DType, LUType>::solve(Field<Type>& psi) const
             solverPerf.finalResidual() =
                 cmptDivide(gSumCmptMag(rA), normFactor);
 
+            nIterLabelType += pTraits<typename pTraits<Type>::labelType>::one;
+
         } while
         (
             nIter++ < this->maxIter_
@@ -194,12 +199,7 @@ Foam::PBiCICG<Type, DType, LUType>::solve(Field<Type>& psi) const
         );
     }
 
-    // CoDiPack4OpenFOAM TODO This could be slow, we need to fix this!
-    solverPerf.nIterations() = pTraits<typename pTraits<Type>::labelType>::zero;
-    for(label i=0;i<nIter;i++)
-    {
-        solverPerf.nIterations() += pTraits<typename pTraits<Type>::labelType>::one;
-    }
+    solverPerf.nIterations() = nIterLabelType;
 
     return solverPerf;
 }
