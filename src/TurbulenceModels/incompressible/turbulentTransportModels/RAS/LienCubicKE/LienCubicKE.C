@@ -50,7 +50,7 @@ tmp<volScalarField> LienCubicKE::fMu() const
 
     return
         (scalar(1) - exp(-Anu_*yStar))
-       *(scalar(1) + (2*kappa_/(pow(Cmu_, 0.75))/(yStar + SMALL)));
+       *(scalar(1) + (scalar(2)*kappa_/(pow(Cmu_, scalar(0.75)))/(yStar + SMALL)));
 }
 
 
@@ -67,11 +67,11 @@ tmp<volScalarField> LienCubicKE::E(const volScalarField& f2) const
     const volScalarField yStar(sqrt(k_)*y_/nu());
     const volScalarField le
     (
-        kappa_*y_/(scalar(1) + (2*kappa_/(pow(Cmu_, 0.75))/(yStar + SMALL)))
+        kappa_*y_/(scalar(1) + (scalar(2)*kappa_/(pow(Cmu_, scalar(0.75)))/(yStar + SMALL)))
     );
 
     return
-        (Ceps2_*pow(Cmu_, 0.75))
+        (Ceps2_*pow(Cmu_, scalar(0.75)))
        *(f2*sqrt(k_)*epsilon_/le)*exp(-AE_*sqr(yStar));
 }
 
@@ -87,8 +87,8 @@ void LienCubicKE::correctNonlinearStress(const volTensorField& gradU)
     volSymmTensorField S(symm(gradU));
     volTensorField W(skew(gradU));
 
-    volScalarField sBar((k_/epsilon_)*sqrt(2.0)*mag(S));
-    volScalarField wBar((k_/epsilon_)*sqrt(2.0)*mag(W));
+    volScalarField sBar((k_/epsilon_)*codi::sqrt(2.0)*mag(S));
+    volScalarField wBar((k_/epsilon_)*codi::sqrt(2.0)*mag(W));
 
     volScalarField Cmu((2.0/3.0)/(Cmu1_ + sBar + Cmu2_*wBar));
     volScalarField fMu(this->fMu());

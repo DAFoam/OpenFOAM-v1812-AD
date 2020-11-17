@@ -56,8 +56,8 @@ void ShihQuadraticKE::correctNonlinearStress(const volTensorField& gradU)
     volSymmTensorField S(symm(gradU));
     volTensorField W(skew(gradU));
 
-    volScalarField sBar((k_/epsilon_)*sqrt(2.0)*mag(S));
-    volScalarField wBar((k_/epsilon_)*sqrt(2.0)*mag(W));
+    volScalarField sBar((k_/epsilon_)*codi::sqrt(2.0)*mag(S));
+    volScalarField wBar((k_/epsilon_)*codi::sqrt(2.0)*mag(W));
 
     volScalarField Cmu((2.0/3.0)/(Cmu1_ + sBar + Cmu2_*wBar));
 

@@ -71,7 +71,7 @@ tmp<volScalarField> LienLeschziner::E(const volScalarField& f2) const
     );
 
     return
-        (Ceps2_*pow(Cmu_, 0.75))
+        (Ceps2_*pow(Cmu_, scalar(0.75)))
        *(f2*sqrt(k_)*epsilon_/le)*exp(-AE_*sqr(yStar));
 }
 

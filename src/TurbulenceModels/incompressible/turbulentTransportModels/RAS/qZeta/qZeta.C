@@ -147,7 +147,7 @@ qZeta::qZeta
     ),
 
     qMin_("qMin", sqrt(kMin_)),
-    zetaMin_("zetaMin", epsilonMin_/(2*qMin_)),
+    zetaMin_("zetaMin", epsilonMin_/(scalar(2)*qMin_)),
 
     k_
     (
@@ -255,8 +255,8 @@ void qZeta::correct()
       + fvm::div(phi_, zeta_)
       - fvm::laplacian(DzetaEff(), zeta_)
      ==
-        (2.0*C1_ - 1)*G*zeta_/q_
-      - fvm::SuSp((2.0*C2_*f2() - dimensionedScalar(1.0))*zeta_/q_, zeta_)
+        (scalar(2.0)*C1_ - 1)*G*zeta_/q_
+      - fvm::SuSp((scalar(2.0)*C2_*f2() - dimensionedScalar(1.0))*zeta_/q_, zeta_)
       + E
     );
 

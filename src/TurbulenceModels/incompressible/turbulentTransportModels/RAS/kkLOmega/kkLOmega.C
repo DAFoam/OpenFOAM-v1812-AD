@@ -623,9 +623,9 @@ void kkLOmega::correct()
     tmp<volTensorField> tgradU(fvc::grad(U_));
     const volTensorField& gradU = tgradU();
 
-    const volScalarField Omega(sqrt(2.0)*mag(skew(gradU)));
+    const volScalarField Omega(codi::sqrt(2.0)*mag(skew(gradU)));
 
-    const volScalarField S2(2.0*magSqr(dev(symm(gradU))));
+    const volScalarField S2(scalar(2.0)*magSqr(dev(symm(gradU))));
 
     const volScalarField ktS(fSS(Omega)*fw*kt_);
 

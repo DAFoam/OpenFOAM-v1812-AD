@@ -27,6 +27,9 @@ License
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// CodiPack4OpenFOAM NOTE we need to add Foam:: for Func to prevent
+// calling Func from system header
+
 #define UNARY_FUNCTION(ReturnType, Type1, Func, Dfunc)                         \
                                                                                \
 TEMPLATE                                                                       \
@@ -50,7 +53,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
         )                                                                      \
     );                                                                         \
                                                                                \
-    Func(tRes.ref().field(), df1.field());                                     \
+    Foam::Func(tRes.ref().field(), df1.field());                               \
                                                                                \
     tRes.ref().oriented() = Dfunc(df1.oriented());                             \
                                                                                \
@@ -75,7 +78,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
         )                                                                      \
     );                                                                         \
                                                                                \
-    Func(tRes.ref().field(), df1.field());                                     \
+    Foam::Func(tRes.ref().field(), df1.field());                               \
                                                                                \
     tRes.ref().oriented() = Dfunc(df1.oriented());                             \
                                                                                \
@@ -171,7 +174,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
         )                                                                      \
     );                                                                         \
                                                                                \
-    Func(tRes.ref().field(), df1.field(), df2.field());                        \
+    Foam::Func(tRes.ref().field(), df1.field(), df2.field());                  \
                                                                                \
     tRes.ref().oriented() = Func(df1.oriented(), df2.oriented());              \
                                                                                \
@@ -197,7 +200,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
         )                                                                      \
     );                                                                         \
                                                                                \
-    Func(tRes.ref().field(), df1.field(), df2.field());                        \
+    Foam::Func(tRes.ref().field(), df1.field(), df2.field());                  \
                                                                                \
     tRes.ref().oriented() = Func(df1.oriented(), df2.oriented());              \
                                                                                \
@@ -225,7 +228,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
         )                                                                      \
     );                                                                         \
                                                                                \
-    Func(tRes.ref().field(), df1.field(), df2.field());                        \
+    Foam::Func(tRes.ref().field(), df1.field(), df2.field());                  \
                                                                                \
     tRes.ref().oriented() = Func(df1.oriented(), df2.oriented());              \
                                                                                \
@@ -256,7 +259,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
         )                                                                      \
     );                                                                         \
                                                                                \
-    Func(tRes.ref().field(), df1.field(), df2.field());                        \
+    Foam::Func(tRes.ref().field(), df1.field(), df2.field());                  \
                                                                                \
     tRes.ref().oriented() = Func(df1.oriented(), df2.oriented());              \
                                                                                \
@@ -293,7 +296,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
         )                                                                      \
     );                                                                         \
                                                                                \
-    Func(tRes.ref().field(), dt1.value(), df2.field());                        \
+    Foam::Func(tRes.ref().field(), dt1.value(), df2.field());                  \
                                                                                \
     tRes.ref().oriented() = df2.oriented();                                    \
                                                                                \
@@ -307,7 +310,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
     const DimensionedField<Type2, GeoMesh>& df2                                \
 )                                                                              \
 {                                                                              \
-    return Func(dimensioned<Type1>(t1), df2);                                  \
+    return Foam::Func(dimensioned<Type1>(t1), df2);                            \
 }                                                                              \
                                                                                \
                                                                                \
@@ -330,7 +333,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
         )                                                                      \
     );                                                                         \
                                                                                \
-    Func(tRes.ref().field(), dt1.value(), df2.field());                        \
+    Foam::Func(tRes.ref().field(), dt1.value(), df2.field());                  \
                                                                                \
     tRes.ref().oriented() = df2.oriented();                                    \
                                                                                \
@@ -346,7 +349,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
     const tmp<DimensionedField<Type2, GeoMesh>>& tdf2                          \
 )                                                                              \
 {                                                                              \
-    return Func(dimensioned<Type2>(t1), tdf2);                                 \
+    return Foam::Func(dimensioned<Type2>(t1), tdf2);                           \
 }
 
 
@@ -374,7 +377,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
         )                                                                      \
     );                                                                         \
                                                                                \
-    Func(tRes.ref().field(), df1.field(), dt2.value());                        \
+    Foam::Func(tRes.ref().field(), df1.field(), dt2.value());                  \
                                                                                \
     tRes.ref().oriented() = df1.oriented();                                    \
                                                                                \
@@ -388,7 +391,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
     const Type2& t2                                                            \
 )                                                                              \
 {                                                                              \
-    return Func(df1, dimensioned<Type2>(t2));                                  \
+    return Foam::Func(df1, dimensioned<Type2>(t2));                            \
 }                                                                              \
                                                                                \
                                                                                \
@@ -411,7 +414,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
         )                                                                      \
     );                                                                         \
                                                                                \
-    Func(tRes.ref().field(), df1.field(), dt2.value());                        \
+    Foam::Func(tRes.ref().field(), df1.field(), dt2.value());                  \
                                                                                \
     tRes.ref().oriented() = df1.oriented();                                    \
                                                                                \
@@ -427,7 +430,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
     const Type2& t2                                                            \
 )                                                                              \
 {                                                                              \
-    return Func(tdf1, dimensioned<Type2>(t2));                                 \
+    return Foam::Func(tdf1, dimensioned<Type2>(t2));                           \
 }
 
 

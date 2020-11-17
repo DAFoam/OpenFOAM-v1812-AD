@@ -139,7 +139,7 @@ public:
         {
             return
                 pow(2.0*flm_/fmm_, 2.0/3.0)
-              * pow(this->Ce_, -2.0/3.0)
+              * pow(this->Ce_, scalar(-2.0/3.0))
               * sqr(this->delta())*magSqr(dev(symm(gradU)));
         }
 
