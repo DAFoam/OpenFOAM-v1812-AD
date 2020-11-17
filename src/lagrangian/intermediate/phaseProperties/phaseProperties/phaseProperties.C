@@ -63,7 +63,7 @@ void Foam::phaseProperties::reorder(const wordList& specieNames)
     if (names_.size() != names0.size())
     {
         Y_.setSize(names_.size());
-        Y_ = 0;
+        Y_ = scalar(0);
     }
 
     // Set the mass-fraction for each specie in the list to the corresponding

@@ -404,8 +404,8 @@ Foam::InjectedParticleDistributionInjection<CloudType>::parcelsToInject
     const label targetParcels =
         round
         (
-            scalar(startTime_.size()*parcelsPerInjector_)
-           *targetVolume/this->volumeTotal_
+            (scalar(startTime_.size()*parcelsPerInjector_)
+           *targetVolume/this->volumeTotal_).getValue()
         );
 
     const label nParcels = targetParcels - nParcelsInjected_;

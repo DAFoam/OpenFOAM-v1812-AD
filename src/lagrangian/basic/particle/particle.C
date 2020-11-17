@@ -711,10 +711,10 @@ Foam::scalar Foam::particle::trackToStationaryTri
 
     // Calculate the hit fraction
     label iH = -1;
-    scalar muH = std::isnormal(detA) && detA <= 0 ? VGREAT : 1/detA;
+    scalar muH = std::isnormal(detA.getValue()) && detA <= 0 ? VGREAT : 1/detA;
     for (label i = 0; i < 4; ++ i)
     {
-        if (std::isnormal(Tx1[i]) && Tx1[i] < 0)
+        if (std::isnormal(Tx1[i].getValue()) && Tx1[i] < 0)
         {
             scalar mu = - y0[i]/Tx1[i];
 
@@ -772,7 +772,7 @@ Foam::scalar Foam::particle::trackToStationaryTri
     // Set the proportion of the track that has been completed
     stepFraction_ += fraction*muH*detA;
 
-    return iH != -1 ? 1 - muH*detA : 0;
+    return iH != -1 ? scalar(1 - muH*detA) : scalar(0);
 }
 
 
@@ -824,7 +824,7 @@ Foam::scalar Foam::particle::trackToMovingTri
 
     // Calculate the hit fraction
     label iH = -1;
-    scalar muH = std::isnormal(detA[0]) && detA[0] <= 0 ? VGREAT : 1/detA[0];
+    scalar muH = std::isnormal(detA[0].getValue()) && detA[0] <= 0 ? VGREAT : 1/detA[0];
     for (label i = 0; i < 4; ++i)
     {
         const Roots<3> mu = hitEqn[i].roots();
@@ -858,7 +858,7 @@ Foam::scalar Foam::particle::trackToMovingTri
     // distance and therefore can be of the static mesh type. This has not yet
     // been implemented.
     const scalar detAH = detAEqn.value(muH);
-    if (!std::isnormal(detAH))
+    if (!std::isnormal(detAH.getValue()))
     {
         FatalErrorInFunction
             << "A moving tet collapsed onto a particle. This is not supported. "
@@ -900,7 +900,7 @@ Foam::scalar Foam::particle::trackToMovingTri
             << "End global coordinates = " << position() << endl;
     }
 
-    return iH != -1 ? 1 - muH*detA[0] : 0;
+    return iH != -1 ? scalar(1 - muH*detA[0]) : scalar(0);
 }
 
 

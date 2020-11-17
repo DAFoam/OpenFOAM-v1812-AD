@@ -120,7 +120,7 @@ void Foam::SprayParcel<ParcelType>::calc
 
         mu_ = liquids.mu(td.pc(), T1, X1);
 
-        scalar d1 = this->d()*cbrt(rho0/rho1);
+        scalar d1 = this->d()*cbrt(scalar(rho0/rho1));
         this->d() = d1;
 
         if (liquidCore() > 0.5)

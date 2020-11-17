@@ -684,9 +684,9 @@ void Foam::moleculeCloud::initialiseMolecules
 
                 point latticeAnchor
                 (
-                    label(latticeMid.x() + 0.5*sign(latticeMid.x())),
-                    label(latticeMid.y() + 0.5*sign(latticeMid.y())),
-                    label(latticeMid.z() + 0.5*sign(latticeMid.z()))
+                    label((latticeMid.x() + 0.5*sign(latticeMid.x())).getValue()),
+                    label((latticeMid.y() + 0.5*sign(latticeMid.y())).getValue()),
+                    label((latticeMid.z() + 0.5*sign(latticeMid.z())).getValue())
                 );
 
                 anchor += (R & (latticeCellShape & latticeAnchor));

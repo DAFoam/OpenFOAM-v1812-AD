@@ -76,7 +76,7 @@ Foam::pairPotential::pairPotential
 
 void Foam::pairPotential::setLookupTables()
 {
-    label N = label((rCut_ - rMin_)/dr_) + 1;
+    label N = label(((rCut_ - rMin_)/dr_).getValue()) + 1;
 
     forceLookup_.setSize(N);
 
@@ -95,7 +95,7 @@ Foam::scalar Foam::pairPotential::force(const scalar r) const
 {
     scalar k_rIJ = (r - rMin_)/dr_;
 
-    label k = label(k_rIJ);
+    label k = label(k_rIJ.getValue());
 
     if (k < 0)
     {
@@ -132,7 +132,7 @@ Foam::scalar Foam::pairPotential::energy(const scalar r) const
 {
     scalar k_rIJ = (r - rMin_)/dr_;
 
-    label k = label(k_rIJ);
+    label k = label(k_rIJ.getValue());
 
     if (k < 0)
     {

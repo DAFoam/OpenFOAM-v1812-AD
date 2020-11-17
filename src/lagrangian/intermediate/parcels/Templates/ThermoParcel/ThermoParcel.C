@@ -292,7 +292,7 @@ Foam::scalar Foam::ThermoParcel<ParcelType>::calcHeatTransfer
     ancp /= m*Cp_;
 
     // Integrate to find the new parcel temperature
-    const scalar deltaT = cloud.TIntegrator().delta(T_, dt, acp + ancp, bcp);
+    const scalar deltaT = cloud.TIntegrator().delta(T_, dt, scalar(acp + ancp), bcp);
     const scalar deltaTncp = ancp*dt;
     const scalar deltaTcp = deltaT - deltaTncp;
 

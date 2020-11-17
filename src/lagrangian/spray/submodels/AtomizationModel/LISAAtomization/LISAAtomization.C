@@ -232,14 +232,14 @@ void Foam::LISAAtomization<CloudType>::update
 
         scalar J = 0.5*traveledTime*hSheet;
 
-        tau = pow(3.0*cTau_, 2.0/3.0)*cbrt(J*sigma/(sqr(Q)*pow4(Urel)*rho));
+        tau = pow(3.0*cTau_, 2.0/3.0)*cbrt(scalar(J*sigma/(sqr(Q)*pow4(Urel)*rho)));
 
         dL = sqrt(4.0*d/k);
     }
 
     scalar kL = 1.0/(dL*sqrt(0.5 + 1.5 * mu/sqrt(rho*sigma*dL)));
 
-    scalar dD = cbrt(3.0*constant::mathematical::pi*sqr(dL)/kL);
+    scalar dD = cbrt(scalar(3.0*constant::mathematical::pi*sqr(dL)/kL));
 
     scalar atmPressure = 1.0e+5;
 

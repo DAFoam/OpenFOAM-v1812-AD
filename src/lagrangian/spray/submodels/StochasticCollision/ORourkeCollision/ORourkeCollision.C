@@ -86,7 +86,7 @@ void Foam::ORourkeCollision<CloudType>::collide
                             p1.Cp() = liquids_.Cp(td.pc(), p1.T(), X);
                             p1.sigma() = liquids_.sigma(td.pc(), p1.T(), X);
                             p1.mu() = liquids_.mu(td.pc(), p1.T(), X);
-                            p1.d() = cbrt(6.0*m1/(p1.nParticle()*p1.rho()*pi));
+                            p1.d() = cbrt(scalar(6.0*m1/(p1.nParticle()*p1.rho()*pi)));
                         }
 
                         if (m2 > ROOTVSMALL)
@@ -97,7 +97,7 @@ void Foam::ORourkeCollision<CloudType>::collide
                             p2.Cp() = liquids_.Cp(td.pc(), p2.T(), X);
                             p2.sigma() = liquids_.sigma(td.pc(), p2.T(), X);
                             p2.mu() = liquids_.mu(td.pc(), p2.T(), X);
-                            p2.d() = cbrt(6.0*m2/(p2.nParticle()*p2.rho()*pi));
+                            p2.d() = cbrt(scalar(6.0*m2/(p2.nParticle()*p2.rho()*pi)));
                         }
                     }
                 }

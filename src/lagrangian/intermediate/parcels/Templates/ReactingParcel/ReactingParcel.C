@@ -346,7 +346,7 @@ void Foam::ReactingParcel<ParcelType>::correctSurfaceValues
     {
         const scalar W = thermo.carrier().W(i);
         const scalar sqrtW = sqrt(W);
-        const scalar cbrtW = cbrt(W);
+        const scalar cbrtW = cbrt(scalar(W));
 
         rhos += Xs[i]*W;
         mus += Ys[i]*sqrtW*thermo.carrier().mu(i, td.pc(), T);
@@ -479,7 +479,7 @@ void Foam::ReactingParcel<ParcelType>::calc
     }
     else
     {
-        this->d_ = cbrt(mass1/this->rho_*6.0/pi);
+        this->d_ = cbrt(scalar(mass1/this->rho_*6.0/pi));
     }
 
     // Remove the particle when mass falls below minimum threshold

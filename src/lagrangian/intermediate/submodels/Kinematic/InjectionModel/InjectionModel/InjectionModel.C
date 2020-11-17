@@ -269,7 +269,7 @@ Foam::InjectionModel<CloudType>::InjectionModel(CloudType& owner)
     nInjections_(this->template getModelProperty<label>("nInjections")),
     parcelsAddedTotal_
     (
-        this->template getModelProperty<scalar>("parcelsAddedTotal")
+        this->template getModelProperty<scalar>("parcelsAddedTotal").getValue()
     ),
     parcelBasis_(pbNumber),
     nParticleFixed_(0.0),
@@ -296,20 +296,20 @@ Foam::InjectionModel<CloudType>::InjectionModel
     massTotal_(0),
     massFlowRate_(owner.db().time(), "massFlowRate"),
     massInjected_(this->template getModelProperty<scalar>("massInjected")),
-    nInjections_(this->template getModelProperty<scalar>("nInjections")),
+    nInjections_(this->template getModelProperty<scalar>("nInjections").getValue()),
     parcelsAddedTotal_
     (
-        this->template getModelProperty<scalar>("parcelsAddedTotal")
+        this->template getModelProperty<scalar>("parcelsAddedTotal").getValue()
     ),
     parcelBasis_(pbNumber),
-    nParticleFixed_(0.0),
+    nParticleFixed_(scalar(0.0)),
     time0_(owner.db().time().value()),
     timeStep0_(this->template getModelProperty<scalar>("timeStep0")),
     minParticlesPerParcel_
     (
         this->coeffDict().lookupOrDefault("minParticlesPerParcel", scalar(1))
     ),
-    delayedVolume_(0.0),
+    delayedVolume_(scalar(0.0)),
     injectorID_(this->coeffDict().lookupOrDefault("injectorID", -1))
 {
     // Provide some info

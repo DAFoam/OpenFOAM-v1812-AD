@@ -176,7 +176,7 @@ bool Foam::ReitzKHRT<CloudType>::update
         // the RT breakup creates diameter/lambdaRT new droplets
         tc = -GREAT;
         scalar nDrops = d/lambdaRT;
-        d = cbrt(d3/nDrops);
+        d = cbrt(scalar(d3/nDrops));
     }
     // otherwise check for KH breakup
     else if (dc < d)
@@ -215,8 +215,8 @@ bool Foam::ReitzKHRT<CloudType>::update
                 if (br3)
                 {
                     D3 = sqrt(D3);
-                    scalar ue3 = cbrt(-qe3 + D3);
-                    scalar ve3 = cbrt(-qe3 - D3);
+                    scalar ue3 = cbrt(scalar(-qe3 + D3));
+                    scalar ve3 = cbrt(scalar(-qe3 - D3));
                     scalar dParenDrops = ue3 + ve3 - be3/3.;
                     scalar mc = nParticle*(pow3(d) - pow3(dParenDrops));
                     scalar nChildDrops = mc/pow3(dc);

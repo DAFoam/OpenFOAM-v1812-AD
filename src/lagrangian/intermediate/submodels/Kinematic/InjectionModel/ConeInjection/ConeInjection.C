@@ -48,7 +48,7 @@ Foam::ConeInjection<CloudType>::ConeInjection
     duration_(this->coeffDict().getScalar("duration")),
     parcelsPerInjector_
     (
-        this->coeffDict().getScalar("parcelsPerInjector")
+        this->coeffDict().getScalar("parcelsPerInjector").getValue()
     ),
     flowRateProfile_
     (
@@ -200,7 +200,7 @@ Foam::label Foam::ConeInjection<CloudType>::parcelsToInject
         const scalar volumeFraction = targetVolume/this->volumeTotal_;
 
         const label targetParcels =
-            ceil(positionAxis_.size()*parcelsPerInjector_*volumeFraction);
+            (ceil(positionAxis_.size()*parcelsPerInjector_*volumeFraction)).getValue();
 
         return targetParcels - nInjected_;
     }

@@ -281,7 +281,7 @@ void Foam::FreeStream<CloudType>::inflow()
                 scalar& faceAccumulator = pFA[i][pFI];
 
                 // Number of whole particles to insert
-                label nI = max(label(faceAccumulator), 0);
+                label nI = max(label(faceAccumulator.getValue()), 0);
 
                 // Add another particle with a probability proportional to the
                 // remainder of taking the integer part of faceAccumulator

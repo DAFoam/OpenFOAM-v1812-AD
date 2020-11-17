@@ -213,7 +213,7 @@ void Foam::distribution::add(const scalar valueToAdd)
 {
     iterator iter(this->begin());
 
-    label n = label(valueToAdd/binWidth_) - label(neg(valueToAdd/binWidth_));
+    label n = label((valueToAdd/binWidth_).getValue()) - label((neg(valueToAdd/binWidth_)).getValue());
 
     iter = find(n);
 
@@ -311,7 +311,7 @@ Foam::List<Foam::Pair<Foam::scalar>> Foam::distribution::normalisedShifted
 
     label lowestNewKey = label
     (
-        lowestOldBin + 0.5*sign(lowestOldBin)
+        (lowestOldBin + 0.5*sign(lowestOldBin)).getValue()
     );
 
     scalar interpolationStartDirection =

@@ -574,7 +574,7 @@ void Foam::ReactingMultiphaseParcel<ParcelType>::calcDevolatilisation
 
         // Note: hardcoded gaseous diffusivities for now
         // TODO: add to carrier thermo
-        const scalar beta = sqr(cbrt(15.0) + cbrt(15.0));
+        const scalar beta = sqr(cbrt(scalar(15.0)) + cbrt(scalar(15.0)));
 
         forAll(dMassDV, i)
         {

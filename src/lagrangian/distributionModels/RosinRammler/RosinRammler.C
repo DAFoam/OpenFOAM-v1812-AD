@@ -77,7 +77,7 @@ Foam::scalar Foam::distributionModels::RosinRammler::sample() const
 {
     scalar K = 1.0 - exp(-pow((maxValue_ - minValue_)/d_, n_));
     scalar y = rndGen_.sample01<scalar>();
-    scalar x = minValue_ + d_*::pow(-log(1.0 - y*K), 1.0/n_);
+    scalar x = minValue_ + d_*pow(-log(1.0 - y*K), 1.0/n_);
     return x;
 }
 
