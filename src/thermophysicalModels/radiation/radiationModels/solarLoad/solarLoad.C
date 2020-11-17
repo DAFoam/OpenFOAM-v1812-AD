@@ -219,9 +219,9 @@ void Foam::radiation::solarLoad::updateSkyDiffusiveRadiation
                         // Ground reflected
                         Er =
                             solarCalc_.directSolarRad()
-                          * (solarCalc_.C() + Foam::sin(solarCalc_.beta()))
+                          * (solarCalc_.C() + sin(solarCalc_.beta()))
                           * solarCalc_.groundReflectivity()
-                          * (1.0 - cosEpsilon)/scalar(2.0);
+                          * (1.0 - cosEpsilon)/2.0;
                     }
 
                     const label cellI = cellIds[faceI];

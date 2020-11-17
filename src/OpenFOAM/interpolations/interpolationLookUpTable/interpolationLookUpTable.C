@@ -82,7 +82,7 @@ Foam::label Foam::interpolationLookUpTable<Type>::index
         (
             Foam::max
             (
-                label((indice - min_[i])/delta_[i]),
+                label(((indice - min_[i])/delta_[i]).getValue()),
                 0
             ),
             dim_[i]
