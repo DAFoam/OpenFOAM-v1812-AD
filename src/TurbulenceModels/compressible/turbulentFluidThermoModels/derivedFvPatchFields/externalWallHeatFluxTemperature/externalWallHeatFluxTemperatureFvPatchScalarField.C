@@ -68,8 +68,8 @@ externalWallHeatFluxTemperatureFvPatchScalarField
     thicknessLayers_(),
     kappaLayers_()
 {
-    refValue() = 0;
-    refGrad() = 0;
+    refValue() = scalar(0);
+    refGrad() = scalar(0);
     valueFraction() = 1;
 }
 
@@ -160,7 +160,7 @@ externalWallHeatFluxTemperatureFvPatchScalarField
     {
         // Start from user entered data. Assume fixedValue.
         refValue() = *this;
-        refGrad() = 0;
+        refGrad() = scalar(0);
         valueFraction() = 1;
     }
 }
@@ -366,16 +366,16 @@ void Foam::externalWallHeatFluxTemperatureFvPatchScalarField::updateCoeffs()
         case fixedPower:
         {
             refGrad() = (Q_/gSum(patch().magSf()) + qr)/kappa(Tp);
-            refValue() = 0;
-            valueFraction() = 0;
+            refValue() = scalar(0);
+            valueFraction() = scalar(0);
 
             break;
         }
         case fixedHeatFlux:
         {
             refGrad() = (q_ + qr)/kappa(Tp);
-            refValue() = 0;
-            valueFraction() = 0;
+            refValue() = scalar(0);
+            valueFraction() = scalar(0);
 
             break;
         }
@@ -427,7 +427,7 @@ void Foam::externalWallHeatFluxTemperatureFvPatchScalarField::updateCoeffs()
                 this->kappa(Tp)*patch().deltaCoeffs()
             );
 
-            refGrad() = 0;
+            refGrad() = scalar(0);
 
             forAll(Tp, i)
             {
