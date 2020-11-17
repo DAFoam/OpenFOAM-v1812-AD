@@ -27,10 +27,8 @@ License
 #include "CoBlended.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-/*
 namespace Foam
 {
     makeSurfaceInterpolationScheme(CoBlended);
 }
-*/
 // ************************************************************************* //

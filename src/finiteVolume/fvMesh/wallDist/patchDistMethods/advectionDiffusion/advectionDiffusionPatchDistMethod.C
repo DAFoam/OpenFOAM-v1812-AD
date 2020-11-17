@@ -133,7 +133,7 @@ bool Foam::patchDistMethods::advectionDiffusion::correct
         fvScalarMatrix yEqn
         (
             fvm::div(yPhi, y)
-          //- fvm::Sp(fvc::div(yPhi), y)
+          - fvm::Sp(fvc::div(yPhi), y)
           - epsilon_*y*fvm::laplacian(y)
          ==
             dimensionedScalar("1", dimless, 1.0)
@@ -147,7 +147,7 @@ bool Foam::patchDistMethods::advectionDiffusion::correct
     // Need to stabilise the y for overset meshes since the holed cells
     // keep the initial value (0.0) so the gradient of that will be
     // zero as well. Turbulence models do not like zero wall distance.
-    // y.max(SMALL);
+    y.max(SMALL);
 
     // Only calculate n if the field is defined
     if (notNull(n))

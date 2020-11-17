@@ -34,7 +34,6 @@ License
 //     faceCellsLeastSquares,
 //     centredCFCCellToCellStencilObject
 // )
-/*
 makeLeastSquaresGradScheme
 (
     pointCellsLeastSquares,
@@ -46,5 +45,4 @@ makeLeastSquaresGradScheme
     edgeCellsLeastSquares,
     centredCECCellToCellStencilObject
 )
-*/
 // ************************************************************************* //

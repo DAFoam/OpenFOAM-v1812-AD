@@ -29,7 +29,6 @@ License
 #include "SuperBee.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-/*
 namespace Foam
 {
     makeLimitedMultivariateSurfaceInterpolationScheme
@@ -38,6 +37,5 @@ namespace Foam
         SuperBeeLimiter
     )
 }
-*/
 
 // ************************************************************************* //

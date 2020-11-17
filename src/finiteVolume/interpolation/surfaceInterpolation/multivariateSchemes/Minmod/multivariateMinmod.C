@@ -29,7 +29,6 @@ License
 #include "Minmod.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-/*
 namespace Foam
 {
     makeLimitedMultivariateSurfaceInterpolationScheme
@@ -38,5 +37,4 @@ namespace Foam
         MinmodLimiter
     )
 }
-*/
 // ************************************************************************* //

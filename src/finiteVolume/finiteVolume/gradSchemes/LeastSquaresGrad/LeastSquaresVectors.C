@@ -64,7 +64,8 @@ void Foam::fv::LeastSquaresVectors<Stencil>::calcLeastSquaresVectors()
 
     // Create the base form of the dd-tensor
     // including components for the "empty" directions
-    symmTensor dd0(sqr((Vector<label>::one - mesh.geometricD())/2));
+    vector tmpVec = Vector<label>::one - mesh.geometricD();
+    symmTensor dd0(sqr(tmpVec/scalar(2)));
 
     forAll(vectors_, i)
     {

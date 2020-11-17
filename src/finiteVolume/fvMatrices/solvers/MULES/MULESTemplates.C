@@ -331,16 +331,15 @@ void Foam::MULES::limiter
         }
     }
 
-    // TODO
-    //psiMaxn = min(psiMaxn + extremaCoeff*(psiMax - psiMin), psiMax);
-    //psiMinn = max(psiMinn - extremaCoeff*(psiMax - psiMin), psiMin);
+    psiMaxn = min(psiMaxn + extremaCoeff*(psiMax - psiMin), psiMax);
+    psiMinn = max(psiMinn - extremaCoeff*(psiMax - psiMin), psiMin);
 
     if (smoothLimiter > SMALL)
     {
-        //psiMaxn =
-        //    min(smoothLimiter*psiIf + (1.0 - smoothLimiter)*psiMaxn, psiMax);
-        //psiMinn =
-        //    max(smoothLimiter*psiIf + (1.0 - smoothLimiter)*psiMinn, psiMin);
+        psiMaxn =
+            min(smoothLimiter*psiIf + (1.0 - smoothLimiter)*psiMaxn, psiMax);
+        psiMinn =
+            max(smoothLimiter*psiIf + (1.0 - smoothLimiter)*psiMinn, psiMin);
     }
 
     if (mesh.moving())
