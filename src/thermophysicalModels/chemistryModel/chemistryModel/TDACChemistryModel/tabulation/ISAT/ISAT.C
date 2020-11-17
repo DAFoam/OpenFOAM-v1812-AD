@@ -57,16 +57,16 @@ Foam::chemistryTabulationMethods::ISAT<CompType, ThermoType>::ISAT
         this->coeffsDict_.lookupOrDefault
         (
             "maxDepthFactor",
-            (chemisTree_.maxNLeafs() - 1)
-           /(log(scalar(chemisTree_.maxNLeafs()))/log(2.0))
+           scalar( (chemisTree_.maxNLeafs() - 1)
+           /(log(scalar(chemisTree_.maxNLeafs()))/codi::log(2.0)))
         )
     ),
     minBalanceThreshold_
     (
         this->coeffsDict_.lookupOrDefault
         (
-            "minBalanceThreshold",0.1*chemisTree_.maxNLeafs()
-        )
+            "minBalanceThreshold",scalar(0.1*chemisTree_.maxNLeafs())
+        ).getValue()
     ),
     MRURetrieve_(this->coeffsDict_.lookupOrDefault("MRURetrieve", false)),
     maxMRUSize_(this->coeffsDict_.lookupOrDefault("maxMRUSize", 0)),
@@ -331,7 +331,7 @@ Foam::chemistryTabulationMethods::ISAT<CompType, ThermoType>::cleanAndBalance()
     (
         chemisTree_.size() > minBalanceThreshold_
      && chemisTree_.depth() >
-        maxDepthFactor_*log(scalar(chemisTree_.size()))/log(2.0)
+        maxDepthFactor_*log(scalar(chemisTree_.size()))/codi::log(2.0)
     )
     {
         chemisTree_.balance();

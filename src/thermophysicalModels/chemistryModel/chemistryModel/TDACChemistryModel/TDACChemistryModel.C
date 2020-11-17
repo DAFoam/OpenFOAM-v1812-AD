@@ -64,7 +64,7 @@ Foam::TDACChemistryModel<ReactionThermo, ThermoType>::TDACChemistryModel
             IOobject::AUTO_WRITE
         ),
         this->mesh(),
-        dimensionedScalar(dimless, Zero)
+        dimensionedScalar(thermo.phasePropertyName("TabulationResults"), dimless, pTraits<scalar>::zero)
     )
 {
     basicSpecieMixture& composition = this->thermo().composition();
@@ -160,7 +160,7 @@ void Foam::TDACChemistryModel<ReactionThermo, ThermoType>::omega
     scalar pf, cf, pr, cr;
     label lRef, rRef;
 
-    dcdt = Zero;
+    ASSIGN_ZERO_FIELD(dcdt, pTraits<scalar>::zero);
 
     forAll(this->reactions_, i)
     {
@@ -429,7 +429,10 @@ void Foam::TDACChemistryModel<ReactionThermo, ThermoType>::jacobian
         }
     }
 
-    dfdc = Zero;
+    label MSize = dfdc.size(); 
+    for(label i=0;i<MSize;i++) {
+        for(label j=0;j<MSize;j++) {
+            dfdc(i,j) = pTraits<scalar>::zero;}}
 
     forAll(this->reactions_, ri)
     {
@@ -687,7 +690,7 @@ Foam::scalar Foam::TDACChemistryModel<ReactionThermo, ThermoType>::solve
         scalar timeLeft = deltaT[celli];
 
         // Not sure if this is necessary
-        Rphiq = Zero;
+        ASSIGN_ZERO_FIELD(Rphiq, pTraits<scalar>::zero);
 
         clockTime_.timeIncrement();
 
@@ -851,7 +854,7 @@ Foam::scalar Foam::TDACChemistryModel<ReactionThermo, ThermoType>::solve
         }
     }
 
-    if (reduced && nAvg && mechRed_->log())
+    if (reduced && nAvg != 0 && mechRed_->log())
     {
         // Write average number of species
         nActiveSpeciesFile_()

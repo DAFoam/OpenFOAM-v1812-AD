@@ -165,7 +165,7 @@ void Foam::chemistryReductionMethods::DRG<CompType, ThermoType>::reduceMechanism
             label curID = wAID[id];
 
             // Absolute value of aggregated value
-            scalar curwA = ((wA[id]>=0) ? wA[id] : -wA[id]);
+            scalar curwA = ((wA[id]>=0) ? scalar(wA[id]) : scalar(-wA[id]));
 
             List<bool> deltaBi(this->nSpecie_, false);
             FIFOStack<label> usedIndex;

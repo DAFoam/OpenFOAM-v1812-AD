@@ -69,7 +69,7 @@ bool Foam::radiation::solarLoad::updateHitFaces()
             {
                 label updateIndex = label
                 (
-                    mesh_.time().value()/solarCalc_.sunTrackingUpdateInterval()
+                    (mesh_.time().value()/solarCalc_.sunTrackingUpdateInterval()).getValue()
                 );
 
                 if (updateIndex > updateTimeIndex_)
@@ -221,7 +221,7 @@ void Foam::radiation::solarLoad::updateSkyDiffusiveRadiation
                             solarCalc_.directSolarRad()
                           * (solarCalc_.C() + Foam::sin(solarCalc_.beta()))
                           * solarCalc_.groundReflectivity()
-                          * (1.0 - cosEpsilon)/2.0;
+                          * (1.0 - cosEpsilon)/scalar(2.0);
                     }
 
                     const label cellI = cellIds[faceI];

@@ -80,7 +80,7 @@ Foam::StandardChemistryModel<ReactionThermo, ThermoType>::StandardChemistryModel
                     IOobject::NO_WRITE
                 ),
                 this->mesh(),
-                dimensionedScalar(dimMass/dimVolume/dimTime, Zero)
+                dimensionedScalar("RR." + Y_[fieldi].name(), dimMass/dimVolume/dimTime, pTraits<scalar>::zero)
             )
         );
     }
@@ -112,7 +112,7 @@ void Foam::StandardChemistryModel<ReactionThermo, ThermoType>::omega
     scalar pf, cf, pr, cr;
     label lRef, rRef;
 
-    dcdt = Zero;
+    ASSIGN_ZERO_FIELD(dcdt, pTraits<scalar>::zero);
 
     forAll(reactions_, i)
     {
@@ -340,7 +340,10 @@ void Foam::StandardChemistryModel<ReactionThermo, ThermoType>::jacobian
         c_[i] = max(c[i], 0.0);
     }
 
-    dfdc = Zero;
+    label MSize = dfdc.size();
+    for(label i=0;i<MSize;i++) {
+        for(label j=0;j<MSize;j++) {
+            dfdc(i,j) = pTraits<scalar>::zero;}}
 
     // Length of the first argument must be nSpecie_
     omega(c_, T, p, dcdt);
@@ -557,7 +560,7 @@ Foam::StandardChemistryModel<ReactionThermo, ThermoType>::Qdot() const
                 false
             ),
             this->mesh_,
-            dimensionedScalar(dimEnergy/dimVolume/dimTime, Zero)
+            dimensionedScalar("Qdot", dimEnergy/dimVolume/dimTime, pTraits<scalar>::zero)
         )
     );
 
@@ -603,7 +606,7 @@ Foam::StandardChemistryModel<ReactionThermo, ThermoType>::calculateRR
                 IOobject::NO_WRITE
             ),
             this->mesh(),
-            dimensionedScalar(dimMass/dimVolume/dimTime, Zero)
+            dimensionedScalar("RR", dimMass/dimVolume/dimTime, pTraits<scalar>::zero)
         )
     );
 

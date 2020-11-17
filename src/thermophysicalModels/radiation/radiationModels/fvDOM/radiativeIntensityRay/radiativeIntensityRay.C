@@ -115,24 +115,24 @@ Foam::radiation::radiativeIntensityRay::radiativeIntensityRay
     ILambda_(nLambda),
     myRayId_(rayId)
 {
-    scalar sinTheta = Foam::sin(theta);
-    scalar cosTheta = Foam::cos(theta);
-    scalar sinPhi = Foam::sin(phi);
-    scalar cosPhi = Foam::cos(phi);
+    scalar sinTheta = sin(theta);
+    scalar cosTheta = cos(theta);
+    scalar sinPhi = sin(phi);
+    scalar cosPhi = cos(phi);
 
-    omega_ = 2.0*sinTheta*Foam::sin(deltaTheta/2.0)*deltaPhi;
+    omega_ = 2.0*sinTheta*sin(deltaTheta/2.0)*deltaPhi;
     d_ = vector(sinTheta*sinPhi, sinTheta*cosPhi, cosTheta);
     dAve_ = vector
     (
         sinPhi
-       *Foam::sin(0.5*deltaPhi)
-       *(deltaTheta - Foam::cos(2.0*theta)
-       *Foam::sin(deltaTheta)),
+       *sin(0.5*deltaPhi)
+       *(deltaTheta - cos(2.0*theta)
+       *sin(deltaTheta)),
         cosPhi
-       *Foam::sin(0.5*deltaPhi)
-       *(deltaTheta - Foam::cos(2.0*theta)
-       *Foam::sin(deltaTheta)),
-        0.5*deltaPhi*Foam::sin(2.0*theta)*Foam::sin(deltaTheta)
+       *sin(0.5*deltaPhi)
+       *(deltaTheta - cos(2.0*theta)
+       *sin(deltaTheta)),
+        0.5*deltaPhi*sin(2.0*theta)*sin(deltaTheta)
     );
 
     if (mesh_.nSolutionD() == 2)
@@ -143,8 +143,8 @@ Foam::radiation::radiativeIntensityRay::radiativeIntensityRay
         // dAve for 2D
         dAve_ = vector
         (
-            2*sinPhi*Foam::sin(0.5*deltaPhi),
-            2*cosPhi*Foam::sin(0.5*deltaPhi),
+            2*sinPhi*sin(0.5*deltaPhi),
+            2*cosPhi*sin(0.5*deltaPhi),
             0
         );
 

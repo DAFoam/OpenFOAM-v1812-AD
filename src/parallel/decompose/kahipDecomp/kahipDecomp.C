@@ -126,7 +126,7 @@ Foam::label Foam::kahipDecomp::decomposeSerial
         cellWeights.setSize(cWeights.size());
         forAll(cellWeights, i)
         {
-            cellWeights[i] = int(cWeights[i]/minWeights);
+            cellWeights[i] = int((cWeights[i]/minWeights).getValue());
         }
     }
 

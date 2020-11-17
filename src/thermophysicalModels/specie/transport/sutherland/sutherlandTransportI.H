@@ -115,7 +115,7 @@ inline Foam::scalar Foam::sutherlandTransport<Thermo>::mu
     const scalar T
 ) const
 {
-    return As_*::sqrt(T)/(1.0 + Ts_/T);
+    return As_*sqrt(T)/(1.0 + Ts_/T);
 }
 
 

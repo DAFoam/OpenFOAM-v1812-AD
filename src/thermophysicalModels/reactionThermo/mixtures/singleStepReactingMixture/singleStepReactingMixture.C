@@ -61,17 +61,16 @@ void Foam::singleStepReactingMixture<ThermoType>::massAndAirStoichRatios()
     const label O2Index = this->species()["O2"];
     const scalar Wu = this->speciesData()[fuelIndex_].W();
 
-    stoicRatio_ =
+    stoicRatio_ = static_cast<dimensionedScalar>(
        (this->speciesData()[inertIndex_].W()
       * specieStoichCoeffs_[inertIndex_]
       + this->speciesData()[O2Index].W()
       * mag(specieStoichCoeffs_[O2Index]))
-      / (Wu*mag(specieStoichCoeffs_[fuelIndex_]));
+      / static_cast<dimensionedScalar>(Wu*mag(specieStoichCoeffs_[fuelIndex_])));
 
-    s_ =
-        (this->speciesData()[O2Index].W()
+    s_ = static_cast<dimensionedScalar>((this->speciesData()[O2Index].W()
       * mag(specieStoichCoeffs_[O2Index]))
-      / (Wu*mag(specieStoichCoeffs_[fuelIndex_]));
+      / static_cast<dimensionedScalar>(Wu*mag(specieStoichCoeffs_[fuelIndex_])));
 
     Info<< "stoichiometric air-fuel ratio :" << stoicRatio_.value() << endl;
 
@@ -196,11 +195,11 @@ Foam::singleStepReactingMixture<ThermoType>::singleStepReactingMixture
 )
 :
     reactingMixture<ThermoType>(thermoDict, mesh, phaseName),
-    stoicRatio_(dimensionedScalar("stoicRatio", dimless, Zero)),
-    s_(dimensionedScalar("s", dimless, Zero)),
-    qFuel_(dimensionedScalar("qFuel", sqr(dimVelocity), Zero)),
-    specieStoichCoeffs_(this->species_.size(), Zero),
-    Yprod0_(this->species_.size(), Zero),
+    stoicRatio_(dimensionedScalar("stoicRatio", dimless, pTraits<scalar>::zero)),
+    s_(dimensionedScalar("s", dimless, pTraits<scalar>::zero)),
+    qFuel_(dimensionedScalar("qFuel", sqr(dimVelocity), pTraits<scalar>::zero)),
+    specieStoichCoeffs_(this->species_.size(), pTraits<scalar>::zero),
+    Yprod0_(this->species_.size(), pTraits<scalar>::zero),
     fres_(Yprod0_.size()),
     inertIndex_(this->species()[thermoDict.get<word>("inertSpecie")]),
     fuelIndex_(this->species()[thermoDict.get<word>("fuel")]),
@@ -226,7 +225,7 @@ Foam::singleStepReactingMixture<ThermoType>::singleStepReactingMixture
                 (
                     header,
                     mesh,
-                    dimensionedScalar(dimless, Zero)
+                    dimensionedScalar("fres_" + this->species()[fresI], dimless, pTraits<scalar>::zero)
                 )
             );
         }

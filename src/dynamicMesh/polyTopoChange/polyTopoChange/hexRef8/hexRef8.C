@@ -507,13 +507,13 @@ Foam::scalar Foam::hexRef8::getLevel0EdgeLength() const
 
         if (lenSqr < GREAT2)
         {
-            level0Size = Foam::sqrt(lenSqr)*(1<<levelI);
+            level0Size = sqrt(lenSqr)*(1<<levelI);
 
             if (debug)
             {
                 Pout<< "hexRef8::getLevel0EdgeLength() :"
                     << " For level:" << levelI
-                    << " have edgeLen:" << Foam::sqrt(lenSqr)
+                    << " have edgeLen:" << sqrt(lenSqr)
                     << " with equivalent level0 len:" << level0Size
                     << endl;
             }

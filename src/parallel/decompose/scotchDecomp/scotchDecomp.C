@@ -301,7 +301,7 @@ Foam::label Foam::scotchDecomp::decomposeSerial
 
         forAll(velotab, i)
         {
-            velotab[i] = int((cWeights[i]/minWeights - 1)*rangeScale) + 1;
+            velotab[i] = int(((cWeights[i]/minWeights - 1)*rangeScale).getValue()) + 1;
         }
     }
 

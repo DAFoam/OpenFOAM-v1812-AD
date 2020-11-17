@@ -141,7 +141,7 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::Cp(scalar p, scalar T) const
     const scalar M = (sqr(Z) + 2*B*Z - sqr(B))/(Z - B);
     const scalar N = ap*B/(b*RR);
 
-    const scalar root2 = sqrt(2.0);
+    const scalar root2 = codi::sqrt(2.0);
 
     return
     (
@@ -203,7 +203,7 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::Z
     const scalar a = 0.45724*sqr(RR*Tc_)/Pc_;
     const scalar b = 0.07780*RR*Tc_/Pc_;
     const scalar kappa = 0.37464 + 1.54226*omega_ - 0.26992*sqr(omega_);
-    const scalar alpha = sqr(1 + kappa*(1 - sqrt(Tr)));
+    const scalar alpha = sqr(scalar(1) + kappa*(scalar(1) - sqrt(Tr)));
 
     const scalar A = a*alpha*p/sqr(RR*T);
     const scalar B = b*p/(RR*T);
@@ -222,7 +222,7 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::Z
 
     if (D <= 0)
     {
-        const scalar th = ::acos(Rl/sqrt(-Q3));
+        const scalar th = acos(Rl/sqrt(-Q3));
         const scalar qm = 2*sqrt(-Q);
         const scalar r1 = qm*cos(th/3.0) - a2/3.0;
         const scalar r2 =

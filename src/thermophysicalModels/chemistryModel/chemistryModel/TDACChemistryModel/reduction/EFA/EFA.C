@@ -274,7 +274,7 @@ void Foam::chemistryReductionMethods::EFA<CompType, ThermoType>::reduceMechanism
         scalar cumFlux(0.0);
         scalar threshold((1-this->tolerance())*CFlux);
         label startPoint(0);
-        label nbToSort(static_cast<label> (nbPairs*sortPart_));
+        label nbToSort(static_cast<label> ((nbPairs*sortPart_).getValue()));
         nbToSort = max(nbToSort,1);
 
         bool cumRespected(false);
@@ -336,7 +336,7 @@ void Foam::chemistryReductionMethods::EFA<CompType, ThermoType>::reduceMechanism
         scalar cumFlux(0.0);
         scalar threshold((1-this->tolerance())*HFlux);
         label startPoint(0);
-        label nbToSort(static_cast<label> (nbPairs*sortPart_));
+        label nbToSort(static_cast<label> ((nbPairs*sortPart_).getValue()));
         nbToSort = max(nbToSort,1);
 
         bool cumRespected(false);
@@ -398,7 +398,7 @@ void Foam::chemistryReductionMethods::EFA<CompType, ThermoType>::reduceMechanism
         scalar cumFlux(0.0);
         scalar threshold((1-this->tolerance())*OFlux);
         label startPoint(0);
-        label nbToSort(static_cast<label> (nbPairs*sortPart_));
+        label nbToSort(static_cast<label> ((nbPairs*sortPart_).getValue()));
         nbToSort = max(nbToSort,1);
 
         bool cumRespected(false);
@@ -460,7 +460,7 @@ void Foam::chemistryReductionMethods::EFA<CompType, ThermoType>::reduceMechanism
         scalar cumFlux(0.0);
         scalar threshold((1-this->tolerance())*NFlux);
         label startPoint(0);
-        label nbToSort(static_cast<label> (nbPairs*sortPart_));
+        label nbToSort(static_cast<label> ((nbPairs*sortPart_).getValue()));
         nbToSort = max(nbToSort,1);
 
         bool cumRespected(false);

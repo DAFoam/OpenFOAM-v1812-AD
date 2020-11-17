@@ -46,17 +46,17 @@ wmake $targetType finiteVolume
 
 #conversion/Allwmake $targetType $*
 #wmake $targetType mesh/extrudeModel
-#wmake $targetType dynamicMesh
+wmake $targetType dynamicMesh
 #wmake $targetType dynamicFvMesh
 #wmake $targetType sampling
 #wmake $targetType topoChangerFvMesh
 
 # Compile scotchDecomp, metisDecomp etc.
-#parallel/Allwmake $targetType $*
+parallel/Allwmake $targetType $*
 #randomProcesses/Allwmake $targetType $*
 
 #wmake $targetType overset
-#wmake $targetType ODE
+wmake $targetType ODE
 
 transportModels/Allwmake $targetType $*
 thermophysicalModels/Allwmake $targetType $*
