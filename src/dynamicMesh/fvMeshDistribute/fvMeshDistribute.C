@@ -404,7 +404,7 @@ Foam::tmp<Foam::surfaceScalarField> Foam::fvMeshDistribute::generateTestField
                 IOobject::NO_WRITE
             ),
             mesh,
-            dimensionedScalar(dimless, Zero)
+            dimensionedScalar("myFlux", dimless, scalar(0.0))
         )
     );
     surfaceScalarField& fld = tfld.ref();
@@ -2806,11 +2806,11 @@ Foam::autoPtr<Foam::mapDistributePolyMesh> Foam::fvMeshDistribute::distribute
     // from nothing so explicitly reset.
     initPatchFields<volScalarField, processorFvPatchField<scalar>>
     (
-        Zero
+        pTraits<scalar>::zero
     );
     initPatchFields<volVectorField, processorFvPatchField<vector>>
     (
-        Zero
+        pTraits<vector>::zero
     );
     initPatchFields
     <
@@ -2818,15 +2818,15 @@ Foam::autoPtr<Foam::mapDistributePolyMesh> Foam::fvMeshDistribute::distribute
         processorFvPatchField<sphericalTensor>
     >
     (
-        Zero
+        pTraits<sphericalTensor>::zero
     );
     initPatchFields<volSymmTensorField, processorFvPatchField<symmTensor>>
     (
-        Zero
+        pTraits<symmTensor>::zero
     );
     initPatchFields<volTensorField, processorFvPatchField<tensor>>
     (
-        Zero
+        pTraits<tensor>::zero
     );
 
 

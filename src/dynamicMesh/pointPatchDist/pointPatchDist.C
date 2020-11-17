@@ -130,7 +130,7 @@ void Foam::pointPatchDist::correct()
     {
         if (allPointInfo[pointi].valid(td))
         {
-            psf[pointi] = Foam::sqrt(allPointInfo[pointi].distSqr());
+            psf[pointi] = sqrt(allPointInfo[pointi].distSqr());
         }
         else
         {

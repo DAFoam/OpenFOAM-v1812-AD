@@ -109,35 +109,35 @@ Foam::label Foam::fvMeshTools::addPatch
         mesh,
         patchFieldDict,
         defaultPatchFieldType,
-        Zero
+        scalar(0.0)
     );
     addPatchFields<volVectorField>
     (
         mesh,
         patchFieldDict,
         defaultPatchFieldType,
-        Zero
+        vector::zero
     );
     addPatchFields<volSphericalTensorField>
     (
         mesh,
         patchFieldDict,
         defaultPatchFieldType,
-        Zero
+        sphericalTensor::zero
     );
     addPatchFields<volSymmTensorField>
     (
         mesh,
         patchFieldDict,
         defaultPatchFieldType,
-        Zero
+        symmTensor::zero
     );
     addPatchFields<volTensorField>
     (
         mesh,
         patchFieldDict,
         defaultPatchFieldType,
-        Zero
+        tensor::zero
     );
 
     // Surface fields
@@ -147,35 +147,35 @@ Foam::label Foam::fvMeshTools::addPatch
         mesh,
         patchFieldDict,
         defaultPatchFieldType,
-        Zero
+        scalar(0.0)
     );
     addPatchFields<surfaceVectorField>
     (
         mesh,
         patchFieldDict,
         defaultPatchFieldType,
-        Zero
+        vector::zero
     );
     addPatchFields<surfaceSphericalTensorField>
     (
         mesh,
         patchFieldDict,
         defaultPatchFieldType,
-        Zero
+        sphericalTensor::zero
     );
     addPatchFields<surfaceSymmTensorField>
     (
         mesh,
         patchFieldDict,
         defaultPatchFieldType,
-        Zero
+        symmTensor::zero
     );
     addPatchFields<surfaceTensorField>
     (
         mesh,
         patchFieldDict,
         defaultPatchFieldType,
-        Zero
+        tensor::zero
     );
 
     // Create reordering list
@@ -239,36 +239,36 @@ void Foam::fvMeshTools::setPatchFields
 
 void Foam::fvMeshTools::zeroPatchFields(fvMesh& mesh, const label patchi)
 {
-    setPatchFields<volScalarField>(mesh, patchi, Zero);
-    setPatchFields<volVectorField>(mesh, patchi, Zero);
+    setPatchFields<volScalarField>(mesh, patchi, scalar(0.0));
+    setPatchFields<volVectorField>(mesh, patchi, vector::zero);
     setPatchFields<volSphericalTensorField>
     (
         mesh,
         patchi,
-        Zero
+        sphericalTensor::zero
     );
     setPatchFields<volSymmTensorField>
     (
         mesh,
         patchi,
-        Zero
+        symmTensor::zero
     );
-    setPatchFields<volTensorField>(mesh, patchi, Zero);
-    setPatchFields<surfaceScalarField>(mesh, patchi, Zero);
-    setPatchFields<surfaceVectorField>(mesh, patchi, Zero);
+    setPatchFields<volTensorField>(mesh, patchi, tensor::zero);
+    setPatchFields<surfaceScalarField>(mesh, patchi, scalar(0.0));
+    setPatchFields<surfaceVectorField>(mesh, patchi, vector::zero);
     setPatchFields<surfaceSphericalTensorField>
     (
         mesh,
         patchi,
-        Zero
+        sphericalTensor::zero
     );
     setPatchFields<surfaceSymmTensorField>
     (
         mesh,
         patchi,
-        Zero
+        symmTensor::zero
     );
-    setPatchFields<surfaceTensorField>(mesh, patchi, Zero);
+    setPatchFields<surfaceTensorField>(mesh, patchi, tensor::zero);
 }
 
 

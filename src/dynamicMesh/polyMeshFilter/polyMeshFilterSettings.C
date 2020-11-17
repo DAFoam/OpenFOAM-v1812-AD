@@ -41,7 +41,7 @@ Foam::polyMeshFilterSettings::polyMeshFilterSettings(const dictionary& dict)
     minLen_(collapseEdgesCoeffDict_.get<scalar>("minimumEdgeLength")),
     maxCos_
     (
-        ::cos
+        cos
         (
             degToRad
             (
@@ -95,7 +95,7 @@ void Foam::polyMeshFilterSettings::writeSettings(Ostream& os) const
     os  << "Merging:" << nl
         << "    edges with length less than " << minLen() << " metres" << nl
         << "    edges split by a point with edges in line to within "
-        << radToDeg(::acos(maxCos())) << " degrees" << nl
+        << radToDeg(acos(maxCos())) << " degrees" << nl
         << "    Minimum edge length reduction factor = "
         << edgeReductionFactor() << nl
         << endl;

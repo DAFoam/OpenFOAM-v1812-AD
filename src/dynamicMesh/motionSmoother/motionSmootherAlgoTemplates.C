@@ -153,7 +153,7 @@ Foam::motionSmootherAlgo::avg
             false
         ),
         fld.mesh(),
-        dimensioned<Type>(fld.dimensions(), Zero)
+        dimensioned<Type>("avg("+fld.name()+')', fld.dimensions(), pTraits<Type>::zero)
     );
     auto& res = tres.ref();
 
@@ -166,7 +166,7 @@ Foam::motionSmootherAlgo::avg
     // Note: on coupled edges use only one edge (through isMasterEdge)
     // This is done so coupled edges do not get counted double.
 
-    scalarField sumWeight(mesh.nPoints(), Zero);
+    scalarField sumWeight(mesh.nPoints(), scalar(0.0));
 
     const edgeList& edges = mesh.edges();
 

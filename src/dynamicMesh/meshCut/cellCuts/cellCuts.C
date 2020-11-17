@@ -136,7 +136,7 @@ void Foam::cellCuts::syncProc()
 
     syncTools::syncPointList(mesh(), pointIsCut_, orEqOp<bool>(), false);
     syncTools::syncEdgeList(mesh(), edgeIsCut_, orEqOp<bool>(), false);
-    syncTools::syncEdgeList(mesh(), edgeWeight_, maxEqOp<scalar>(), -GREAT);
+    syncTools::syncEdgeList(mesh(), edgeWeight_, maxEqOp<scalar>(), scalar(-GREAT));
 
     {
         const label nBnd = mesh().nBoundaryFaces();

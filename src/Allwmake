@@ -39,13 +39,13 @@ wmakeLnInclude -u fvOptions
 
 wmake $targetType finiteVolume
 
-#wmake $targetType lagrangian/basic
-#wmake $targetType lagrangian/distributionModels
+wmake $targetType lagrangian/basic
+wmake $targetType lagrangian/distributionModels
 #wmake $targetType finiteArea
 #wmake $targetType genericPatchFields
 
 #conversion/Allwmake $targetType $*
-#wmake $targetType mesh/extrudeModel
+wmake $targetType mesh/extrudeModel
 wmake $targetType dynamicMesh
 #wmake $targetType dynamicFvMesh
 #wmake $targetType sampling

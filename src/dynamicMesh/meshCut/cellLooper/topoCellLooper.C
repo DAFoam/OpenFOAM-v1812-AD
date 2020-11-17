@@ -43,7 +43,7 @@ namespace Foam
 }
 
 // Angle for polys to be considered splitHexes.
-const Foam::scalar Foam::topoCellLooper::featureCos = Foam::cos(degToRad(10.0));
+const Foam::scalar Foam::topoCellLooper::featureCos = cos(degToRad(10.0));
 
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
