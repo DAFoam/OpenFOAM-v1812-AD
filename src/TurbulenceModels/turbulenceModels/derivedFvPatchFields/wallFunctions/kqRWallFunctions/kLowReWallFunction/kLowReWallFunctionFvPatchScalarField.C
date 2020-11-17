@@ -214,10 +214,7 @@ void kLowReWallFunctionFvPatchScalarField::updateCoeffs()
     }
 
     // Limit kw to avoid failure of the turbulence model due to division by kw
-    forAll(kw, idxI)
-    {
-        if (kw[idxI] < SMALL) kw[idxI] = SMALL;
-    }
+    kw = max(kw, SMALL);
 
     fixedValueFvPatchField<scalar>::updateCoeffs();
 

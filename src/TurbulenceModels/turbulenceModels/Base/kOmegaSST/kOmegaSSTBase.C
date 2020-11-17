@@ -134,17 +134,7 @@ tmp<volScalarField::Internal> kOmegaSSTBase<BasicEddyViscosityModel>::Pk
     const volScalarField::Internal& G
 ) const
 {
-    volScalarField::Internal tmp = (c1_*betaStar_)*this->k_()*this->omega_();
-    forAll(tmp, idxI)
-    {
-	if (G[idxI] < tmp[idxI])
-	{
-	    tmp[idxI] = G[idxI];
-	}
-    }
-
-    return tmp;
-    //return min(G, (c1_*betaStar_)*this->k_()*this->omega_());
+    return min(G, (c1_*betaStar_)*this->k_()*this->omega_());
 }
 
 

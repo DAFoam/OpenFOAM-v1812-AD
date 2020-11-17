@@ -43,13 +43,11 @@ namespace LESModels
 
 void Foam::LESModels::PrandtlDelta::calcDelta()
 {
-	/*
     delta_ = min
     (
         static_cast<const volScalarField&>(geometricDelta_()),
         (kappa_/Cdelta_)*wallDist::New(turbulenceModel_.mesh()).y()
     );
-    */
 }
 
 
