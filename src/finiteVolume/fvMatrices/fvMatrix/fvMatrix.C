@@ -865,7 +865,7 @@ Foam::fvMatrix<Type>::H() const
             Hphi.replace
             (
                 cmpt,
-                dimensionedScalar(Hphi.dimensions(), scalar(0.0))
+                dimensionedScalar("H("+psi_.name()+')', Hphi.dimensions(), scalar(0.0))
             );
         }
     }
