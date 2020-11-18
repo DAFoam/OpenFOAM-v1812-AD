@@ -95,6 +95,9 @@ export WM_COMPILE_OPTION=Debug
 #   HPMPI | CRAY-MPICH | FJMPI | QSMPI | SGIMPI | INTELMPI | USERMPI
 export WM_MPLIB=SYSTEMOPENMPI
 
+# [WM_CODI_AD_MODE] - Automatic differentiation mode
+# = forward | reverse
+export WM_CODI_AD_MODE=forward
 
 #------------------------------------------------------------------------------
 # (advanced / legacy)
@@ -150,6 +153,15 @@ then
 else
     echo "Error: did not locate installation path for $WM_PROJECT-$WM_PROJECT_VERSION" 1>&2
     echo "No directory: $WM_PROJECT_DIR" 1>&2
+fi
+
+if [ "$WM_CODI_AD_MODE" = "forward" ]; then
+  export WM_CODI_AD_FLAGS="-DCODI_AD_FORWARD"
+elif [ "$WM_CODI_AD_MODE" = "reverse" ]; then
+  export WM_CODI_AD_FLAGS="-DCODI_AD_REVERSE"
+else
+  echo "WM_CODI_AD_MODE not valid!"
+  exit 1
 fi
 
 # Cleanup variables (done as final statement for a clean exit code)

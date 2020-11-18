@@ -49,8 +49,13 @@ namespace Foam
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 // Replace double with codi type
+#ifdef CODI_AD_FORWARD
 typedef codi::RealForward doubleScalar; // forward mode AD
-//typedef codi::RealReverse doubleScalar; // reverse mode AD
+#endif
+
+#ifdef CODI_AD_REVERSE
+typedef codi::RealReverse doubleScalar; // reverse mode AD
+#endif
 
 // Largest and smallest scalar values allowed in certain parts of the code.
 // (15 is the number of significant figures in an
