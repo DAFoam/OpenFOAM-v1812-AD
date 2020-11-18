@@ -53,11 +53,13 @@ OBJECTS_DIR     = $(MAKE_DIR)/$(WM_OPTIONS)
 SYS_INC         =
 SYS_LIBS        =
 
-# CoDiPack4OpenFOAM Added include path for codipack
+# CoDiPack4OpenFOAM Added include path for codipack and medipack
 PROJECT_INC     = \
     -I$(LIB_SRC)/$(WM_PROJECT)/lnInclude \
     -I$(LIB_SRC)/OSspecific/$(WM_OSTYPE)/lnInclude \
-    -I$(LIB_SRC)/codipack/include
+    -I$(LIB_SRC)/codipack/include \
+    -I$(LIB_SRC)/medipack/include \
+    -I$(LIB_SRC)/medipack/src
 
 PROJECT_LIBS    = -l$(WM_PROJECT)
 
