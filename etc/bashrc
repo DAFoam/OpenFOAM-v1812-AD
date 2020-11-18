@@ -88,7 +88,7 @@ export WM_LABEL_SIZE=32
 
 # [WM_COMPILE_OPTION] - Optimised, debug, profiling:
 # = Opt | Debug | Prof
-export WM_COMPILE_OPTION=Opt
+export WM_COMPILE_OPTION=Debug
 
 # [WM_MPLIB] - MPI implementation:
 # = SYSTEMOPENMPI | OPENMPI | SYSTEMMPI | MPI | MPICH | MPICH-GM |
