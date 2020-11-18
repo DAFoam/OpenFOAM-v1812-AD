@@ -55,7 +55,7 @@ void Foam::fv::tabulatedAccelerationSource::addSup
         (
             mag(g.value()) > SMALL
           ? g & (cmptMag(g.value())/mag(g.value()))*hRef
-          : dimensionedScalar("ghRef", g.dimensions()*dimLength, 0)
+          : dimensionedScalar("ghRef", g.dimensions()*dimLength, scalar(0))
         );
 
         mesh_.lookupObjectRef<volScalarField>("gh")
@@ -86,7 +86,7 @@ void Foam::fv::tabulatedAccelerationSource::addSup
 
     eqn -=
     (
-        rho*(2*Omega ^ eqn.psi())         // Coriolis force
+        rho*(scalar(2)*Omega ^ eqn.psi())         // Coriolis force
       + rho*(Omega ^ (Omega ^ mesh_.C())) // Centrifugal force
       + rho*(dOmegaDT ^ mesh_.C())        // Angular tabulatedAcceleration force
     );

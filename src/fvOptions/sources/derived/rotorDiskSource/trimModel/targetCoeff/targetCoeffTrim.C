@@ -63,7 +63,7 @@ Foam::vector Foam::targetCoeffTrim::calcCoeffs
 
     scalar coeff1 = alpha_*sqr(rotor_.omega())*mathematical::pi;
 
-    vector cf(Zero);
+    vector cf(vector::zero);
     forAll(cells, i)
     {
         label celli = cells[i];
@@ -119,9 +119,9 @@ void Foam::targetCoeffTrim::correctTrim
         // iterate to find new pitch angles to achieve target force
         scalar err = GREAT;
         label iter = 0;
-        tensor J(Zero);
+        tensor J(tensor::zero);
 
-        vector old = Zero;
+        vector old = vector::zero;
         while ((err > tol_) && (iter < nIter_))
         {
             // cache initial theta vector
@@ -199,8 +199,8 @@ Foam::targetCoeffTrim::targetCoeffTrim
     trimModel(rotor, dict, typeName),
     calcFrequency_(-1),
     useCoeffs_(true),
-    target_(Zero),
-    theta_(Zero),
+    target_(vector::zero),
+    theta_(vector::zero),
     nIter_(50),
     tol_(1e-8),
     relax_(1.0),

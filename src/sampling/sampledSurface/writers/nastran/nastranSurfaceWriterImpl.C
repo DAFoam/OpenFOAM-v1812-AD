@@ -205,7 +205,7 @@ Foam::fileName Foam::nastranSurfaceWriter::writeTemplate
         {
             for (const face& f : dFaces)
             {
-                Type v = Zero;
+                Type v = pTraits<Type>::zero;
 
                 for (const label verti : f)
                 {

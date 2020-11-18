@@ -57,7 +57,7 @@ Foam::sampledPlane::sampleOnPoints
     // One value per point.
     // Initialize with Zero to handle missed/degenerate faces
 
-    auto tvalues = tmp<Field<Type>>::New(points().size(), Zero);
+    auto tvalues = tmp<Field<Type>>::New(points().size(), pTraits<Type>::zero);
     auto& values = tvalues.ref();
 
     bitSet pointDone(points().size());

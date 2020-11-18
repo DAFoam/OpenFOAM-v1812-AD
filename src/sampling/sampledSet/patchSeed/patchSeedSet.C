@@ -220,7 +220,7 @@ void Foam::patchSeedSet::calcSamples
     {
         // Check what fraction of maxPoints_ I need to generate locally.
         label myMaxPoints =
-            label(scalar(patchFaces.size())/totalSize*maxPoints_);
+            label((scalar(patchFaces.size())/totalSize*maxPoints_).getValue());
 
         labelList subset = identity(patchFaces.size());
         for (label iter = 0; iter < 4; ++iter)

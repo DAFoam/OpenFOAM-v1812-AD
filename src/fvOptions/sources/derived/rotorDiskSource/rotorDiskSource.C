@@ -362,7 +362,7 @@ void Foam::fv::rotorDiskSource::createCoordinateSystem()
     coordSys_ = coordSystem::cylindrical(origin, axis, refDir);
 
     const scalar sumArea = gSum(area_);
-    const scalar diameter = Foam::sqrt(4.0*sumArea/mathematical::pi);
+    const scalar diameter = sqrt(4.0*sumArea/mathematical::pi);
     Info<< "    Rotor gometry:" << nl
         << "    - disk diameter = " << diameter << nl
         << "    - disk area     = " << sumArea << nl

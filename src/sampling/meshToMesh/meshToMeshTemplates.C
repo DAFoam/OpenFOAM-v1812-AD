@@ -252,7 +252,7 @@ Foam::tmp<Foam::Field<Type>> Foam::meshToMesh::mapSrcToTgt
         new Field<Type>
         (
             tgtToSrcCellAddr_.size(),
-            Zero
+            pTraits<Type>::zero
         )
     );
 
@@ -457,7 +457,7 @@ Foam::tmp<Foam::Field<Type>> Foam::meshToMesh::mapTgtToSrc
         new Field<Type>
         (
             srcToTgtCellAddr_.size(),
-            Zero
+            pTraits<Type>::zero
         )
     );
 
@@ -689,7 +689,7 @@ Foam::meshToMesh::mapSrcToTgt
             ),
             tgtMesh,
             field.dimensions(),
-            Field<Type>(tgtMesh.nCells(), Zero),
+            Field<Type>(tgtMesh.nCells(), pTraits<Type>::zero),
             tgtPatchFields
         )
     );

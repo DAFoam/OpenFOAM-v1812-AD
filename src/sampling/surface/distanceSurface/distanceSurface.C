@@ -68,7 +68,7 @@ Foam::distanceSurface::distanceSurface
     distance_(dict.get<scalar>("distance")),
     signed_
     (
-        distance_ < 0 || equal(distance_, Zero) || dict.get<bool>("signed")
+        distance_ < 0 || equal(distance_, scalar(0.0)) || dict.get<bool>("signed")
     ),
     cell_(dict.lookupOrDefault("cell", true)),
     regularise_(dict.lookupOrDefault("regularise", true)),
@@ -112,7 +112,7 @@ Foam::distanceSurface::distanceSurface
     distance_(distance),
     signed_
     (
-        signedDistance || distance_ < 0 || equal(distance_, Zero)
+        signedDistance || distance_ < 0 || equal(distance_, scalar(0.0))
     ),
     cell_(cell),
     regularise_(regularise),
@@ -154,7 +154,7 @@ void Foam::distanceSurface::createGeometry()
                 false
             ),
             fvm,
-            dimensionedScalar(dimLength, Zero)
+            dimensionedScalar("distanceSurface.cellDistance", dimLength, scalar(0.0))
         )
     );
     volScalarField& cellDistance = *cellDistancePtr_;
@@ -162,7 +162,7 @@ void Foam::distanceSurface::createGeometry()
     // For distance = 0 (and isoSurfaceCell) we apply additional filtering
     // to limit the extent of open edges.
 
-    const bool isZeroDist  = equal(distance_, Zero);
+    const bool isZeroDist  = equal(distance_, scalar(0.0));
     const bool filterCells = (cell_ && isZeroDist);
 
     bitSet ignoreCells;

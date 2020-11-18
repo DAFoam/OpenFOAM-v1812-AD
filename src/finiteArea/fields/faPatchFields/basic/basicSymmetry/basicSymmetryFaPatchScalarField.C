@@ -34,7 +34,7 @@ template<>
 Foam::tmp<Foam::scalarField>
 Foam::basicSymmetryFaPatchField<Foam::scalar>::snGrad() const
 {
-    return tmp<scalarField>::New(size(), Zero);
+    return tmp<scalarField>::New(size(), pTraits<scalar>::zero);
 }
 
 

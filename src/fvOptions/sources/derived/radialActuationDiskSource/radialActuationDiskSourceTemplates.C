@@ -46,7 +46,7 @@ addRadialActuationDiskAxialInertialResistance
     scalarField Tr(cells.size());
     const vector uniDiskDir = diskDir_/mag(diskDir_);
 
-    tensor E(Zero);
+    tensor E(tensor::zero);
     E.xx() = uniDiskDir.x();
     E.yy() = uniDiskDir.y();
     E.zz() = uniDiskDir.z();

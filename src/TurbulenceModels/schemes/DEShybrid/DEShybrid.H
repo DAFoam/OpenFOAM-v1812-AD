@@ -186,8 +186,8 @@ class DEShybrid
         ) const
         {
             tmp<volTensorField> gradU(fvc::grad(U));
-            const volScalarField S(sqrt(2.0)*mag(symm(gradU())));
-            const volScalarField Omega(sqrt(2.0)*mag(skew(gradU())));
+            const volScalarField S(codi::sqrt(2.0)*mag(symm(gradU())));
+            const volScalarField Omega(codi::sqrt(2.0)*mag(skew(gradU())));
             const dimensionedScalar tau0_ = L0_/U0_;
 
             const volScalarField B

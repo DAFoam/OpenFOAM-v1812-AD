@@ -72,7 +72,7 @@ bool Foam::discreteSurface::sampleType
                     IOobject::NO_WRITE
                 ),
                 surf,
-                dimensioned<Type>(volFld.dimensions(), Zero)
+                dimensioned<Type>(fieldName, volFld.dimensions(), pTraits<Type>::zero)
             );
             ptr->writeOpt() = IOobject::NO_WRITE;
 
@@ -173,7 +173,7 @@ Foam::discreteSurface::sampleOnFaces
 
         // Create flat boundary field
 
-        Field<Type> bVals(nBnd, Zero);
+        Field<Type> bVals(nBnd, pTraits<Type>::zero);
 
         const auto& bField = vField.boundaryField();
 

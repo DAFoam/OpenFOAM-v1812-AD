@@ -649,10 +649,10 @@ void Foam::shortestPathSet::genSamples
             (
                 samplingCurveDist.size()
               ? samplingCurveDist.last()
-              : 0
+              : scalar(0.0)
             ),
             maxOp<scalar>()
-        );
+        ).getValue();
 
 
         if (debug)

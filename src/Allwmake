@@ -41,14 +41,14 @@ wmake $targetType finiteVolume
 
 wmake $targetType lagrangian/basic
 wmake $targetType lagrangian/distributionModels
-#wmake $targetType finiteArea
+wmake $targetType finiteArea
 #wmake $targetType genericPatchFields
 
-#conversion/Allwmake $targetType $*
+conversion/Allwmake $targetType $*
 wmake $targetType mesh/extrudeModel
 wmake $targetType dynamicMesh
 #wmake $targetType dynamicFvMesh
-#wmake $targetType sampling
+wmake $targetType sampling
 #wmake $targetType topoChangerFvMesh
 
 # Compile scotchDecomp, metisDecomp etc.
@@ -62,14 +62,14 @@ transportModels/Allwmake $targetType $*
 thermophysicalModels/Allwmake $targetType $*
 TurbulenceModels/Allwmake $targetType $*
 
-exit 1
-
-
-wmake $targetType combustionModels
-regionModels/Allwmake $targetType $*
-lagrangian/Allwmake $targetType $*
+#wmake $targetType combustionModels
+#regionModels/Allwmake $targetType $*
+#lagrangian/Allwmake $targetType $*
 
 wmake $targetType fvOptions
+
+exit 1
+
 wmake $targetType fvMotionSolver
 
 mesh/Allwmake $targetType $*

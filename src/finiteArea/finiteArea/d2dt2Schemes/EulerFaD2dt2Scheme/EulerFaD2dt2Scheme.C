@@ -387,7 +387,7 @@ EulerFaD2dt2Scheme<Type>::facD2dt2
     }
     else
     {
-        dimensionedScalar halfRdeltaT2 = 0.5*rDeltaT2;
+        dimensionedScalar halfRdeltaT2 = dimensionedScalar(scalar(0.5)*rDeltaT2);
 
         areaScalarField rhoRho0(rho + rho.oldTime());
         areaScalarField rho0Rho00(rho.oldTime() + rho.oldTime().oldTime());

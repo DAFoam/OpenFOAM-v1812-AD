@@ -277,7 +277,7 @@ Foam::Ostream& Foam::nastranSurfaceWriter::writeFooter
     labelList pidsUsed = labelHashSet(surf.zoneIds()).sortedToc();
     if (pidsUsed.empty())
     {
-        pidsUsed.setSize(1, Zero); // fallback
+        pidsUsed.setSize(1, 0); // fallback
     }
 
     for (auto pid : pidsUsed)

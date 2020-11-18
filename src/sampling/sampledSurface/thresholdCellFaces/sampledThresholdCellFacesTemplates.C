@@ -75,7 +75,7 @@ Foam::sampledThresholdCellFaces::sampleOnPoints
     const labelList& elements = meshCells_;
 
     // One value per point
-    auto tvalues = tmp<Field<Type>>::New(points().size(), Zero);
+    auto tvalues = tmp<Field<Type>>::New(points().size(), pTraits<Type>::zero);
     auto& values = tvalues.ref();
 
     bitSet pointDone(points().size());

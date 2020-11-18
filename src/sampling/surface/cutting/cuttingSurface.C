@@ -151,7 +151,7 @@ void Foam::cuttingSurface::performCut
             const scalar s1 = pointDist[e.last()];
             const scalar d = s1-s0;
 
-            return Foam::mag(d) < ROOTVSMALL ? -1 : (-s0/d);
+            return Foam::mag(d) < ROOTVSMALL ? scalar(-1) : scalar(-s0/d);
         };
 
     walkCellCuts

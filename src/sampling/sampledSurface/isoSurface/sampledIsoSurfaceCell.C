@@ -111,8 +111,8 @@ bool Foam::sampledIsoSurfaceCell::updateGeometry() const
     if (average_)
     {
         //- From point field and interpolated cell.
-        scalarField cellAvg(fvm.nCells(), Zero);
-        labelField nPointCells(fvm.nCells(), Zero);
+        scalarField cellAvg(fvm.nCells(), scalar(0.0));
+        labelField nPointCells(fvm.nCells(), 0);
 
         for (label pointi = 0; pointi < fvm.nPoints(); ++pointi)
         {

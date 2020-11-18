@@ -241,7 +241,7 @@ Foam::point Foam::sampledSet::pushIn
     {
         newPosition = facePt;
 
-        label trap(1.0/trackingCorrectionTol + 1);
+        label trap((1.0/trackingCorrectionTol + 1).getValue());
 
         label iterNo = 0;
 

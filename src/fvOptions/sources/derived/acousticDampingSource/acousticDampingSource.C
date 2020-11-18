@@ -88,7 +88,7 @@ Foam::fv::acousticDampingSource::acousticDampingSource
 )
 :
     cellSetOption(name, modelType, dict, mesh),
-    frequency_("frequency", dimless/dimTime, 0),
+    frequency_("frequency", dimless/dimTime, scalar(0)),
     blendFactor_
     (
         volScalarField
@@ -107,7 +107,7 @@ Foam::fv::acousticDampingSource::acousticDampingSource
         )
     ),
     URefName_("unknown-URef"),
-    x0_(Zero),
+    x0_(vector::zero),
     r1_(0),
     r2_(0),
     w_(20)
@@ -125,7 +125,7 @@ void Foam::fv::acousticDampingSource::addSup
 )
 {
     const volVectorField& U = eqn.psi();
-    const volScalarField coeff(name_ + ":coeff", w_*frequency_*blendFactor_);
+    const volScalarField coeff(name_ + ":coeff", scalar(w_)*frequency_*blendFactor_);
     const volVectorField& URef(mesh().lookupObject<volVectorField>(URefName_));
 
     fvMatrix<vector> dampingEqn
@@ -144,7 +144,7 @@ void Foam::fv::acousticDampingSource::addSup
 )
 {
     const volVectorField& U = eqn.psi();
-    const volScalarField coeff(name_ + ":coeff", w_*frequency_*blendFactor_);
+    const volScalarField coeff(name_ + ":coeff", scalar(w_)*frequency_*blendFactor_);
     const volVectorField& URef(mesh().lookupObject<volVectorField>(URefName_));
 
     fvMatrix<vector> dampingEqn
@@ -164,7 +164,7 @@ void Foam::fv::acousticDampingSource::addSup
 )
 {
     const volVectorField& U = eqn.psi();
-    const volScalarField coeff(name_ + ":coeff", w_*frequency_*blendFactor_);
+    const volScalarField coeff(name_ + ":coeff", scalar(w_)*frequency_*blendFactor_);
     const volVectorField& URef(mesh().lookupObject<volVectorField>(URefName_));
 
     fvMatrix<vector> dampingEqn

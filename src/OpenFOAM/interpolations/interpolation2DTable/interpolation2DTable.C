@@ -326,7 +326,7 @@ Type Foam::interpolation2DTable<Type>::operator()
         WarningInFunction
             << "cannot interpolate a zero-sized table - returning zero" << endl;
 
-        return Zero;
+        return pTraits<Type>::zero;
     }
     else if (nX == 1)
     {

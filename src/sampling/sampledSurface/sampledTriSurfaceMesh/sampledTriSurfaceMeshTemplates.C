@@ -62,7 +62,7 @@ Foam::sampledTriSurfaceMesh::sampleOnFaces
 
     // Create flat boundary field
 
-    Field<Type> bVals(nBnd, Zero);
+    Field<Type> bVals(nBnd, pTraits<Type>::zero);
 
     const auto& bField = sampler.psi().boundaryField();
 
