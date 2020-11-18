@@ -156,8 +156,10 @@ else
 fi
 
 if [ "$WM_CODI_AD_MODE" = "forward" ]; then
+  echo "Using forward mode AD."
   export WM_CODI_AD_FLAGS="-DCODI_AD_FORWARD"
 elif [ "$WM_CODI_AD_MODE" = "reverse" ]; then
+  echo "Using reverse mode AD."
   export WM_CODI_AD_FLAGS="-DCODI_AD_REVERSE"
 else
   echo "WM_CODI_AD_MODE not valid!"
