@@ -576,7 +576,7 @@ Foam::vector Foam::cyclicPolyPatch::findFaceMaxRadius
         Info<< "findFaceMaxRadius(const pointField&) : patch: " << name() << nl
             << "    rotFace  = " << facei << nl
             << "    point    = " << faceCentres[facei] << nl
-            << "    distance = " << Foam::sqrt(magRadSqr[facei])
+            << "    distance = " << sqrt(magRadSqr[facei])
             << endl;
     }
 

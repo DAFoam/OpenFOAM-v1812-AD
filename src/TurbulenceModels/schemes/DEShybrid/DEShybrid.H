@@ -197,10 +197,10 @@ class DEShybrid
             );
             const volScalarField K
             (
-                max(Foam::sqrt(0.5*(sqr(S) + sqr(Omega))), 0.1/tau0_)
+                max(sqrt(0.5*(sqr(S) + sqr(Omega))), 0.1/tau0_)
             );
 
-            const volScalarField lTurb(Foam::sqrt(nuEff/(pow(0.09, 1.5)*K)));
+            const volScalarField lTurb(sqrt(nuEff/(pow(0.09, 1.5)*K)));
             const volScalarField g(tanh(pow4(B)));
             const volScalarField A
             (

@@ -176,8 +176,7 @@ Foam::scalar Foam::COxidationHurtMitchell<CloudType>::calculate
 
     // Molar reaction rate per unit surface area [kmol/(m^2.s)]
     const scalar qCsLim = mass*Ychar/(WC_*Ap*dt);
-    const scalar qCs = min(convSI*Rk*Foam::sqrt(ppO2/101325.0), qCsLim);
-
+    const scalar qCs = min(convSI*Rk*sqrt(ppO2/101325.0), qCsLim); 
     // Calculate the number of molar units reacted [kmol]
     const scalar dOmega = qCs*Ap*dt;
 

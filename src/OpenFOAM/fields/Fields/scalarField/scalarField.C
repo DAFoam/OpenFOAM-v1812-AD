@@ -118,32 +118,32 @@ BINARY_TYPE_OPERATOR_SF(scalar, scalar, scalar, /, divide)
 // CodiPack4OpenFOAM NOTE these functions are for const Type& inputs
 inline scalar pow(const scalar& val, const scalar& p)
 {
-    return pow(val, p);
+    return codi::pow(val, p);
 }
 
 inline scalar sqrt(const scalar& val)
 {
-    return sqrt(val);
+    return codi::sqrt(val);
 }
 
 inline scalar log(const scalar& val)
 {
-    return log(val);
+    return codi::log(val);
 }
 
 inline scalar log10(const scalar& val)
 {
-    return log10(val);
+    return codi::log10(val);
 }
 
 inline scalar cos(const scalar& val)
 {
-    return cos(val);
+    return codi::cos(val);
 }
 
 inline scalar sin(const scalar& val)
 {
-    return sin(val);
+    return codi::sin(val);
 }
 
 BINARY_FUNCTION(scalar, scalar, scalar, pow)

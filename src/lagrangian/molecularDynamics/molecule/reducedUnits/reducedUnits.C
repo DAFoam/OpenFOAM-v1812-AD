@@ -56,7 +56,7 @@ void Foam::reducedUnits::calcRefValues()
 
     refForce_ = refEnergy_/refLength_;
 
-    refVelocity_ = Foam::sqrt(refEnergy_/refMass_);
+    refVelocity_ = sqrt(refEnergy_/refMass_);
 
     refVolume_ = Foam::pow(refLength_,3.0);
 

@@ -170,7 +170,7 @@ void Foam::regionToFace::combine(topoSet& set, const bool add) const
         Info<< "    Found nearest face at " << ni.first().rawPoint()
             << " on processor " << ni.second().second()
             << " face " << ni.first().index()
-            << " distance " << Foam::sqrt(ni.second().first()) << endl;
+            << " distance " << sqrt(ni.second().first()) << endl;
     }
 
     labelList faceRegion(patch.size(), -1);
