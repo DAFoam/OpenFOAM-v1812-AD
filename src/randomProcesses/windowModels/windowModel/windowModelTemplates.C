@@ -48,7 +48,7 @@ Foam::tmp<Foam::Field<Type>> Foam::windowModel::apply
     }
 
 
-    auto tresult = tmp<Field<Type>>::New(nSamples, Zero);
+    auto tresult = tmp<Field<Type>>::New(nSamples, pTraits<Type>::zero);
     auto& result = tresult.ref();
 
     label nWindow = nWindowsTotal(fld.size());

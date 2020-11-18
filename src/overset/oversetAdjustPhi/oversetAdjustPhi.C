@@ -221,11 +221,11 @@ bool Foam::oversetAdjustPhi
 
             if (flux < 0.0)
             {
-                phi[facei] /= Foam::sqrt(massCorr[zonei]);
+                phi[facei] /= sqrt(massCorr[zonei]);
             }
             else
             {
-                phi[facei] *= Foam::sqrt(massCorr[zonei]);
+                phi[facei] *= sqrt(massCorr[zonei]);
             }
         }
     }
@@ -265,11 +265,11 @@ bool Foam::oversetAdjustPhi
 
                 if (flux < 0.0)
                 {
-                    phip[i] /= Foam::sqrt(massCorr[zonei]);
+                    phip[i] /= sqrt(massCorr[zonei]);
                 }
                 else
                 {
-                    phip[i] *= Foam::sqrt(massCorr[zonei]);
+                    phip[i] *= sqrt(massCorr[zonei]);
                 }
             }
         }

@@ -75,7 +75,7 @@ Foam::graph Foam::kShellMean
     const label tnp = Ek.size();
     const label NoSubintervals = label
     (
-        pow(scalar(tnp), 1.0/vector::dim)*pow(1.0/vector::dim, 0.5) - 0.5
+        (pow(scalar(tnp), 1.0/vector::dim)*pow(1.0/vector::dim, 0.5) - 0.5).getValue()
     );
 
     scalarField k1D(NoSubintervals);

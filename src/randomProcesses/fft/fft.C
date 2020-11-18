@@ -128,7 +128,7 @@ Foam::fft::realTransform1D(const scalarField& field)
 
     for (label i=0; i < n; ++i)
     {
-        in[i] = field[i];
+        in[i] = field[i].getValue();
     }
 
     // Using real to half-complex fftw 'kind'
@@ -195,8 +195,8 @@ void Foam::fft::transform
 
     forAll(field, i)
     {
-        inPtr[i][0] = field[i].Re();
-        inPtr[i][1] = field[i].Im();
+        inPtr[i][0] = (field[i].Re()).getValue();
+        inPtr[i][1] = (field[i].Im()).getValue();
     }
 
     // Create the plan

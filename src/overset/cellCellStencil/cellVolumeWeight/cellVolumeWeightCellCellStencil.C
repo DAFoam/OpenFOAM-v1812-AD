@@ -720,7 +720,7 @@ Foam::cellCellStencils::cellVolumeWeight::cellVolumeWeight
         forAll(volCellTypes, celli)
         {
             // Round to integer
-            cellTypes_[celli] = volCellTypes[celli];
+            cellTypes_[celli] = volCellTypes[celli].getValue();
         }
     }
 

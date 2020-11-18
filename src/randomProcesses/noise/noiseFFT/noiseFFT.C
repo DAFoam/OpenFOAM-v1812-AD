@@ -43,7 +43,7 @@ Foam::tmp<Foam::scalarField> Foam::noiseFFT::frequencies
     const scalar deltaT
 )
 {
-    auto tf = tmp<scalarField>::New(N/2, Zero);
+    auto tf = tmp<scalarField>::New(N/2, scalar(0.0));
     auto& f = tf.ref();
 
     const scalar deltaf = 1.0/(N*deltaT);
@@ -289,7 +289,7 @@ Foam::tmp<Foam::scalarField> Foam::noiseFFT::Pf
         const List<double>& out = planInfo_.out;
         forAll(in, i)
         {
-            in[i] = pn[i];
+            in[i] = pn[i].getValue();
         }
         tpn.clear();
 
@@ -307,7 +307,7 @@ Foam::tmp<Foam::scalarField> Foam::noiseFFT::Pf
         {
             const auto re = out[i];
             const auto im = out[n - i];
-            result[i] = sqrt(re*re + im*im);
+            result[i] = std::sqrt(re*re + im*im);
         }
 
         return tresult;
@@ -480,8 +480,8 @@ Foam::graph Foam::noiseFFT::octaves
         {
             for (label freqI = fb0; freqI < fb1; ++freqI)
             {
-                label f0 = f[freqI];
-                label f1 = f[freqI + 1];
+                label f0 = f[freqI].getValue();
+                label f1 = f[freqI + 1].getValue();
                 scalar dataAve = 0.5*(data[freqI] + data[freqI + 1]);
                 octData[bandI] += dataAve*(f1 - f0);
             }

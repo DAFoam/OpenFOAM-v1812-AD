@@ -261,11 +261,11 @@ Foam::voxelMeshSearch::voxelMeshSearch
     }
     else if (mesh_.nGeometricD() == 2)
     {
-        nDivs = label(Foam::sqrt(scalar(nCells)));
+        nDivs = label(sqrt(scalar(nCells)).getValue());
     }
     else
     {
-        nDivs = label(Foam::cbrt(scalar(nCells)));
+        nDivs = label(cbrt(scalar(nCells)).getValue());
     }
 
     nDivs_ = labelVector(nDivs, nDivs, nDivs);

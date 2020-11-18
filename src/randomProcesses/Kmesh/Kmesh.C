@@ -60,7 +60,7 @@ Foam::Kmesh::Kmesh(const fvMesh& mesh)
 
     forAll(nn_, i)
     {
-        nn_[i] = label(l_[i]/cellL[i] + 0.5);
+        nn_[i] = label((l_[i]/cellL[i] + 0.5).getValue());
         nTot *= nn_[i];
 
         if (nn_[i] > 1)

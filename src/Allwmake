@@ -42,20 +42,20 @@ wmake $targetType finiteVolume
 wmake $targetType lagrangian/basic
 wmake $targetType lagrangian/distributionModels
 wmake $targetType finiteArea
-#wmake $targetType genericPatchFields
+wmake $targetType genericPatchFields
 
 conversion/Allwmake $targetType $*
 wmake $targetType mesh/extrudeModel
 wmake $targetType dynamicMesh
-#wmake $targetType dynamicFvMesh
+wmake $targetType dynamicFvMesh
 wmake $targetType sampling
-#wmake $targetType topoChangerFvMesh
+wmake $targetType topoChangerFvMesh
 
 # Compile scotchDecomp, metisDecomp etc.
 parallel/Allwmake $targetType $*
-#randomProcesses/Allwmake $targetType $*
+randomProcesses/Allwmake $targetType $*
 
-#wmake $targetType overset
+wmake $targetType overset
 wmake $targetType ODE
 
 transportModels/Allwmake $targetType $*

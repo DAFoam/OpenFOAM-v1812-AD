@@ -92,7 +92,7 @@ bool Foam::dynamicInkJetFvMesh::update()
     scalar scalingFunction =
         0.5*
         (
-            ::cos(constant::mathematical::twoPi*frequency_*time().value())
+            cos(constant::mathematical::twoPi*frequency_*time().value())
           - 1.0
         );
 
