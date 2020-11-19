@@ -33,7 +33,7 @@ namespace Foam
     //- Calculate the geometric expension factor from the expansion ratio
     inline scalar calcGexp(const scalar expRatio, const label nDiv)
     {
-        return nDiv > 1 ? pow(expRatio, 1.0/(nDiv - 1)) : 0.0;
+        return nDiv > 1 ? pow(expRatio, 1.0/(nDiv - 1)) : scalar(0.0);
     }
 }
 
@@ -68,7 +68,7 @@ Foam::lineDivide::lineDivide
         forAll(gd, sectioni)
         {
             scalar nDivFrac = gd[sectioni].nDivFraction();
-            secnDivs[sectioni] = label(nDivFrac*nDiv + 0.5);
+            secnDivs[sectioni] = label((nDivFrac*nDiv + 0.5).getValue());
             sumSecnDivs += secnDivs[sectioni];
 
             // Find the section with the largest number of divisions

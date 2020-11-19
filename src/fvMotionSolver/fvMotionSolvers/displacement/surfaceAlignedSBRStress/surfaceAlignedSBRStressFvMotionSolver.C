@@ -236,8 +236,8 @@ void Foam::surfaceAlignedSBRStressFvMotionSolver::calculateCellRot()
                         faceId != -1
                     &&
                         (
-                            ::cos(degToRad(minAng_)) > cosMax
-                            || cosMax > ::cos(degToRad(maxAng_))
+                            cos(degToRad(minAng_)) > cosMax
+                            || cosMax > cos(degToRad(maxAng_))
 
                         )
                     )
@@ -249,7 +249,7 @@ void Foam::surfaceAlignedSBRStressFvMotionSolver::calculateCellRot()
 
                         if (magRot > 0)
                         {
-                            const scalar theta = ::asin(magRot);
+                            const scalar theta = asin(magRot);
                             quaternion q(cellRot_[rotCellId]/magRot, theta);
                             const tensor R = q.R();
                             const labelList& cPoints =
