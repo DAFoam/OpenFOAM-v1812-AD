@@ -1082,7 +1082,7 @@ Foam::List<Foam::labelPair> Foam::meshRefinement::freeStandingBaffles
         //    mesh_.time().path()/timeName()/"flatBaffles.obj"
         //);
 
-        const scalar planarAngleCos = Foam::cos(degToRad(planarAngle));
+        const scalar planarAngleCos = cos(degToRad(planarAngle));
 
         label filterI = 0;
         forAll(filteredCouples, i)

@@ -255,7 +255,7 @@ Foam::Map<Foam::label> Foam::meshRefinement::findEdgeConnectedProblemCells
 
         if (angle >= 0)
         {
-            if (mag(n & nearestNormal[i]) < Foam::sin(angle))
+            if (mag(n & nearestNormal[i]) < sin(angle))
             {
                 perpFaces.insert(facei);
                 candidateCells.insert

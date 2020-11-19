@@ -68,11 +68,12 @@ TurbulenceModels/Allwmake $targetType $*
 
 wmake $targetType fvOptions
 
-exit 1
-
-wmake $targetType fvMotionSolver
+#wmake $targetType fvMotionSolver
 
 mesh/Allwmake $targetType $*
+
+exit 1
+
 renumber/Allwmake $targetType $*
 fvAgglomerationMethods/Allwmake $targetType $*
 wmake $targetType waveModels

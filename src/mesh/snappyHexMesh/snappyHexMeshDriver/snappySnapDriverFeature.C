@@ -1067,7 +1067,7 @@ void Foam::snappySnapDriver::featureAttractionUsingReconstruction
         // Trim to snap distance
         if (magSqr(d) > sqr(snapDist[pointi]))
         {
-            d *= Foam::sqrt(sqr(snapDist[pointi])/magSqr(d));
+            d *= sqrt(sqr(snapDist[pointi])/magSqr(d));
         }
 
         patchAttraction = d;
@@ -1089,7 +1089,7 @@ void Foam::snappySnapDriver::featureAttractionUsingReconstruction
         // Trim to snap distance
         if (magSqr(d) > sqr(snapDist[pointi]))
         {
-            d *= Foam::sqrt(sqr(snapDist[pointi])/magSqr(d));
+            d *= sqrt(sqr(snapDist[pointi])/magSqr(d));
         }
 
         patchAttraction = d;
@@ -1110,7 +1110,7 @@ void Foam::snappySnapDriver::featureAttractionUsingReconstruction
         // Trim to snap distance
         if (magSqr(d) > sqr(snapDist[pointi]))
         {
-            d *= Foam::sqrt(sqr(snapDist[pointi])/magSqr(d));
+            d *= sqrt(sqr(snapDist[pointi])/magSqr(d));
         }
 
         patchAttraction = d;
@@ -2860,7 +2860,7 @@ void Foam::snappySnapDriver::determineBaffleFeatures
     // Detect baffle edges. Assume initial mesh will have 0,90 or 180
     // (baffle) degree angles so smoothing should make 0,90
     // to be less than 90. Choose reasonable value
-    const scalar baffleFeatureCos = Foam::cos(degToRad(110.0));
+    const scalar baffleFeatureCos = cos(degToRad(110.0));
 
 
     autoPtr<OBJstream> baffleEdgeStr;
@@ -4041,7 +4041,7 @@ Foam::vectorField Foam::snappySnapDriver::calcNearestSurfaceFeature
 
     if (!alignMeshEdges)
     {
-        const scalar concaveCos = Foam::cos
+        const scalar concaveCos = cos
         (
             degToRad(snapParams.concaveAngle())
         );
