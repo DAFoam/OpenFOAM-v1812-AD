@@ -68,7 +68,7 @@ TurbulenceModels/Allwmake $targetType $*
 
 wmake $targetType fvOptions
 
-#wmake $targetType fvMotionSolver
+wmake $targetType fvMotionSolver
 
 mesh/Allwmake $targetType $*
 

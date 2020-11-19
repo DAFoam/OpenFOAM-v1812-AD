@@ -2772,7 +2772,7 @@ void Foam::snappySnapDriver::doSnap
             {
                 detectNearSurfaces
                 (
-                    Foam::cos(degToRad(planarAngle)),// planar cos for gaps
+                    cos(degToRad(planarAngle)),// planar cos for gaps
                     pp,
                     nearestPoint,   // surfacepoint from nearest test
                     nearestNormal,  // surfacenormal from nearest test

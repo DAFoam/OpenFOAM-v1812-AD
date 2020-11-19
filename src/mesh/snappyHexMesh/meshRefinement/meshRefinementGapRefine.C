@@ -1305,7 +1305,7 @@ Foam::label Foam::meshRefinement::markInternalGapRefinement
                     detectedGapSize[cellI] = min
                     (
                         detectedGapSize[cellI],
-                        Foam::sqrt(d2)
+                        sqrt(d2)
                     );
                 }
             }

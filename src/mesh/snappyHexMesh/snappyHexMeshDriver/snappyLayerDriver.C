@@ -1639,7 +1639,7 @@ void Foam::snappyLayerDriver::calculateLayerThickness
             Info<< setf(ios_base::left) << setw(maxPatchNameLen)
                 << patches[patchi].name() << setprecision(3)
                 << " " << setw(8)
-                << returnReduce(patches[patchi].size(), sumOp<scalar>())
+                << returnReduce(patches[patchi].size(), sumOp<label>())
                 << " " << setw(6) << layerParams.numLayers()[patchi]
                 << " " << setw(8) << avgNearWallThickness
                 << "  " << setw(8) << avgThickness

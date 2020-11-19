@@ -234,7 +234,7 @@ void Foam::refinementFeatures::read
         {
             // Look up 'level' for single level
             levels_[featI] = labelList(1, dict.get<label>("level"));
-            distances_[featI] = scalarField(1, Zero);
+            distances_[featI] = scalarField(1, scalar(0.0));
         }
 
         Info<< "Refinement level according to distance to "
@@ -545,7 +545,7 @@ void Foam::refinementFeatures::findNearestEdge
     nearInfo.setSize(samples.size());
     nearInfo = pointIndexHit();
     nearNormal.setSize(samples.size());
-    nearNormal = Zero;
+    nearNormal = pTraits<vector>::zero;
 
     forAll(edgeTrees_, featI)
     {
@@ -604,7 +604,7 @@ void Foam::refinementFeatures::findNearestRegionEdge
     nearInfo.setSize(samples.size());
     nearInfo = pointIndexHit();
     nearNormal.setSize(samples.size());
-    nearNormal = Zero;
+    nearNormal = pTraits<vector>::zero;
 
 
     const PtrList<indexedOctree<treeDataEdge>>& regionTrees =

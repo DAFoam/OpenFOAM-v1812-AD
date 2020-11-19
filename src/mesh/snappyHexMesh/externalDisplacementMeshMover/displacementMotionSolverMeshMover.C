@@ -216,7 +216,7 @@ bool Foam::displacementMotionSolverMeshMover::move
 
         if (minThicknessName == "none")
         {
-            zeroMinThickness = scalarField(adaptPatchPtr_().nPoints(), Zero);
+            zeroMinThickness = scalarField(adaptPatchPtr_().nPoints(), scalar(0.0));
         }
 
         const scalarField& minThickness =
