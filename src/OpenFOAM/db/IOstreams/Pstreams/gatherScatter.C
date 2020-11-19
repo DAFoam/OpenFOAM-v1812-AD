@@ -42,6 +42,15 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
+template<class T,class B>
+T Pstream::myBop(T& v1,T v2, const B& bop){
+    return bop(v1, v2);
+}
+template<class B>
+Foam::label Pstream::myBop(Foam::label& v1,Foam::label v2, const B& bop){
+    return Foam::label((bop(v1, v2)).getValue());
+}
+
 template<class T, class BinaryOp>
 void Pstream::gather
 (
@@ -87,7 +96,7 @@ void Pstream::gather
                 fromBelow >> value;
             }
 
-            Value = bop(Value, value);
+            Value = myBop(Value, value, bop);
         }
 
         // Send up Value
