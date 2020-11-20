@@ -79,7 +79,7 @@ Type Foam::functionObjects::fieldValues::volFieldValue::processValues
     const scalarField& weightField
 ) const
 {
-    Type result = Zero;
+    Type result = pTraits<Type>::zero;
     switch (operation_)
     {
         case opNone:

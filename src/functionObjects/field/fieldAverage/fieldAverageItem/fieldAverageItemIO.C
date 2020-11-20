@@ -81,7 +81,7 @@ Foam::Istream& Foam::functionObjects::operator>>
             if
             (
                 faItem.base_ == fieldAverageItem::baseType::ITER
-             && label(faItem.window_) < 1
+             && label(faItem.window_.getValue()) < 1
             )
             {
                 FatalIOErrorInFunction(dictEntry)

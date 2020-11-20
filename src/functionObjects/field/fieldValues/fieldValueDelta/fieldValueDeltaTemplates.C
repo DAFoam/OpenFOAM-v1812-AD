@@ -41,7 +41,7 @@ void Foam::functionObjects::fieldValues::fieldValueDelta::applyOperation
         return;
     }
 
-    Type result = Zero;
+    Type result = pTraits<Type>::zero;
 
     Type value1 = this->getObjectResult<Type>(name1, entryName1);
     Type value2 = this->getObjectResult<Type>(name2, entryName2);

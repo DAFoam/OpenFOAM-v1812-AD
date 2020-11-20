@@ -107,7 +107,7 @@ void Foam::functionObjects::AMIWeights::reportPatch
 
     srcAveNbr =
         returnReduce(srcAveNbr, sumOp<scalar>())
-       /(returnReduce(srcAddress.size(), sumOp<scalar>()) + ROOTVSMALL);
+       /(returnReduce(srcAddress.size(), sumOp<label>()) + ROOTVSMALL);
 
     const scalarField& tgtWeightsSum = pp.AMI().tgtWeightsSum();
     const scalar tgtMinWeight = gMin(tgtWeightsSum);
@@ -131,7 +131,7 @@ void Foam::functionObjects::AMIWeights::reportPatch
 
     tgtAveNbr =
         returnReduce(tgtAveNbr, sumOp<scalar>())
-       /(returnReduce(tgtAddress.size(), sumOp<scalar>()) + ROOTVSMALL);
+       /(returnReduce(tgtAddress.size(), sumOp<label>()) + ROOTVSMALL);
 
     file()
         << mesh_.time().timeName() << tab

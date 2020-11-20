@@ -73,7 +73,7 @@ bool Foam::functionObjects::columnAverage::columnAverageField
         const labelList& cellToPatchFace = ms.cellToPatchFaceAddressing();
 
         // Brute force: collect per-global-patchface on all processors
-        Field<Type> regionField(globalFaces_().size(), Zero);
+        Field<Type> regionField(globalFaces_().size(), pTraits<Type>::zero);
         labelList regionCount(globalFaces_().size(), 0);
 
         forAll(cellToPatchFace, celli)

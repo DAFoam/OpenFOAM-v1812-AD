@@ -55,6 +55,7 @@ void Foam::vtk::surfaceWriter::write
         (
             std::is_same<typename pTraits<Type>::cmptType,label>::value
          || std::is_floating_point<typename pTraits<Type>::cmptType>::value
+         || std::is_same<typename pTraits<Type>::cmptType,scalar>::value
         ),
         "Label and Floating-point vector space only"
     );
