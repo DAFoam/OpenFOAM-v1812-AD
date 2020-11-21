@@ -49,13 +49,15 @@ int main(int argc, char *argv[])
 
             volVectorField URes = (UEqn & U) + fvc::grad(p);
 
-            word partDerivResName = "partDerivSerialAD_CellI"+name(cellI);
+            word partDerivResName = "verify_AD_CellI"+name(cellI);
             OFstream fOut(partDerivResName);
             forAll(URes, idxJ)
             {
                 for(label j=0;j<3;j++)
                 {
-                    fOut<<URes[idxJ][j].getGradient()<<endl;
+                    scalar deriv = URes[idxJ][j].getGradient();
+                    if (fabs(deriv) > 1e-16) fOut<<deriv<<endl;
+                    else fOut<<"0"<<endl;
                 }
             }    
         }
@@ -73,6 +75,7 @@ int main(int argc, char *argv[])
             volVectorField URes = (UEqn & U) + fvc::grad(p);
 
             U[cellI][0] += eps;
+            U.correctBoundaryConditions();
 
             fvVectorMatrix UEqnP(
                 fvm::div(phi, U)
@@ -83,15 +86,17 @@ int main(int argc, char *argv[])
             volVectorField UResP = (UEqnP & U) + fvc::grad(p);
 
             U[cellI][0] -= eps;
+            U.correctBoundaryConditions();
             
-            word partDerivResName = "partDerivSerialFD_CellI"+name(cellI);
+            word partDerivResName = "verify_FD_CellI"+name(cellI);
             OFstream fOut(partDerivResName);
             forAll(URes, idxJ)
             {
                 for(label j=0;j<3;j++)
                 {
                     scalar deriv = (UResP[idxJ][j] - URes[idxJ][j] ) /eps;
-                    fOut<<deriv<<endl;
+                    if (fabs(deriv) > 1e-16) fOut<<deriv<<endl;
+                    else fOut<<"0"<<endl;
                 }
             }    
 
