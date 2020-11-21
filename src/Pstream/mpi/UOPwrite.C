@@ -31,6 +31,12 @@ Description
 
 #include <mpi.h>
 
+// MediPack
+#include <medi/medi.hpp>
+#include <codi.hpp>
+#include <codi/externals/codiMpiTypes.hpp>
+using namespace medi;
+
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 bool Foam::UOPstream::write
@@ -67,14 +73,14 @@ bool Foam::UOPstream::write
 
 
     bool transferFailed = true;
-
+    // not checking the type
     if (commsType == commsTypes::blocking)
     {
-        transferFailed = MPI_Bsend
+        transferFailed = AMPI_Bsend
         (
             const_cast<char*>(buf),
             bufSize,
-            MPI_BYTE,
+            AMPI_BYTE, // mpiTypes->MPI_TYPE, // AMPI_Type_No_Check, //mpiTypes->MPI_TYPE, // MPI_BYTE,
             toProcNo,   //procID(toProcNo),
             tag,
             PstreamGlobals::MPICommunicators_[communicator] //MPI_COMM_WORLD
@@ -90,11 +96,11 @@ bool Foam::UOPstream::write
     }
     else if (commsType == commsTypes::scheduled)
     {
-        transferFailed = MPI_Send
+        transferFailed = AMPI_Send
         (
             const_cast<char*>(buf),
             bufSize,
-            MPI_BYTE,
+            AMPI_BYTE, // AMPI_Type_No_Check, // MPI_BYTE,
             toProcNo,   //procID(toProcNo),
             tag,
             PstreamGlobals::MPICommunicators_[communicator] //MPI_COMM_WORLD
@@ -110,13 +116,14 @@ bool Foam::UOPstream::write
     }
     else if (commsType == commsTypes::nonBlocking)
     {
-        MPI_Request request;
+        AMPI_Request request;
 
-        transferFailed = MPI_Isend
+        // CodiPack4OpenFOAM TODO nonBlocking AMPI not supported yet
+        transferFailed = AMPI_Isend
         (
             const_cast<char*>(buf),
             bufSize,
-            MPI_BYTE,
+            AMPI_BYTE,
             toProcNo,   //procID(toProcNo),
             tag,
             PstreamGlobals::MPICommunicators_[communicator],//MPI_COMM_WORLD,
@@ -144,6 +151,5 @@ bool Foam::UOPstream::write
 
     return !transferFailed;
 }
-
 
 // ************************************************************************* //

@@ -32,6 +32,11 @@ Description
 
 #include <mpi.h>
 
+// MediPack
+#include <medi/medi.hpp>
+#include <codi.hpp>
+#include <codi/externals/codiMpiTypes.hpp>
+using namespace medi;
 // * * * * * * * * * * * * * * * * Constructor * * * * * * * * * * * * * * * //
 
 Foam::UIPstream::UIPstream
@@ -66,7 +71,7 @@ Foam::UIPstream::UIPstream
     }
     else
     {
-        MPI_Status status;
+        AMPI_Status status;
 
         label wantedSize = externalBuf_.capacity();
 
@@ -83,14 +88,14 @@ Foam::UIPstream::UIPstream
         // and set it
         if (!wantedSize)
         {
-            MPI_Probe
+            AMPI_Probe
             (
                 fromProcNo_,
                 tag_,
                 PstreamGlobals::MPICommunicators_[comm_],
                 &status
             );
-            MPI_Get_count(&status, MPI_BYTE, &messageSize_);
+            AMPI_Get_count(&status, AMPI_BYTE, &messageSize_);
 
             externalBuf_.setCapacity(messageSize_);
             wantedSize = messageSize_;
@@ -167,7 +172,7 @@ Foam::UIPstream::UIPstream(const int fromProcNo, PstreamBuffers& buffers)
     }
     else
     {
-        MPI_Status status;
+        AMPI_Status status;
 
         label wantedSize = externalBuf_.capacity();
 
@@ -184,14 +189,14 @@ Foam::UIPstream::UIPstream(const int fromProcNo, PstreamBuffers& buffers)
         // and set it
         if (!wantedSize)
         {
-            MPI_Probe
+            AMPI_Probe
             (
                 fromProcNo_,
                 tag_,
                 PstreamGlobals::MPICommunicators_[comm_],
                 &status
             );
-            MPI_Get_count(&status, MPI_BYTE, &messageSize_);
+            AMPI_Get_count(&status, AMPI_BYTE, &messageSize_);
 
             externalBuf_.setCapacity(messageSize_);
             wantedSize = messageSize_;
@@ -257,15 +262,15 @@ Foam::label Foam::UIPstream::read
 
     if (commsType == commsTypes::blocking || commsType == commsTypes::scheduled)
     {
-        MPI_Status status;
+        AMPI_Status status;
 
         if
         (
-            MPI_Recv
+            AMPI_Recv
             (
                 buf,
                 bufSize,
-                MPI_BYTE,
+                AMPI_BYTE,
                 fromProcNo,
                 tag,
                 PstreamGlobals::MPICommunicators_[communicator],
@@ -284,7 +289,7 @@ Foam::label Foam::UIPstream::read
         // Check size of message read
 
         int messageSize;
-        MPI_Get_count(&status, MPI_BYTE, &messageSize);
+        AMPI_Get_count(&status, AMPI_BYTE, &messageSize);
 
         if (debug)
         {
@@ -307,15 +312,16 @@ Foam::label Foam::UIPstream::read
     }
     else if (commsType == commsTypes::nonBlocking)
     {
-        MPI_Request request;
+        // CoDiPack4OpenFOAM TODO nonBlocking AMPI not supported yet
+        AMPI_Request request;
 
         if
         (
-            MPI_Irecv
+            AMPI_Irecv
             (
                 buf,
                 bufSize,
-                MPI_BYTE,
+                AMPI_BYTE,
                 fromProcNo,
                 tag,
                 PstreamGlobals::MPICommunicators_[communicator],
@@ -354,6 +360,5 @@ Foam::label Foam::UIPstream::read
         return 0;
     }
 }
-
 
 // ************************************************************************* //

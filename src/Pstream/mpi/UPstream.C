@@ -33,15 +33,20 @@ License
 #include "collatedFileOperation.H"
 
 #include <mpi.h>
+// MediPack
+#include <medi/medi.hpp>
+#include <codi.hpp>
+#include <codi/externals/codiMpiTypes.hpp>
+using namespace medi;
 
 #include <cstring>
 #include <cstdlib>
 #include <csignal>
 
 #if defined(WM_SP)
-    #define MPI_SCALAR MPI_FLOAT
+    #define AMPI_SCALAR AMPI_FLOAT
 #elif defined(WM_DP)
-    #define MPI_SCALAR MPI_DOUBLE
+    #define AMPI_SCALAR AMPI_DOUBLE
 #endif
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -71,7 +76,7 @@ bool Foam::UPstream::initNull()
 {
     int flag = 0;
 
-    MPI_Finalized(&flag);
+    AMPI_Finalized(&flag);
     if (flag)
     {
         // Already finalized - this is an error
@@ -82,13 +87,13 @@ bool Foam::UPstream::initNull()
         return false;
     }
 
-    MPI_Initialized(&flag);
+    AMPI_Initialized(&flag);
     if (flag)
     {
         // Already initialized - nothing to do
         return true;
     }
-
+/*
     MPI_Init_thread
     (
         nullptr,    // argc
@@ -96,6 +101,9 @@ bool Foam::UPstream::initNull()
         MPI_THREAD_SINGLE,
         &flag       // provided_thread_support
     );
+*/
+
+    AMPI_Init(nullptr, nullptr);
 
     return true;
 }
@@ -105,7 +113,7 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
 {
     int flag = 0;
 
-    MPI_Finalized(&flag);
+    AMPI_Finalized(&flag);
     if (flag)
     {
         // Already finalized - this is an error
@@ -116,7 +124,7 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
         return false;
     }
 
-    MPI_Initialized(&flag);
+    AMPI_Initialized(&flag);
     if (flag)
     {
         // Already initialized - issue warning and skip the rest
@@ -128,24 +136,27 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
     }
 
 
-    //MPI_Init(&argc, &argv);
+    // CoDiPack4OpenFOAM TODO Multi-thread AMPI not supported yet
+    AMPI_Init(&argc, &argv);
+/*
     int provided_thread_support;
-    MPI_Init_thread
+    AMPI_Init_thread
     (
         &argc,
         &argv,
         (
             needsThread
-          ? MPI_THREAD_MULTIPLE
-          : MPI_THREAD_SINGLE
+          ? AMPI_THREAD_MULTIPLE
+          : AMPI_THREAD_SINGLE
         ),
         &provided_thread_support
     );
+*/
 
     int numprocs;
-    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+    AMPI_Comm_size(AMPI_COMM_WORLD, &numprocs);
     int myRank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+    AMPI_Comm_rank(AMPI_COMM_WORLD, &myRank);
 
     if (debug)
     {
@@ -162,7 +173,7 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
 
 
     // Initialise parallel structure
-    setParRun(numprocs, provided_thread_support == MPI_THREAD_MULTIPLE);
+    setParRun(numprocs, false);
 
     #ifndef SGIMPI
     {
@@ -190,7 +201,7 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
         // TBD: could add error handling here.
         // Delete allocated and leave if we fail to attach the buffer?
 
-        MPI_Buffer_attach(new char[bufSize], bufSize);
+        AMPI_Buffer_attach(new char[bufSize], bufSize);
     }
     #endif
 
@@ -207,7 +218,7 @@ void Foam::UPstream::exit(int errnum)
 
     int flag = 0;
 
-    MPI_Initialized(&flag);
+    AMPI_Initialized(&flag);
     if (!flag)
     {
         // Not initialized - just exit
@@ -215,7 +226,7 @@ void Foam::UPstream::exit(int errnum)
         return;
     }
 
-    MPI_Finalized(&flag);
+    AMPI_Finalized(&flag);
     if (flag)
     {
         // Already finalized - warn and exit
@@ -235,9 +246,9 @@ void Foam::UPstream::exit(int errnum)
         int bufSize = 0;
         char* buf = nullptr;
 
-        flag = MPI_Buffer_detach(&buf, &bufSize);
+        flag = AMPI_Buffer_detach(&buf, &bufSize);
 
-        if (MPI_SUCCESS == flag && bufSize)
+        if (AMPI_SUCCESS == flag && bufSize)
         {
             delete[] buf;
         }
@@ -268,19 +279,19 @@ void Foam::UPstream::exit(int errnum)
 
     if (errnum == 0)
     {
-        MPI_Finalize();
+        AMPI_Finalize();
         ::exit(errnum);
     }
     else
     {
-        MPI_Abort(MPI_COMM_WORLD, errnum);
+        AMPI_Abort(AMPI_COMM_WORLD, errnum);
     }
 }
 
 
 void Foam::UPstream::abort()
 {
-    MPI_Abort(MPI_COMM_WORLD, 1);
+    AMPI_Abort(AMPI_COMM_WORLD, 1);
 }
 
 
@@ -299,7 +310,7 @@ void Foam::reduce
             << endl;
         error::printStack(Pout);
     }
-    allReduce(Value, 1, MPI_SCALAR, MPI_SUM, bop, tag, communicator);
+    allReduce(Value, 1, AMPI_SCALAR, AMPI_SUM, bop, tag, communicator);
 }
 
 
@@ -318,7 +329,7 @@ void Foam::reduce
             << endl;
         error::printStack(Pout);
     }
-    allReduce(Value, 1, MPI_SCALAR, MPI_MIN, bop, tag, communicator);
+    allReduce(Value, 1, AMPI_SCALAR, AMPI_MIN, bop, tag, communicator);
 }
 
 
@@ -337,7 +348,7 @@ void Foam::reduce
             << endl;
         error::printStack(Pout);
     }
-    allReduce(Value, 2, MPI_SCALAR, MPI_SUM, bop, tag, communicator);
+    allReduce(Value, 2, AMPI_SCALAR, AMPI_SUM, bop, tag, communicator);
 }
 
 
@@ -376,15 +387,15 @@ void Foam::reduce
 #ifdef MPIX_COMM_TYPE_SHARED
     // Assume mpich2 with non-blocking collectives extensions. Once mpi3
     // is available this will change.
-    MPI_Request request;
+    AMPI_Request request;
     scalar v = Value;
-    MPIX_Ireduce
+    AMPIX_Ireduce
     (
         &v,
         &Value,
         1,
-        MPI_SCALAR,
-        MPI_SUM,
+        AMPI_SCALAR,
+        AMPI_SUM,
         0,              //root
         PstreamGlobals::MPICommunicators_[communicator],
         &request
@@ -567,17 +578,17 @@ void Foam::UPstream::gather
     {
         if
         (
-            MPI_Gatherv
+            AMPI_Gatherv
             (
                 const_cast<char*>(sendData),
                 sendSize,
-                MPI_BYTE,
+                AMPI_BYTE,
                 recvData,
                 const_cast<int*>(recvSizes.begin()),
                 const_cast<int*>(recvOffsets.begin()),
-                MPI_BYTE,
+                AMPI_BYTE,
                 0,
-                MPI_Comm(PstreamGlobals::MPICommunicators_[communicator])
+                AMPI_Comm(PstreamGlobals::MPICommunicators_[communicator])
             )
         )
         {
@@ -626,17 +637,17 @@ void Foam::UPstream::scatter
     {
         if
         (
-            MPI_Scatterv
+            AMPI_Scatterv
             (
                 const_cast<char*>(sendData),
                 const_cast<int*>(sendSizes.begin()),
                 const_cast<int*>(sendOffsets.begin()),
-                MPI_BYTE,
+                AMPI_BYTE,
                 recvData,
                 recvSize,
-                MPI_BYTE,
+                AMPI_BYTE,
                 0,
-                MPI_Comm(PstreamGlobals::MPICommunicators_[communicator])
+                AMPI_Comm(PstreamGlobals::MPICommunicators_[communicator])
             )
         )
         {
@@ -659,9 +670,9 @@ void Foam::UPstream::allocatePstreamCommunicator
     if (index == PstreamGlobals::MPIGroups_.size())
     {
         // Extend storage with dummy values
-        MPI_Group newGroup = MPI_GROUP_NULL;
+        AMPI_Group newGroup = AMPI_GROUP_NULL;
         PstreamGlobals::MPIGroups_.append(newGroup);
-        MPI_Comm newComm = MPI_COMM_NULL;
+        AMPI_Comm newComm = AMPI_COMM_NULL;
         PstreamGlobals::MPICommunicators_.append(newComm);
     }
     else if (index > PstreamGlobals::MPIGroups_.size())
@@ -683,9 +694,9 @@ void Foam::UPstream::allocatePstreamCommunicator
                 << UPstream::worldComm << Foam::exit(FatalError);
         }
 
-        PstreamGlobals::MPICommunicators_[index] = MPI_COMM_WORLD;
-        MPI_Comm_group(MPI_COMM_WORLD, &PstreamGlobals::MPIGroups_[index]);
-        MPI_Comm_rank
+        PstreamGlobals::MPICommunicators_[index] = AMPI_COMM_WORLD;
+        AMPI_Comm_group(AMPI_COMM_WORLD, &PstreamGlobals::MPIGroups_[index]);
+        AMPI_Comm_rank
         (
             PstreamGlobals::MPICommunicators_[index],
            &myProcNo_[index]
@@ -693,7 +704,7 @@ void Foam::UPstream::allocatePstreamCommunicator
 
         // Set the number of processes to the actual number
         int numProcs;
-        MPI_Comm_size(PstreamGlobals::MPICommunicators_[index], &numProcs);
+        AMPI_Comm_size(PstreamGlobals::MPICommunicators_[index], &numProcs);
 
         //procIDs_[index] = identity(numProcs);
         procIDs_[index].setSize(numProcs);
@@ -705,7 +716,7 @@ void Foam::UPstream::allocatePstreamCommunicator
     else
     {
         // Create new group
-        MPI_Group_incl
+        AMPI_Group_incl
         (
             PstreamGlobals::MPIGroups_[parentIndex],
             procIDs_[index].size(),
@@ -714,14 +725,14 @@ void Foam::UPstream::allocatePstreamCommunicator
         );
 
         // Create new communicator
-        MPI_Comm_create
+        AMPI_Comm_create
         (
             PstreamGlobals::MPICommunicators_[parentIndex],
             PstreamGlobals::MPIGroups_[index],
            &PstreamGlobals::MPICommunicators_[index]
         );
 
-        if (PstreamGlobals::MPICommunicators_[index] == MPI_COMM_NULL)
+        if (PstreamGlobals::MPICommunicators_[index] == AMPI_COMM_NULL)
         {
             myProcNo_[index] = -1;
         }
@@ -729,7 +740,7 @@ void Foam::UPstream::allocatePstreamCommunicator
         {
             if
             (
-                MPI_Comm_rank
+                AMPI_Comm_rank
                 (
                     PstreamGlobals::MPICommunicators_[index],
                    &myProcNo_[index]
@@ -753,15 +764,15 @@ void Foam::UPstream::freePstreamCommunicator(const label communicator)
 {
     if (communicator != UPstream::worldComm)
     {
-        if (PstreamGlobals::MPICommunicators_[communicator] != MPI_COMM_NULL)
+        if (PstreamGlobals::MPICommunicators_[communicator] != AMPI_COMM_NULL)
         {
             // Free communicator. Sets communicator to MPI_COMM_NULL
-            MPI_Comm_free(&PstreamGlobals::MPICommunicators_[communicator]);
+            AMPI_Comm_free(&PstreamGlobals::MPICommunicators_[communicator]);
         }
-        if (PstreamGlobals::MPIGroups_[communicator] != MPI_GROUP_NULL)
+        if (PstreamGlobals::MPIGroups_[communicator] != AMPI_GROUP_NULL)
         {
             // Free greoup. Sets group to MPI_GROUP_NULL
-            MPI_Group_free(&PstreamGlobals::MPIGroups_[communicator]);
+            AMPI_Group_free(&PstreamGlobals::MPIGroups_[communicator]);
         }
     }
 }
@@ -793,7 +804,7 @@ void Foam::UPstream::waitRequests(const label start)
 
     if (PstreamGlobals::outstandingRequests_.size())
     {
-        SubList<MPI_Request> waitRequests
+        SubList<AMPI_Request> waitRequests
         (
             PstreamGlobals::outstandingRequests_,
             PstreamGlobals::outstandingRequests_.size() - start,
@@ -802,11 +813,11 @@ void Foam::UPstream::waitRequests(const label start)
 
         if
         (
-            MPI_Waitall
+            AMPI_Waitall
             (
                 waitRequests.size(),
                 waitRequests.begin(),
-                MPI_STATUSES_IGNORE
+                AMPI_STATUSES_IGNORE
             )
         )
         {
@@ -844,10 +855,10 @@ void Foam::UPstream::waitRequest(const label i)
 
     if
     (
-        MPI_Wait
+        AMPI_Wait
         (
            &PstreamGlobals::outstandingRequests_[i],
-            MPI_STATUS_IGNORE
+            AMPI_STATUS_IGNORE
         )
     )
     {
@@ -882,11 +893,11 @@ bool Foam::UPstream::finishedRequest(const label i)
     }
 
     int flag;
-    MPI_Test
+    AMPI_Test
     (
        &PstreamGlobals::outstandingRequests_[i],
        &flag,
-        MPI_STATUS_IGNORE
+        AMPI_STATUS_IGNORE
     );
 
     if (debug)
@@ -988,5 +999,5 @@ void Foam::UPstream::freeTag(const word& s, const int tag)
     PstreamGlobals::freedTags_.append(tag);
 }
 
-
+#include <medi/medi.cpp>
 // ************************************************************************* //

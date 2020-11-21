@@ -226,13 +226,18 @@ void Foam::UList<T>::operator=(const zero)
 template<class T>
 std::streamsize Foam::UList<T>::byteSize() const
 {
+
+    // CodiPack4OpenFOAM TODO We had to comment out the contiguous check because
+    // the codi datatype is not primative type of c++ and the std::is_arithmetic
+    // call (contiguous) will return false
+/*
     if (!contiguous<T>())
     {
         FatalErrorInFunction
             << "Cannot return binary size of a list with non-primitive elements"
             << abort(FatalError);
     }
-
+*/
     return this->size_*sizeof(T);
 }
 
