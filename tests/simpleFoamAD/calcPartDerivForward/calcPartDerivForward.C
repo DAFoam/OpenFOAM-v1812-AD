@@ -8,13 +8,12 @@
 
 \*---------------------------------------------------------------------------*/
 
-#include "fvCFD.H" 
-#include "argList.H"
-#include "Time.H"
-#include "fvMesh.H"
-#include "fvc.H"
-#include "fvMatrices.H"
-#include "fvm.H"
+#include "fvCFD.H"
+#include "singlePhaseTransportModel.H"
+#include "turbulentTransportModel.H"
+#include "simpleControl.H"
+#include "fvOptions.H"
+#include "OFstream.H"
 
 using namespace Foam;
 
@@ -22,92 +21,89 @@ using namespace Foam;
 
 int main(int argc, char *argv[])
 {
-     #include "setRootCase.H"
+    #include "setRootCaseLists.H"
     #include "createTime.H"
     #include "createMesh.H"
+    #include "createControl.H"
+    #include "createFields.H"
 
-	label resI = 10;
-	scalar resRef = 0.0;
-	
-	volScalarField p
-(
-    IOobject
-    (
-        "p",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh
-);
+    label myProc = Pstream::myProcNo();
+    label nProcs = Pstream::nProcs();
 
-	forAll(p, cellI)
-{
-                p[cellI] = cos(1.0*cellI);
-}
-p.correctBoundaryConditions();
+    scalar eps = 1e-6;
 
-volVectorField U
-(
-    IOobject
-    (
-        "U",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh
-);
+    if (nProcs == 1)
+    {
+        // Test CellI 152 172 195
+        labelList testCellIs = {152, 182, 195};
+        forAll(testCellIs, idxI)
+        {
+            label cellI = testCellIs[idxI];
+            U[cellI][0].setGradient(1.0);
 
-forAll(U, cellI)
-{
-	for(label i=0;i<3;i++)
-	{
-		U[cellI][i] = sin(1.0*cellI+i);
-}
-}
-U.correctBoundaryConditions();
+            fvVectorMatrix UEqn(
+                fvm::div(phi, U)
+                + turbulence->divDevReff(U));
 
-surfaceScalarField phi
-(
-    IOobject
-    (
-        "phi",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-    linearInterpolate(U) & mesh.Sf()
-);
+            UEqn.relax();
 
-    U[10][0].setGradient(1.0);
+            volVectorField URes = (UEqn & U) + fvc::grad(p);
 
-fvVectorMatrix UEqn
-    (
-     fvm::div(phi, U) - fvc::grad(p)
-    );
+            word partDerivResName = "partDerivSerialAD_CellI"+name(cellI);
+            OFstream fOut(partDerivResName);
+            forAll(URes, idxJ)
+            {
+                for(label j=0;j<3;j++)
+                {
+                    fOut<<URes[idxJ][j].getGradient()<<endl;
+                }
+            }    
+        }
 
-volVectorField URes = UEqn & U;
-   
-resRef = URes[resI][0];
-Info<<"AD: "<< URes[resI][0].getGradient()<<endl;
+        forAll(testCellIs, idxI)
+        {
+            label cellI = testCellIs[idxI];
 
-scalar eps =1e-8;
-    U[10][0] += eps;
+            fvVectorMatrix UEqn(
+                fvm::div(phi, U)
+                + turbulence->divDevReff(U));
 
-    fvVectorMatrix UEqnP
-    (
-     fvm::div(phi, U) - fvc::grad(p)
-    );
+            UEqn.relax();
 
-volVectorField UResP = UEqnP & U;
+            volVectorField URes = (UEqn & U) + fvc::grad(p);
 
-scalar resP = UResP[resI][0];
+            U[cellI][0] += eps;
 
-Info<<"FD: "<< (resP-resRef)/eps<<endl;
+            fvVectorMatrix UEqnP(
+                fvm::div(phi, U)
+                + turbulence->divDevReff(U));
+
+            UEqnP.relax();
+
+            volVectorField UResP = (UEqnP & U) + fvc::grad(p);
+
+            U[cellI][0] -= eps;
+            
+            word partDerivResName = "partDerivSerialFD_CellI"+name(cellI);
+            OFstream fOut(partDerivResName);
+            forAll(URes, idxJ)
+            {
+                for(label j=0;j<3;j++)
+                {
+                    scalar deriv = (UResP[idxJ][j] - URes[idxJ][j] ) /eps;
+                    fOut<<deriv<<endl;
+                }
+            }    
+
+        }     
+
+    }
+    else
+    {
+        // Test Proc0 CellI=61, 84
+        // Proc1 CellI=59
+
+    }
 
     return 0;
 }
