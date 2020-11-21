@@ -445,6 +445,7 @@ void Foam::UPstream::allToAll
     {
         if
         (
+            // CodiPack4OpenFOAM TODO Alltoall function is not AMPI yet
             MPI_Alltoall
             (
                 // NOTE: const_cast is a temporary hack for
@@ -516,6 +517,7 @@ void Foam::UPstream::allToAll
     {
         if
         (
+            // CodiPack4OpenFOAM TODO Alltoall function is not AMPI yet
             MPI_Alltoallv
             (
                 const_cast<char*>(sendData),
