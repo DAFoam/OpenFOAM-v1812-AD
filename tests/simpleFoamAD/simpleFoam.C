@@ -75,9 +75,9 @@ int main(int argc, char *argv[])
         "Velocity at inlet"
     );
 
-    #include "postProcess.H"
+    //#include "postProcess.H"
 
-    #include "addCheckCaseOptions.H"
+    //#include "addCheckCaseOptions.H"
     #include "setRootCaseLists.H"
     #include "createTime.H"
     #include "createMesh.H"
