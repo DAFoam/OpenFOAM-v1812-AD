@@ -1,7 +1,7 @@
 OpenFOAM-v1812-AD
 =================
 
-This repository contains the OpenFOAM-v1812 source codes differentiated by the automatic differentiation (AD) tools [CoDiPack](https://github.com/scicompkl/codipack) and [MeDiPack] (https://github.com/scicompkl/medipack).
+This repository contains the OpenFOAM-v1812 source codes differentiated by the automatic differentiation (AD) tools [CoDiPack](https://github.com/scicompkl/codipack) and [MeDiPack](https://github.com/scicompkl/medipack).
 
 Installation
 ------------
