@@ -15,7 +15,7 @@ NOTE: OpenFOAM-v1812-AD only differentiates necessary libraries for computing pa
 Acknowledgement
 ---------------
 
-We use the AD tools [CoDiPack](https://github.com/scicompkl/codipack) and [MeDiPack](https://github.com/scicompkl/medipack), developed by Dr. Nicolas Gauger's group at TU Kaiserslautern. In addition, the differentiation is inspired by [discreteAdjointOpenFOAM](https://www.stce.rwth-aachen.de/research/software/discreteadjointopenfoam), developed by Dr. Markus Towara et al. from RWTH Aachen University.
+OpenFOAM-v1812-AD uses the AD tools [CoDiPack](https://github.com/scicompkl/codipack) and [MeDiPack](https://github.com/scicompkl/medipack), developed by Dr. Nicolas Gauger's group at TU Kaiserslautern. In addition, the differentiation is inspired by [discreteAdjointOpenFOAM](https://www.stce.rwth-aachen.de/research/software/discreteadjointopenfoam), developed by Dr. Markus Towara et al. from RWTH Aachen University.
 
 License
 -------
