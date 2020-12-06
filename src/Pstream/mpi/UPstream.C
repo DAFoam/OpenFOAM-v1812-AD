@@ -54,6 +54,9 @@ using namespace medi;
 // file-scope: min value and default for mpiBufferSize
 static const int minBufferSize = 20000000;
 
+// whether to use Python, if yes, we do not call MPI_Finalize and let the 
+// mpi4py finialize the MPI 
+int isPython = 0;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -111,6 +114,20 @@ bool Foam::UPstream::initNull()
 
 bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
 {
+    // We need to check if the argv contains the -python option
+    // if yes, we set isPython=1 and do not call MPI_Finalize, instead
+    // we let mpi4py finalize the MPI
+    // NOTE: this function is not called for serial runs, so we need some
+    // special treatment in the ::exit function
+
+    //Info<<"argv"<<endl;
+    for(label i=0;i<argc;i++)
+    {
+        //Info<<argv[i]<<endl;
+        if(word(argv[i])=="-python") isPython=1;
+    }
+    //Info<<"isPython: "<<isPython<<endl;
+
     int flag = 0;
 
     AMPI_Finalized(&flag);
@@ -128,16 +145,23 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
     if (flag)
     {
         // Already initialized - issue warning and skip the rest
-        WarningInFunction
-            << "MPI was already initialized - cannot perform MPI_Init" << nl
-            << "This could indicate an application programming error!" << endl;
+        //WarningInFunction
+        //    << "MPI was already initialized - cannot perform MPI_Init" << nl
+        //    << "This could indicate an application programming error!" << endl;
 
-        return true;
+        //return true;
+
+        // NOTE: If MPI is initialized, don't quit
+    }
+    else
+    {
+        // If not initialized, do it here
+        AMPI_Init(&argc, &argv);
     }
 
 
     // CoDiPack4OpenFOAM TODO Multi-thread AMPI not supported yet
-    AMPI_Init(&argc, &argv);
+    // AMPI_Init(&argc, &argv);
 /*
     int provided_thread_support;
     AMPI_Init_thread
@@ -211,6 +235,11 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
 
 void Foam::UPstream::exit(int errnum)
 {
+    // NOTE: return here for Python, we do not quit MPI in the OpenFOAM layer
+    // NOTE: for serial runs, the ::init function will not be called so 
+    // isPython will be always 0, we need some special treatment below
+    if(isPython) return;
+
     if (debug)
     {
         Pout<< "UPstream::exit." << endl;
@@ -224,6 +253,16 @@ void Foam::UPstream::exit(int errnum)
         // Not initialized - just exit
         ::exit(errnum);
         return;
+    }
+    else
+    {
+       // NOTE: here is the special treatment, if Python is used and if the
+       // run is serial, the MPI_INIT WILL BE called by mpi4py, so we need
+       // to see if the nProcs is 1, if yes, then return without finalizing
+       // the MPI, again, we let mpi4py to finalize it
+       int numprocs;
+       AMPI_Comm_size(AMPI_COMM_WORLD, &numprocs);
+       if(numprocs == 1) return; 
     }
 
     AMPI_Finalized(&flag);
