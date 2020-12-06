@@ -165,7 +165,7 @@ void patchInjection::correct
             patchInjectedMasses0
         );
 
-        patchInjectedMasses_ = 0;
+        patchInjectedMasses_ = pTraits<scalar>::zero;
     }
 }
 

@@ -429,7 +429,7 @@ void kinematicSingleLayer::solveThickness
     }
 
     // Bound film thickness by a minimum of zero
-    delta_.max(0.0);
+    delta_.max(scalar(0.0));
 
     // Update U field
     U_ -= fvc::reconstruct(deltarUAf*phiAdd);

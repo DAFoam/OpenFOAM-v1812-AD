@@ -83,8 +83,8 @@ thixotropicViscosity::thixotropicViscosity
         film.regionMesh()
     )
 {
-    lambda_.min(1);
-    lambda_.max(0);
+    lambda_.min(scalar(1));
+    lambda_.max(scalar(0));
 
     // Initialise viscosity to inf value because it cannot be evaluated yet
     mu_ = muInf_;
@@ -164,8 +164,8 @@ void thixotropicViscosity::correct
     lambdaEqn.relax();
     lambdaEqn.solve();
 
-    lambda_.min(1);
-    lambda_.max(0);
+    lambda_.min(scalar(1));
+    lambda_.max(scalar(0));
 
     mu_ = muInf_/(sqr(1 - K_*lambda_) + ROOTVSMALL);
     mu_.correctBoundaryConditions();

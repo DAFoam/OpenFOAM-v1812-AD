@@ -49,16 +49,26 @@ src/Allwmake $targetType $*
 echo "========================================"
 echo "Compile OpenFOAM applications"
 echo
-applications/Allwmake $targetType $*
+#applications/Allwmake $targetType $*
+
+# Compile common applications
+wmake applications/utilities/parallelProcessing/decomposePar
+wmake applications/utilities/parallelProcessing/reconstructPar
+wmake applications/utilities/mesh/generation/blockMesh
+wmake applications/utilities/mesh/manipulation/checkMesh
+wmake applications/solvers/incompressible/simpleFoam
+wmake applications/solvers/compressible/rhoSimpleFoam
+wmake applications/utilities/postProcessing/postProcess
+
 
 # Additional components/modules
-if [ -d "$WM_PROJECT_DIR/modules" ]
-then
-    echo "========================================"
-    echo "Compile OpenFOAM modules"
-    echo
-    (cd $WM_PROJECT_DIR/modules 2>/dev/null && wmake -all)
-fi
+#if [ -d "$WM_PROJECT_DIR/modules" ]
+#then
+#    echo "========================================"
+#    echo "Compile OpenFOAM modules"
+#    echo
+#    (cd $WM_PROJECT_DIR/modules 2>/dev/null && wmake -all)
+#fi
 
 # Count files in given directory. Ignore "Test-*" binaries.
 _foamCountDirEntries()

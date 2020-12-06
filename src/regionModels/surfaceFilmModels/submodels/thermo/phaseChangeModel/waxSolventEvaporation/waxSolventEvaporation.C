@@ -354,8 +354,8 @@ void waxSolventEvaporation::correctModel
         YsolventEqn.relax();
         YsolventEqn.solve();
 
-        Ysolvent_.min(1);
-        Ysolvent_.max(0);
+        Ysolvent_.min(scalar(1));
+        Ysolvent_.max(scalar(0));
 
         scalarField dm
         (

@@ -513,7 +513,7 @@ Foam::label Foam::checkTopology
                     }
                 }
                 Info<< " with "
-                    << returnReduce(cellRegions[i].size(), sumOp<scalar>())
+                    << returnReduce(cellRegions[i].size(), sumOp<label>())
                     << " cells to cellSet " << cellRegions[i].name() << endl;
 
                 cellRegions[i].write();

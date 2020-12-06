@@ -63,7 +63,7 @@ thermophysicalModels/Allwmake $targetType $*
 TurbulenceModels/Allwmake $targetType $*
 
 #wmake $targetType combustionModels
-#regionModels/Allwmake $targetType $*
+regionModels/Allwmake $targetType $*
 #lagrangian/Allwmake $targetType $*
 
 wmake $targetType fvOptions
@@ -80,18 +80,17 @@ mesh/Allwmake $targetType $*
 #wmake $targetType regionCoupled
 
 #functionObjects/Allwmake $targetType $*
-exit 1
 
-wmake $targetType lumpedPointMotion
-wmake $targetType sixDoFRigidBodyMotion
-wmake $targetType sixDoFRigidBodyState
-wmake $targetType rigidBodyDynamics
-wmake $targetType rigidBodyMeshMotion
-wmake $targetType semiPermeableBaffle
-wmake $targetType atmosphericModels
+#wmake $targetType lumpedPointMotion
+#wmake $targetType sixDoFRigidBodyMotion
+#wmake $targetType sixDoFRigidBodyState
+#wmake $targetType rigidBodyDynamics
+#wmake $targetType rigidBodyMeshMotion
+#wmake $targetType semiPermeableBaffle
+#wmake $targetType atmosphericModels
 
 # Needs access to Turbulence
 
-wmake $targetType thermophysicalModels/thermophysicalPropertiesFvPatchFields/liquidProperties
+#wmake $targetType thermophysicalModels/thermophysicalPropertiesFvPatchFields/liquidProperties
 
 #------------------------------------------------------------------------------
