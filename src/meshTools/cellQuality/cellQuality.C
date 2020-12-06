@@ -64,7 +64,7 @@ Foam::tmp<Foam::scalarField> Foam::cellQuality::nonOrthogonality() const
         scalar magS = mag(s);
 
         scalar cosDDotS =
-            radToDeg(Foam::acos(min(1.0, (d & s)/(mag(d)*magS + VSMALL))));
+            radToDeg(acos(min(1.0, (d & s)/(mag(d)*magS + VSMALL))));
 
         result[own[facei]] = max(cosDDotS, result[own[facei]]);
 
@@ -89,7 +89,7 @@ Foam::tmp<Foam::scalarField> Foam::cellQuality::nonOrthogonality() const
             scalar magS = mag(s);
 
             scalar cosDDotS =
-                radToDeg(Foam::acos(min(1.0, (d & s)/(mag(d)*magS + VSMALL))));
+                radToDeg(acos(min(1.0, (d & s)/(mag(d)*magS + VSMALL))));
 
             result[faceCells[facei]] = max(cosDDotS, result[faceCells[facei]]);
         }
@@ -203,7 +203,7 @@ Foam::tmp<Foam::scalarField> Foam::cellQuality::faceNonOrthogonality() const
         scalar magS = mag(s);
 
         scalar cosDDotS =
-            radToDeg(Foam::acos(min(1.0, (d & s)/(mag(d)*magS + VSMALL))));
+            radToDeg(acos(min(1.0, (d & s)/(mag(d)*magS + VSMALL))));
 
         result[facei] = cosDDotS;
     }
@@ -228,7 +228,7 @@ Foam::tmp<Foam::scalarField> Foam::cellQuality::faceNonOrthogonality() const
             scalar magS = mag(s);
 
             scalar cosDDotS =
-                radToDeg(Foam::acos(min(1.0, (d & s)/(mag(d)*magS + VSMALL))));
+                radToDeg(acos(min(1.0, (d & s)/(mag(d)*magS + VSMALL))));
 
             result[globalFacei++] = cosDDotS;
         }

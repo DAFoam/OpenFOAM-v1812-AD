@@ -720,7 +720,7 @@ bool Foam::primitiveMesh::checkFaceAngles
     if (nConcave > 0)
     {
         scalar maxConcaveDegr =
-            radToDeg(Foam::asin(Foam::min(1.0, maxEdgeSin.getValue())));
+            radToDeg(asin(min(1.0, maxEdgeSin)));
 
         if (debug || report)
         {

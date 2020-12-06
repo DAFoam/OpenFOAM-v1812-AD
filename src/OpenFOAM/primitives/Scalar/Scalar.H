@@ -166,12 +166,12 @@ Ostream& operator<<(Ostream& os, const Scalar val);
 //transFunc(asin)
 //transFunc(acos)
 //transFunc(atan)
-//transFunc(sinh)
-//transFunc(cosh)
-//transFunc(tanh)
-//transFunc(asinh)
-//transFunc(acosh)
-//transFunc(atanh)
+transFunc(sinh)
+transFunc(cosh)
+transFunc(tanh)
+transFunc(asinh)
+transFunc(acosh)
+transFunc(atanh)
 
 // Standard ANSI-C (but not in <cmath>) transcendental functions
 

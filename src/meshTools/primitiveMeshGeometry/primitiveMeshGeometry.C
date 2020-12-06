@@ -829,7 +829,7 @@ bool Foam::primitiveMeshGeometry::checkFaceAngles
         if (maxEdgeSin > SMALL)
         {
             scalar maxConcaveDegr =
-                radToDeg(asin(Foam::min(1.0, maxEdgeSin.getValue())));
+                radToDeg(asin(min(1.0, maxEdgeSin)));
 
             Info<< "There are " << nConcave
                 << " faces with concave angles between consecutive"

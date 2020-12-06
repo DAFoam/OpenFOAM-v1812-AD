@@ -176,36 +176,6 @@ inline scalar atan(const scalar& val)
     return codi::atan(val);
 }
 
-inline scalar sinh(const scalar& val)
-{
-    return codi::sinh(val);
-}
-
-inline scalar cosh(const scalar& val)
-{
-    return codi::cosh(val);
-}
-
-inline scalar tanh(const scalar& val)
-{
-    return codi::tanh(val);
-}
-
-inline scalar asinh(const scalar& val)
-{
-    return codi::asinh(val);
-}
-
-inline scalar acosh(const scalar& val)
-{
-    return codi::acosh(val);
-}
-
-inline scalar atanh(const scalar& val)
-{
-    return codi::atanh(val);
-}
-
 BINARY_FUNCTION(scalar, scalar, scalar, pow)
 BINARY_TYPE_FUNCTION(scalar, scalar, scalar, pow)
 

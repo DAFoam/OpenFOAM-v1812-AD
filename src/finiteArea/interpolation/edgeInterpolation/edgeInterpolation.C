@@ -544,7 +544,7 @@ void Foam::edgeInterpolation::makeCorrectionVectors() const
             sinAlpha[edgeI] = max(-1, min(sinAlpha[edgeI], 1));
         }
 
-        NonOrthogCoeff = max(Foam::asin(sinAlpha)*180.0/M_PI);
+        NonOrthogCoeff = max(asin(sinAlpha)*180.0/M_PI);
     }
 
     reduce(NonOrthogCoeff, maxOp<scalar>());

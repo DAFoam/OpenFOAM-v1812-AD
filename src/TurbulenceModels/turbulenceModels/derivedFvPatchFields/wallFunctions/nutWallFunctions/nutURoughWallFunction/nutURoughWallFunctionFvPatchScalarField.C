@@ -102,7 +102,7 @@ tmp<scalarField> nutURoughWallFunctionFvPatchScalarField::calcYPlus
         // Rough Walls
         const scalar c_1 = 1/(90 - 2.25) + roughnessConstant_;
         static const scalar c_2 = 2.25/(90 - 2.25);
-        static const scalar c_3 = 2.0*atan(1.0)/codi::log(90/2.25);
+        static const scalar c_3 = 2.0*codi::atan(1.0)/codi::log(90/2.25);
         static const scalar c_4 = c_3*codi::log(2.25);
 
         //if (KsPlusBasedOnYPlus_)

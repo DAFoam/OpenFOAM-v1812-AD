@@ -958,7 +958,7 @@ void Foam::medialAxisMeshMover::findIsolatedRegions
 
     Info<< typeName << " : Removing isolated regions ..." << nl
         << indent << "- if partially extruded faces make angle < "
-        << Foam::radToDeg(Foam::acos(minCosLayerTermination)) <<  nl;
+        << radToDeg(acos(minCosLayerTermination)) <<  nl;
     if (detectExtrusionIsland)
     {
         Info<< indent << "- if exclusively surrounded by non-extruded points"
