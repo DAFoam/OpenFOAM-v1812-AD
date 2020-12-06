@@ -153,24 +153,25 @@ Ostream& operator<<(Ostream& os, const Scalar val);
 
 // Standard C++ transcendental functions
 //CoDiPack4OpenFOAM NOTE Need to comment these functions out since they cause seg fault in codi
+// NOTE If a function is commented out, we need to add it in scalarField.C
 // transFunc(sqrt)
 
-transFunc(cbrt)
-transFunc(exp)
+//transFunc(cbrt)
+//transFunc(exp)
 //transFunc(log)
 //transFunc(log10)
 //transFunc(sin)
 //transFunc(cos)
-transFunc(tan)
-transFunc(asin)
-transFunc(acos)
-transFunc(atan)
-transFunc(sinh)
-transFunc(cosh)
-transFunc(tanh)
-transFunc(asinh)
-transFunc(acosh)
-transFunc(atanh)
+//transFunc(tan)
+//transFunc(asin)
+//transFunc(acos)
+//transFunc(atan)
+//transFunc(sinh)
+//transFunc(cosh)
+//transFunc(tanh)
+//transFunc(asinh)
+//transFunc(acosh)
+//transFunc(atanh)
 
 // Standard ANSI-C (but not in <cmath>) transcendental functions
 

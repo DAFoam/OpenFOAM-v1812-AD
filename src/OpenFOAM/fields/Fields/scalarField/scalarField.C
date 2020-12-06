@@ -126,6 +126,16 @@ inline scalar sqrt(const scalar& val)
     return codi::sqrt(val);
 }
 
+inline scalar cbrt(const scalar& val)
+{
+    return codi::cbrt(val);
+}
+
+inline scalar exp(const scalar& val)
+{
+    return codi::exp(val);
+}
+
 inline scalar log(const scalar& val)
 {
     return codi::log(val);
@@ -144,6 +154,56 @@ inline scalar cos(const scalar& val)
 inline scalar sin(const scalar& val)
 {
     return codi::sin(val);
+}
+
+inline scalar tan(const scalar& val)
+{
+    return codi::tan(val);
+}
+
+inline scalar asin(const scalar& val)
+{
+    return codi::asin(val);
+}
+
+inline scalar acos(const scalar& val)
+{
+    return codi::acos(val);
+}
+
+inline scalar atan(const scalar& val)
+{
+    return codi::atan(val);
+}
+
+inline scalar sinh(const scalar& val)
+{
+    return codi::sinh(val);
+}
+
+inline scalar cosh(const scalar& val)
+{
+    return codi::cosh(val);
+}
+
+inline scalar tanh(const scalar& val)
+{
+    return codi::tanh(val);
+}
+
+inline scalar asinh(const scalar& val)
+{
+    return codi::asinh(val);
+}
+
+inline scalar acosh(const scalar& val)
+{
+    return codi::acosh(val);
+}
+
+inline scalar atanh(const scalar& val)
+{
+    return codi::atanh(val);
 }
 
 BINARY_FUNCTION(scalar, scalar, scalar, pow)
