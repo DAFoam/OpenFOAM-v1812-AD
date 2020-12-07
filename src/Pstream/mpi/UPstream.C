@@ -484,7 +484,9 @@ void Foam::UPstream::allToAll
     {
         if
         (
-            // CodiPack4OpenFOAM TODO Alltoall function is not AMPI yet
+            // CoDiPack4OpenFOAM TODO Alltoall function is not AMPI yet
+            // This shouldn't be an issue since the allToAll function is only used in
+            // src/OpenFOAM/db/IOstreams/Pstreams/exchange.C 
             MPI_Alltoall
             (
                 // NOTE: const_cast is a temporary hack for
@@ -556,17 +558,16 @@ void Foam::UPstream::allToAll
     {
         if
         (
-            // CodiPack4OpenFOAM TODO Alltoall function is not AMPI yet
-            MPI_Alltoallv
+            AMPI_Alltoallv
             (
                 const_cast<char*>(sendData),
                 const_cast<int*>(sendSizes.begin()),
                 const_cast<int*>(sendOffsets.begin()),
-                MPI_BYTE,
+                AMPI_BYTE,
                 recvData,
                 const_cast<int*>(recvSizes.begin()),
                 const_cast<int*>(recvOffsets.begin()),
-                MPI_BYTE,
+                AMPI_BYTE,
                 PstreamGlobals::MPICommunicators_[communicator]
             )
         )
