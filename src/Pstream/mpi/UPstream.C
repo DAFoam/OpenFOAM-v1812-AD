@@ -120,13 +120,10 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
     // NOTE: this function is not called for serial runs, so we need some
     // special treatment in the ::exit function
 
-    //Info<<"argv"<<endl;
     for(label i=0;i<argc;i++)
     {
-        //Info<<argv[i]<<endl;
         if(word(argv[i])=="-python") isPython=1;
     }
-    //Info<<"isPython: "<<isPython<<endl;
 
     int flag = 0;
 
@@ -151,7 +148,10 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
 
         //return true;
 
-        // NOTE: If MPI is initialized, don't quit
+        // NOTE: If MPI is initialized, call the AMPI_Init_common function
+        // to initialize MeDiPack, check the AMPI_Init function defined
+        // in MeDiPack/include/medi/ampi/wrappers.hpp
+        AMPI_Init_common();
     }
     else
     {
