@@ -6,7 +6,7 @@ This repository contains the OpenFOAM-v1812 source codes differentiated by autom
 Installation
 ------------
 
-The installation of OpenFOAM-v1812-AD is similar to that of OpenFOAM-v1812. One needs to first install all prerequisites, source the OpenFOAM-v1812-AD/etc/bashrc file, and then run `./Allwmake.sh`.
+The installation of OpenFOAM-v1812-AD is similar to that of OpenFOAM-v1812. One needs to first install all prerequisites, source the OpenFOAM-v1812-AD/etc/bashrc file, and then run `./Allwmake`.
 
 The default build will be for forward mode AD. To compile reverse mode AD, change `WM_CODI_AD_MODE` to `reverse` in OpenFOAM-v1812-AD/etc/bashrc, source it, and rebuild.
 
