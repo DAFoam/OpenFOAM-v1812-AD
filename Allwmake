@@ -59,7 +59,7 @@ wmake applications/utilities/mesh/manipulation/checkMesh
 wmake applications/solvers/incompressible/simpleFoam
 wmake applications/solvers/compressible/rhoSimpleFoam
 wmake applications/utilities/postProcessing/postProcess
-
+wmake applications/solvers/incompressible/DASimpleFoamReverseAD
 
 # Additional components/modules
 #if [ -d "$WM_PROJECT_DIR/modules" ]
