@@ -96,8 +96,8 @@ export WM_COMPILE_OPTION=Opt
 export WM_MPLIB=SYSTEMOPENMPI
 
 # [WM_CODI_AD_MODE] - Automatic differentiation mode
-# = forward | reverse
-export WM_CODI_AD_MODE=forward
+# = CODI_AD_FORWARD | CODI_AD_REVERSE
+export WM_CODI_AD_MODE=CODI_AD_FORWARD
 
 #------------------------------------------------------------------------------
 # (advanced / legacy)
@@ -153,17 +153,6 @@ then
 else
     echo "Error: did not locate installation path for $WM_PROJECT-$WM_PROJECT_VERSION" 1>&2
     echo "No directory: $WM_PROJECT_DIR" 1>&2
-fi
-
-if [ "$WM_CODI_AD_MODE" = "forward" ]; then
-  echo "Using forward mode AD."
-  export WM_CODI_AD_FLAGS="-DCODI_AD_FORWARD"
-elif [ "$WM_CODI_AD_MODE" = "reverse" ]; then
-  echo "Using reverse mode AD."
-  export WM_CODI_AD_FLAGS="-DCODI_AD_REVERSE"
-else
-  echo "WM_CODI_AD_MODE not valid!"
-  exit 1
 fi
 
 # Cleanup variables (done as final statement for a clean exit code)

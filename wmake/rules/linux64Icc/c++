@@ -4,7 +4,7 @@ CC          = icpc -std=c++11 -fp-trap=common -fp-model precise
 
 include $(DEFAULT_RULES)/c++$(WM_COMPILE_OPTION)
 
-c++FLAGS    = $(GFLAGS) $(c++WARN) $(c++OPT) $(c++DBUG) $(ptFLAGS) $(LIB_HEADER_DIRS) $(WM_CODI_AD_FLAGS) -fPIC
+c++FLAGS    = $(GFLAGS) $(c++WARN) $(c++OPT) $(c++DBUG) $(ptFLAGS) $(LIB_HEADER_DIRS) -fPIC
 
 Ctoo        = $(WM_SCHEDULER) $(CC) $(c++FLAGS) -c $< -o $@
 cxxtoo      = $(Ctoo)
