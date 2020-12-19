@@ -156,7 +156,7 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
         // NOTE: Get the level of thread support provided. This is the same value that was 
         // returned in the provided argument in AMPI_Init_thread. 
         // provided_thread_support will be used later in setParRun
-        MPI_Query_thread(&provided_thread_support);
+        AMPI_Query_thread(&provided_thread_support);
     }
     else
     {
