@@ -2,4 +2,4 @@ derivedFvPatchFields/filmPyrolysisVelocityCoupled/filmPyrolysisVelocityCoupledFv
 derivedFvPatchFields/filmPyrolysisTemperatureCoupled/filmPyrolysisTemperatureCoupledFvPatchScalarField.C
 derivedFvPatchFields/filmPyrolysisRadiativeCoupledMixed/filmPyrolysisRadiativeCoupledMixedFvPatchScalarField.C
 
-LIB = $(FOAM_LIBBIN)/libregionCoupling
+LIB = $(FOAM_LIBBIN)/libregionCouplingAD

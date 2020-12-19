@@ -736,4 +736,4 @@ $(writers)/jplotGraph/jplotGraph.C
 
 meshes/data/data.C
 
-LIB = $(FOAM_LIBBIN)/libOpenFOAM
+LIB = $(FOAM_LIBBIN)/libOpenFOAMAD

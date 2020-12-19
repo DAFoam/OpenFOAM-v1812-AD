@@ -32,4 +32,4 @@ regionsToCell/regionsToCell.C
 lduPrimitiveProcessorInterface/lduPrimitiveProcessorInterface.C
 
 
-LIB = $(FOAM_LIBBIN)/liboverset
+LIB = $(FOAM_LIBBIN)/liboversetAD

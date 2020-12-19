@@ -57,4 +57,4 @@ $(derivedConstraints)/velocityDampingConstraint/velocityDampingConstraint.C
 corrections/limitTemperature/limitTemperature.C
 corrections/limitVelocity/limitVelocity.C
 
-LIB = $(FOAM_LIBBIN)/libfvOptions
+LIB = $(FOAM_LIBBIN)/libfvOptionsAD

@@ -12,15 +12,15 @@ EXE_INC = \
     -I$(LIB_SRC)/sampling/lnInclude
 
 EXE_LIBS = \
-    -lturbulenceModels \
-    -lincompressibleTurbulenceModels \
-    -lcompressibleTurbulenceModels \
-    -lincompressibleTransportModels \
-    -lcompressibleTransportModels \
-    -lfluidThermophysicalModels \
-    -lspecie \
-    -lfiniteVolume \
-    -lfvOptions \
-    -lgenericPatchFields \
-    -lmeshTools \
-    -lsampling
+    -lturbulenceModelsAD \
+    -lincompressibleTurbulenceModelsAD \
+    -lcompressibleTurbulenceModelsAD \
+    -lincompressibleTransportModelsAD \
+    -lcompressibleTransportModelsAD \
+    -lfluidThermophysicalModelsAD \
+    -lspecieAD \
+    -lfiniteVolumeAD \
+    -lfvOptionsAD \
+    -lgenericPatchFieldsAD \
+    -lmeshToolsAD \
+    -lsamplingAD

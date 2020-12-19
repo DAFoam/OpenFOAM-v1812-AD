@@ -12,12 +12,12 @@ EXE_INC = \
     -I$(LIB_SRC)/parallel/distributed/lnInclude
 
 LIB_LIBS = \
-    -lcompressibleTransportModels \
-    -lfluidThermophysicalModels \
-    -lspecie \
-    -lsolidThermo \
-    -lSLGThermo \
-    -lthermophysicalProperties \
-    -lfiniteVolume \
-    -lmeshTools \
-    -ldistributed
+    -lcompressibleTransportModelsAD \
+    -lfluidThermophysicalModelsAD \
+    -lspecieAD \
+    -lsolidThermoAD \
+    -lSLGThermoAD \
+    -lthermophysicalPropertiesAD \
+    -lfiniteVolumeAD \
+    -lmeshToolsAD \
+    -ldistributedAD

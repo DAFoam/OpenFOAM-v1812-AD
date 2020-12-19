@@ -5,4 +5,4 @@ basicSolidChemistryModel/basicSolidChemistryModels.C
 
 solidChemistrySolver/makeSolidChemistrySolvers.C
 
-LIB = $(FOAM_LIBBIN)/libsolidChemistryModel
+LIB = $(FOAM_LIBBIN)/libsolidChemistryModelAD

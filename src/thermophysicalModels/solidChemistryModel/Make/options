@@ -10,8 +10,8 @@ EXE_INC = \
     -I$(LIB_SRC)/transportModels/compressible/lnInclude
 
 LIB_LIBS = \
-    -lchemistryModel \
-    -lfiniteVolume \
-    -lODE\
-    -lreactionThermophysicalModels \
-    -lcompressibleTransportModels
+    -lchemistryModelAD \
+    -lfiniteVolumeAD \
+    -lODEAD\
+    -lreactionThermophysicalModelsAD \
+    -lcompressibleTransportModelsAD

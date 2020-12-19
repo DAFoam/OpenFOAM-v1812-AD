@@ -125,4 +125,4 @@ convectionSchemes = finiteArea/convectionSchemes
 $(convectionSchemes)/faConvectionScheme/faConvectionSchemes.C
 $(convectionSchemes)/gaussFaConvectionScheme/gaussFaConvectionSchemes.C
 
-LIB = $(FOAM_LIBBIN)/libfiniteArea
+LIB = $(FOAM_LIBBIN)/libfiniteAreaAD

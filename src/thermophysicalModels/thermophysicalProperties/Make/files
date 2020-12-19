@@ -61,4 +61,4 @@ solidProperties/C/C.C
 solidProperties/CaCO3/CaCO3.C
 
 
-LIB = $(FOAM_LIBBIN)/libthermophysicalProperties
+LIB = $(FOAM_LIBBIN)/libthermophysicalPropertiesAD

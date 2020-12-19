@@ -13,12 +13,12 @@ EXE_INC = \
     -I$(LIB_SRC)/meshTools/lnInclude
 
 LIB_LIBS = \
-    -lcompressibleTransportModels \
-    -lregionModels \
-    -lsolidThermo \
-    -lturbulenceModels \
-    -lcompressibleTurbulenceModels \
-    -lradiationModels \
-    -ldynamicMesh \
-    -lfiniteVolume \
-    -lmeshTools
+    -lcompressibleTransportModelsAD \
+    -lregionModelsAD \
+    -lsolidThermoAD \
+    -lturbulenceModelsAD \
+    -lcompressibleTurbulenceModelsAD \
+    -lradiationModelsAD \
+    -ldynamicMeshAD \
+    -lfiniteVolumeAD \
+    -lmeshToolsAD

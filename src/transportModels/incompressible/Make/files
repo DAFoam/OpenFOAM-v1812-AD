@@ -14,4 +14,4 @@ singlePhaseTransportModel/singlePhaseTransportModel.C
 
 incompressibleTwoPhaseMixture/incompressibleTwoPhaseMixture.C
 
-LIB = $(FOAM_LIBBIN)/libincompressibleTransportModels
+LIB = $(FOAM_LIBBIN)/libincompressibleTransportModelsAD

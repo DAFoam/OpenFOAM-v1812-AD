@@ -6,8 +6,8 @@ EXE_INC = \
     -I$(LIB_SRC)/finiteVolume/lnInclude
 
 LIB_LIBS = \
-    -lcompressibleTransportModels \
-    -lfluidThermophysicalModels \
-    -lspecie \
-    -lsolidSpecie \
-    -lfiniteVolume
+    -lcompressibleTransportModelsAD \
+    -lfluidThermophysicalModelsAD \
+    -lspecieAD \
+    -lsolidSpecieAD \
+    -lfiniteVolumeAD

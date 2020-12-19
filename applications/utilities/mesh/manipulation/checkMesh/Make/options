@@ -7,6 +7,6 @@ EXE_INC = \
     -I$(LIB_SRC)/dynamicMesh/lnInclude
 
 EXE_LIBS = \
-    -lmeshTools \
-    -lsampling \
-    -ldynamicMesh
+    -lmeshToolsAD \
+    -lsamplingAD \
+    -ldynamicMeshAD

@@ -11,13 +11,13 @@ EXE_INC = \
     -I$(LIB_SRC)/meshTools/lnInclude
 
 LIB_LIBS = \
-    -lcompressibleTransportModels \
-    -lfluidThermophysicalModels \
-    -lspecie \
-    -lthermophysicalProperties \
-    -lreactionThermophysicalModels \
-    -lSLGThermo \
-    -ldistributionModels \
-    -lregionModels \
-    -lfiniteVolume \
-    -lmeshTools
+    -lcompressibleTransportModelsAD \
+    -lfluidThermophysicalModelsAD \
+    -lspecieAD \
+    -lthermophysicalPropertiesAD \
+    -lreactionThermophysicalModelsAD \
+    -lSLGThermoAD \
+    -ldistributionModelsAD \
+    -lregionModelsAD \
+    -lfiniteVolumeAD \
+    -lmeshToolsAD

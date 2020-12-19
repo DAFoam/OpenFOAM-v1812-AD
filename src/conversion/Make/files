@@ -28,4 +28,4 @@ vtk/output/foamVtkInternalWriter.H
 vtk/output/foamVtkPatchWriter.H
 vtk/output/foamVtkSurfaceFieldWriter.C
 
-LIB = $(FOAM_LIBBIN)/libconversion
+LIB = $(FOAM_LIBBIN)/libconversionAD

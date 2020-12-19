@@ -14,15 +14,15 @@ EXE_INC = \
     -I$(LIB_SRC)/transportModels/compressible/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolume \
-    -lmeshTools \
-    -lchemistryModel \
-    -lspecie \
-    -lfluidThermophysicalModels \
-    -lsolidChemistryModel \
-    -lsolidThermo \
-    -lturbulenceModels \
-    -lcompressibleTurbulenceModels \
-    -lregionModels \
-    -lradiationModels \
-    -lreactionThermophysicalModels
+    -lfiniteVolumeAD \
+    -lmeshToolsAD \
+    -lchemistryModelAD \
+    -lspecieAD \
+    -lfluidThermophysicalModelsAD \
+    -lsolidChemistryModelAD \
+    -lsolidThermoAD \
+    -lturbulenceModelsAD \
+    -lcompressibleTurbulenceModelsAD \
+    -lregionModelsAD \
+    -lradiationModelsAD \
+    -lreactionThermophysicalModelsAD

@@ -6,4 +6,4 @@ noThermo/noThermo.C
 derivedFvPatchFields/thermalBaffle/thermalBaffleFvPatchScalarField.C
 
 
-LIB = $(FOAM_LIBBIN)/libthermalBaffleModels
+LIB = $(FOAM_LIBBIN)/libthermalBaffleModelsAD

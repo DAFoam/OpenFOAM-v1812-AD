@@ -321,4 +321,4 @@ regionCoupled/GAMG/interfaceFields/regionCoupledGAMGInterfaceField/regionCoupled
 
 tetOverlapVolume/tetOverlapVolume.C
 
-LIB = $(FOAM_LIBBIN)/libmeshTools
+LIB = $(FOAM_LIBBIN)/libmeshToolsAD

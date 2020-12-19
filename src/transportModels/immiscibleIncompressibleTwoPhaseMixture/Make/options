@@ -6,8 +6,8 @@ EXE_INC = \
     -I$(LIB_SRC)/finiteVolume/lnInclude
 
 LIB_LIBS = \
-    -ltwoPhaseMixture \
-    -lincompressibleTransportModels \
-    -linterfaceProperties \
-    -ltwoPhaseProperties \
-    -lfiniteVolume
+    -ltwoPhaseMixtureAD \
+    -lincompressibleTransportModelsAD \
+    -linterfacePropertiesAD \
+    -ltwoPhasePropertiesAD \
+    -lfiniteVolumeAD

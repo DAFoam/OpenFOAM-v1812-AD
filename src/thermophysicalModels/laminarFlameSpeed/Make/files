@@ -5,4 +5,4 @@ Gulders/Gulders.C
 GuldersEGR/GuldersEGR.C
 RaviPetersen/RaviPetersen.C
 
-LIB = $(FOAM_LIBBIN)/liblaminarFlameSpeedModels
+LIB = $(FOAM_LIBBIN)/liblaminarFlameSpeedModelsAD

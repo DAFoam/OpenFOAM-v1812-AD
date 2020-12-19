@@ -2,4 +2,4 @@ decompositionInformation.C
 decompositionModel.C
 fvFieldDecomposer.C
 
-LIB = $(FOAM_LIBBIN)/libdecompose
+LIB = $(FOAM_LIBBIN)/libdecomposeAD

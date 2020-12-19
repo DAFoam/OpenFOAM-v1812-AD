@@ -78,4 +78,4 @@ $(PATCHFIELDS)/inclinedFilmNusseltHeight/inclinedFilmNusseltHeightFvPatchScalarF
 $(PATCHFIELDS)/inclinedFilmNusseltInletVelocity/inclinedFilmNusseltInletVelocityFvPatchVectorField.C
 
 
-LIB = $(FOAM_LIBBIN)/libsurfaceFilmModels
+LIB = $(FOAM_LIBBIN)/libsurfaceFilmModelsAD

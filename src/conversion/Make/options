@@ -5,6 +5,6 @@ EXE_INC = \
     -I$(LIB_SRC)/meshTools/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolume \
-    -lfiniteArea \
-    -lmeshTools
+    -lfiniteVolumeAD \
+    -lfiniteAreaAD \
+    -lmeshToolsAD

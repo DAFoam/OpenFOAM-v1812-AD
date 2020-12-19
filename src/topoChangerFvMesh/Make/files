@@ -11,4 +11,4 @@ movingConeTopoFvMesh/movingConeTopoFvMesh.C
 mixerFvMesh/mixerFvMesh.C
 */
 
-LIB = $(FOAM_LIBBIN)/libtopoChangerFvMesh
+LIB = $(FOAM_LIBBIN)/libtopoChangerFvMeshAD

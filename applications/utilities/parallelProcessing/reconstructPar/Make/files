@@ -2,4 +2,4 @@ processorFaMeshes.C
 faFieldReconstructor.C
 reconstructPar.C
 
-EXE = $(FOAM_APPBIN)/reconstructPar
+EXE = $(FOAM_APPBIN)/reconstructParAD

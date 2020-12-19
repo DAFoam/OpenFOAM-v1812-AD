@@ -20,13 +20,13 @@ EXE_INC = \
     -I$(LIB_SRC)/meshTools/lnInclude
 
 LIB_LIBS = \
-    -lregionModels \
-    -lpyrolysisModels \
-    -lsurfaceFilmModels \
-    -lsolidChemistryModel \
-    -lreactionThermophysicalModels \
-    -lSLGThermo \
-    -lturbulenceModels \
-    -lcompressibleTurbulenceModels \
-    -lfiniteVolume \
-    -lmeshTools
+    -lregionModelsAD \
+    -lpyrolysisModelsAD \
+    -lsurfaceFilmModelsAD \
+    -lsolidChemistryModelAD \
+    -lreactionThermophysicalModelsAD \
+    -lSLGThermoAD \
+    -lturbulenceModelsAD \
+    -lcompressibleTurbulenceModelsAD \
+    -lfiniteVolumeAD \
+    -lmeshToolsAD

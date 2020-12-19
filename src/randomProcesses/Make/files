@@ -28,4 +28,4 @@ $(windowModels)/Hanning/Hanning.C
 $(windowModels)/uniform/uniform.C
 
 
-LIB = $(FOAM_LIBBIN)/librandomProcesses
+LIB = $(FOAM_LIBBIN)/librandomProcessesAD

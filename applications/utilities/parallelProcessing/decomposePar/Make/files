@@ -9,4 +9,4 @@ faMeshDecomposition.C
 faFieldDecomposer.C
 lagrangianFieldDecomposer.C
 
-EXE = $(FOAM_APPBIN)/decomposePar
+EXE = $(FOAM_APPBIN)/decomposeParAD

@@ -1,3 +1,3 @@
 dummyScotchDecomp.C
 
-LIB = $(FOAM_LIBBIN)/dummy/libscotchDecomp
+LIB = $(FOAM_LIBBIN)/dummy/libscotchDecompAD

@@ -6,5 +6,5 @@ EXE_INC = \
 
 LIB_LIBS = \
     -L$(FFTW_LIB_DIR) -lfftw3 \
-    -lfiniteVolume \
-    -lsampling
+    -lfiniteVolumeAD \
+    -lsamplingAD

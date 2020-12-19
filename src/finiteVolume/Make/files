@@ -472,4 +472,4 @@ $(fvOptions)/fvOptionIO.C
 $(fvOptions)/fvOptionList.C
 $(fvOptions)/fvOptions.C
 
-LIB = $(FOAM_LIBBIN)/libfiniteVolume
+LIB = $(FOAM_LIBBIN)/libfiniteVolumeAD

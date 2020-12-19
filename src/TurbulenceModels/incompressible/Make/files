@@ -11,4 +11,4 @@ turbulentTransportModels/RAS/LienCubicKE/LienCubicKE.C
 BCs = turbulentTransportModels/RAS/derivedFvPatchFields
 turbulentTransportModels/derivedFvPatchFields/wallFunctions/alphatWallFunctions/alphatJayatillekeWallFunction/alphatJayatillekeWallFunctionFvPatchScalarField.C
 
-LIB = $(FOAM_LIBBIN)/libincompressibleTurbulenceModels
+LIB = $(FOAM_LIBBIN)/libincompressibleTurbulenceModelsAD

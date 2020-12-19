@@ -11,4 +11,4 @@ sector/sector.C
 cyclicSector/cyclicSector.C
 wedge/wedge.C
 
-LIB = $(FOAM_LIBBIN)/libextrudeModel
+LIB = $(FOAM_LIBBIN)/libextrudeModelAD
