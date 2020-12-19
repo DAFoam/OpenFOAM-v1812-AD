@@ -98,7 +98,7 @@ OptimisationSwitches
     maxMasterFileBufferSize 1e9;
 
     // CoDiPack4OpenFOAM. Change to blocking communication
-    commsType       blocking; //scheduled; //blocking; // nonBlocking;
+    commsType       nonBlocking; //scheduled; //blocking; // nonBlocking;
     floatTransfer   0;
     nProcsSimpleSum 0;
 

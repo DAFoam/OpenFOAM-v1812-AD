@@ -96,17 +96,16 @@ bool Foam::UPstream::initNull()
         // Already initialized - nothing to do
         return true;
     }
-/*
-    MPI_Init_thread
+
+    AMPI_Init_thread
     (
         nullptr,    // argc
         nullptr,    // argv
-        MPI_THREAD_SINGLE,
+        AMPI_THREAD_SINGLE,
         &flag       // provided_thread_support
     );
-*/
 
-    AMPI_Init(nullptr, nullptr);
+    //AMPI_Init(nullptr, nullptr);
 
     return true;
 }
@@ -138,6 +137,8 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
         return false;
     }
 
+    int provided_thread_support;
+
     AMPI_Initialized(&flag);
     if (flag)
     {
@@ -152,17 +153,31 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
         // to initialize MeDiPack, check the AMPI_Init function defined
         // in MeDiPack/include/medi/ampi/wrappers.hpp
         AMPI_Init_common();
+        // NOTE: Get the level of thread support provided. This is the same value that was 
+        // returned in the provided argument in AMPI_Init_thread. 
+        // provided_thread_support will be used later in setParRun
+        MPI_Query_thread(&provided_thread_support);
     }
     else
     {
         // If not initialized, do it here
-        AMPI_Init(&argc, &argv);
+        // AMPI_Init(&argc, &argv);
+        AMPI_Init_thread
+        (
+            &argc,
+            &argv,
+            (
+                needsThread
+              ? AMPI_THREAD_MULTIPLE
+              : AMPI_THREAD_SINGLE
+            ),
+            &provided_thread_support
+        );
     }
 
 
-    // CoDiPack4OpenFOAM TODO Multi-thread AMPI not supported yet
     // AMPI_Init(&argc, &argv);
-/*
+    /*
     int provided_thread_support;
     AMPI_Init_thread
     (
@@ -175,7 +190,7 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
         ),
         &provided_thread_support
     );
-*/
+    */
 
     int numprocs;
     AMPI_Comm_size(AMPI_COMM_WORLD, &numprocs);
@@ -197,7 +212,7 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
 
 
     // Initialise parallel structure
-    setParRun(numprocs, false);
+    setParRun(numprocs, provided_thread_support == AMPI_THREAD_MULTIPLE);
 
     #ifndef SGIMPI
     {
