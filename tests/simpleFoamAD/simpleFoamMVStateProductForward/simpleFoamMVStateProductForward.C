@@ -8,12 +8,12 @@
 
 \*---------------------------------------------------------------------------*/
 
-#include "OFstream.H"
 #include "fvCFD.H"
-#include "fvOptions.H"
-#include "simpleControl.H"
 #include "singlePhaseTransportModel.H"
 #include "turbulentTransportModel.H"
+#include "simpleControl.H"
+#include "fvOptions.H"
+#include "OFstream.H"
 
 using namespace Foam;
 
@@ -26,16 +26,17 @@ int main(int argc, char* argv[])
         "FD",
         "Which mode to run");
 
-#include "createControl.H"
-#include "createFields.H"
-#include "createMesh.H"
-#include "createTime.H"
-#include "setRootCaseLists.H"
+    #include "setRootCaseLists.H"
+    #include "createTime.H"
+    #include "createMesh.H"
+    #include "createControl.H"
+    #include "createFields.H"
+    #include "initContinuityErrs.H"
 
     word mode = "FD";
     if (args.optionFound("mode"))
     {
-        mode = readWord(args.optionLookup("mode")());
+        mode = word(args.optionLookup("mode")());
         Info << "Using mode: " << mode << endl;
     }
     else
@@ -55,20 +56,20 @@ int main(int argc, char* argv[])
             for (label comp = 0; comp < 3; comp++)
             {
                 scalar randomSeed = sin(0.1 * (cellI + comp));
-                U[cellI][comp].setGradient(randomSeed);
+                U[cellI][comp].setGradient(randomSeed.getValue());
             }
         }
 
         forAll(p, cellI)
         {
             scalar randomSeed = sin(0.1 * cellI);
-            p[cellI].setGradient(randomSeed);
+            p[cellI].setGradient(randomSeed.getValue());
         }
 
         forAll(phi, faceI)
         {
             scalar randomSeed = sin(0.1 * faceI);
-            phi[faceI].setGradient(randomSeed);
+            phi[faceI].setGradient(randomSeed.getValue());
         }
 
         forAll(phi.boundaryField(), patchI)
@@ -76,7 +77,7 @@ int main(int argc, char* argv[])
             forAll(phi.boundaryField()[patchI], faceI)
             {
                 scalar randomSeed = sin(0.1 * (patchI + faceI));
-                phi.boundaryFieldRef()[patchI][faceI].setGradient(randomSeed);
+                phi.boundaryFieldRef()[patchI][faceI].setGradient(randomSeed.getValue());
             }
         }
 
@@ -301,6 +302,7 @@ int main(int argc, char* argv[])
 
     }
 
+    Info<<"Done!"<<endl;
     return 0;
 }
 
