@@ -21,65 +21,28 @@ using namespace Foam;
 
 int main(int argc, char* argv[])
 {
-
 #include "setRootCaseLists.H"
 #include "createTime.H"
 #include "createMesh.H"
 #include "createControl.H"
 #include "createFields.H"
 #include "initContinuityErrs.H"
-
+    
     label myProc = Pstream::myProcNo();
-
     scalar URef = 1.0;
     scalar pRef = 1.0;
     scalar phiRef = 1.0e-3;
-
-    // AD
+    // FD
     {
-        // compute dRdW * psi using forward mode AD. Here psi is a random vector
+        // compute dRdW * psi using finite-difference. Here psi is a random vector
         // psi = sin(0.1*cellI) or sin(0.1*(cellI + comp))
 
-        // set seeds
-        word productNameSeed = "dRdWPsi_" + name(myProc) + "_AD_Seeds.txt";
-        OFstream fOutSeed(productNameSeed);
-        forAll(U, cellI)
-        {
-            for (label comp = 0; comp < 3; comp++)
-            {
-                scalar randomSeed = URef * sin(0.1 * (cellI + comp));
-                fOutSeed << randomSeed << endl;
-                U[cellI][comp].setGradient(randomSeed.getValue());
-            }
-        }
+        // FD perturbation
+        scalar eps = 1.0e-6;
 
-        forAll(p, cellI)
-        {
-            scalar randomSeed = pRef * sin(0.1 * cellI);
-            fOutSeed << randomSeed << endl;
-            p[cellI].setGradient(randomSeed.getValue());
-        }
-
-        forAll(phi, faceI)
-        {
-            scalar randomSeed = phiRef * sin(0.1 * faceI);
-            fOutSeed << randomSeed << endl;
-            phi[faceI].setGradient(randomSeed.getValue());
-        }
-
-        forAll(phi.boundaryField(), patchI)
-        {
-            forAll(phi.boundaryField()[patchI], faceI)
-            {
-                scalar randomSeed = phiRef * sin(0.1 * (patchI + faceI));
-                fOutSeed << randomSeed << endl;
-                phi.boundaryFieldRef()[patchI][faceI].setGradient(randomSeed.getValue());
-            }
-        }
-
+        // ref Res
         U.correctBoundaryConditions();
         p.correctBoundaryConditions();
-
         // URes
         fvVectorMatrix UEqn(fvm::div(phi, U) + turbulence->divDevReff(U));
         UEqn.relax();
@@ -97,15 +60,61 @@ int main(int argc, char* argv[])
         volScalarField pRes = pEqn & p;
         // phiRes
         surfaceScalarField phiRes = phiHbyA - pEqn.flux() - phi;
+        // perturb states
+        forAll(U, cellI)
+        {
+            for (label comp = 0; comp < 3; comp++)
+            {
+                scalar randomSeed = URef * Foam::sin(0.1 * (cellI + comp));
+                U[cellI][comp] += randomSeed * eps;
+            }
+        }
+
+        forAll(p, cellI)
+        {
+            scalar randomSeed = pRef * Foam::sin(0.1 * cellI);
+            p[cellI] += randomSeed * eps;
+        }
+
+        forAll(phi, faceI)
+        {
+            scalar randomSeed = phiRef * Foam::sin(0.1 * faceI);
+            phi[faceI] += randomSeed * eps;
+        }
+
+        forAll(phi.boundaryField(), patchI)
+        {
+            forAll(phi.boundaryField()[patchI], faceI)
+            {
+                scalar randomSeed = phiRef * Foam::sin(0.1 * (patchI + faceI));
+                phi.boundaryFieldRef()[patchI][faceI] += randomSeed * eps;
+            }
+        }
+
+        // compute perturbed Res
+        U.correctBoundaryConditions();
+        p.correctBoundaryConditions();
+        fvVectorMatrix UEqnP(fvm::div(phi, U) + turbulence->divDevReff(U));
+        UEqnP.relax();
+        volVectorField UResP = (UEqnP & U) + fvc::grad(p);
+        volScalarField rAUP(1.0 / UEqnP.A());
+        volVectorField HbyAP("HbyA", U);
+        HbyAP = rAUP * UEqnP.H();
+        surfaceScalarField phiHbyAP("phiHbyA", fvc::flux(HbyAP));
+        adjustPhi(phiHbyAP, U, p);
+        fvScalarMatrix pEqnP(fvm::laplacian(rAUP, p) == fvc::div(phiHbyAP));
+        pEqnP.setReference(pRefCell, pRefValue);
+        volScalarField pResP = pEqnP & p;
+        surfaceScalarField phiResP = phiHbyAP - pEqnP.flux() - phi;
 
         // output the matrix-vector product to files
-        word productName = "dRdWPsi_" + name(myProc) + "_AD_Values.txt";
+        word productName = "dRdWPsi_" + name(myProc) + "_FD_Values.txt";
         OFstream fOut(productName);
         forAll(URes, cellI)
         {
             for (label comp = 0; comp < 3; comp++)
             {
-                scalar val = URes[cellI][comp].getGradient();
+                scalar val = (UResP[cellI][comp] - URes[cellI][comp]) / eps;
                 if (fabs(val) > 1e-16)
                 {
                     fOut << val << endl;
@@ -119,7 +128,7 @@ int main(int argc, char* argv[])
 
         forAll(pRes, cellI)
         {
-            scalar val = pRes[cellI].getGradient();
+            scalar val = (pResP[cellI] - pRes[cellI]) / eps;
             if (fabs(val) > 1e-16)
             {
                 fOut << val << endl;
@@ -132,7 +141,7 @@ int main(int argc, char* argv[])
 
         forAll(phiRes, faceI)
         {
-            scalar val = phiRes[faceI].getGradient();
+            scalar val = (phiResP[faceI] - phiRes[faceI]) / eps;
             if (fabs(val) > 1e-16)
             {
                 fOut << val << endl;
@@ -147,7 +156,7 @@ int main(int argc, char* argv[])
         {
             forAll(phiRes.boundaryField()[patchI], faceI)
             {
-                scalar val = phiRes.boundaryFieldRef()[patchI][faceI].getGradient();
+                scalar val = (phiResP.boundaryFieldRef()[patchI][faceI] - phiRes.boundaryFieldRef()[patchI][faceI]) / eps;
                 if (fabs(val) > 1e-16)
                 {
                     fOut << val << endl;
