@@ -43,14 +43,6 @@ SourceFiles
 #include <codi.hpp>
 #include <codi/externals/codiMpiTypes.hpp>
 using namespace medi;
-#ifdef CODI_AD_FORWARD
-using MpiTypes = CoDiMpiTypes<codi::RealForward>;
-#endif
-#ifdef CODI_AD_REVERSE
-using MpiTypes = CoDiMpiTypes<codi::RealReverse>;
-#endif
-
-MpiTypes* mpiTypes;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

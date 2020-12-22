@@ -43,7 +43,7 @@ void Foam::allReduce
     {
         return;
     }
-
+    
     if (UPstream::nProcs(communicator) <= UPstream::nProcsSimpleSum)
     {
         if (UPstream::master(communicator))

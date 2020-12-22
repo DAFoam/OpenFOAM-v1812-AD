@@ -38,6 +38,14 @@ License
 #include <codi.hpp>
 #include <codi/externals/codiMpiTypes.hpp>
 using namespace medi;
+#ifdef CODI_AD_FORWARD
+using MpiTypes = CoDiMpiTypes<codi::RealForward>;
+#endif
+#ifdef CODI_AD_REVERSE
+using MpiTypes = CoDiMpiTypes<codi::RealReverse>;
+#endif
+
+MpiTypes* mpiTypes;
 
 #include <cstring>
 #include <cstdlib>
@@ -94,6 +102,8 @@ bool Foam::UPstream::initNull()
     if (flag)
     {
         // Already initialized - nothing to do
+        // Initialize mpiTypes for AMPI_Datatype 
+        mpiTypes = new MpiTypes();
         return true;
     }
 
@@ -106,6 +116,9 @@ bool Foam::UPstream::initNull()
     );
 
     //AMPI_Init(nullptr, nullptr);
+
+    // Initialize mpiTypes for AMPI_Datatype 
+    mpiTypes = new MpiTypes();
 
     return true;
 }
@@ -157,6 +170,8 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
         // returned in the provided argument in AMPI_Init_thread. 
         // provided_thread_support will be used later in setParRun
         AMPI_Query_thread(&provided_thread_support);
+        // Initialize mpiTypes for AMPI_Datatype 
+        mpiTypes = new MpiTypes();
     }
     else
     {
@@ -173,6 +188,8 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
             ),
             &provided_thread_support
         );
+        // Initialize mpiTypes for AMPI_Datatype 
+        mpiTypes = new MpiTypes();
     }
 
 
@@ -364,7 +381,10 @@ void Foam::reduce
             << endl;
         error::printStack(Pout);
     }
-    allReduce(Value, 1, AMPI_SCALAR, AMPI_SUM, bop, tag, communicator);
+    if (UPstream::parRun())
+    {
+        allReduce(Value, 1, mpiTypes->MPI_TYPE, AMPI_SUM, bop, tag, communicator);
+    }
 }
 
 
@@ -383,7 +403,10 @@ void Foam::reduce
             << endl;
         error::printStack(Pout);
     }
-    allReduce(Value, 1, AMPI_SCALAR, AMPI_MIN, bop, tag, communicator);
+    if (UPstream::parRun())
+    {
+        allReduce(Value, 1, mpiTypes->MPI_TYPE, AMPI_MIN, bop, tag, communicator);
+    }
 }
 
 
@@ -402,7 +425,10 @@ void Foam::reduce
             << endl;
         error::printStack(Pout);
     }
-    allReduce(Value, 2, AMPI_SCALAR, AMPI_SUM, bop, tag, communicator);
+    if (UPstream::parRun())
+    {
+        allReduce(Value, 2, mpiTypes->MPI_TYPE, AMPI_SUM, bop, tag, communicator);
+    }
 }
 
 
