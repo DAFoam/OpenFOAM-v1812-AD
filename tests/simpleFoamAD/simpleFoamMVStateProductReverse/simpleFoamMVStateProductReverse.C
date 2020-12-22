@@ -28,6 +28,10 @@ int main(int argc, char* argv[])
 #include "createFields.H"
 #include "initContinuityErrs.H"
 
+    scalar URef = 1.0;
+    scalar pRef = 1.0;
+    scalar phiRef = 1.0e-3;
+
     label myProc = Pstream::myProcNo();
     {
         codi::RealReverse::TapeType& tape = codi::RealReverse::getGlobalTape();
@@ -120,7 +124,7 @@ int main(int argc, char* argv[])
         {
             for (label comp = 0; comp < 3; comp++)
             {
-                scalar randomSeed = cos(0.1 * (cellI + comp));
+                scalar randomSeed = URef * cos(0.1 * (cellI + comp));
                 fOutSeed << randomSeed << endl;
                 URes[cellI][comp].setGradient(randomSeed.getValue());
             }
@@ -128,14 +132,14 @@ int main(int argc, char* argv[])
 
         forAll(pRes, cellI)
         {
-            scalar randomSeed = cos(0.1 * cellI);
+            scalar randomSeed = pRef * cos(0.1 * cellI);
             fOutSeed << randomSeed << endl;
             pRes[cellI].setGradient(randomSeed.getValue());
         }
 
         forAll(phiRes, faceI)
         {
-            scalar randomSeed = cos(0.1 * faceI);
+            scalar randomSeed = phiRef * cos(0.1 * faceI);
             fOutSeed << randomSeed << endl;
             phiRes[faceI].setGradient(randomSeed.getValue());
         }
@@ -144,7 +148,7 @@ int main(int argc, char* argv[])
         {
             forAll(phiRes.boundaryField()[patchI], faceI)
             {
-                scalar randomSeed = cos(0.1 * (patchI + faceI));
+                scalar randomSeed = phiRef * cos(0.1 * (patchI + faceI));
                 fOutSeed << randomSeed << endl;
                 phiRes.boundaryFieldRef()[patchI][faceI].setGradient(randomSeed.getValue());
             }

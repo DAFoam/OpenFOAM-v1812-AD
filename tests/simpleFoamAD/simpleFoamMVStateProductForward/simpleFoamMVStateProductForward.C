@@ -26,12 +26,12 @@ int main(int argc, char* argv[])
         "FD",
         "Which mode to run");
 
-    #include "setRootCaseLists.H"
-    #include "createTime.H"
-    #include "createMesh.H"
-    #include "createControl.H"
-    #include "createFields.H"
-    #include "initContinuityErrs.H"
+#include "setRootCaseLists.H"
+#include "createTime.H"
+#include "createMesh.H"
+#include "createControl.H"
+#include "createFields.H"
+#include "initContinuityErrs.H"
 
     word mode = "FD";
     if (args.optionFound("mode"))
@@ -46,6 +46,10 @@ int main(int argc, char* argv[])
 
     label myProc = Pstream::myProcNo();
 
+    scalar URef = 1.0;
+    scalar pRef = 1.0;
+    scalar phiRef = 1.0e-3;
+
     // AD
     if ("AD" == mode)
     {
@@ -59,7 +63,7 @@ int main(int argc, char* argv[])
         {
             for (label comp = 0; comp < 3; comp++)
             {
-                scalar randomSeed = sin(0.1 * (cellI + comp));
+                scalar randomSeed = URef * sin(0.1 * (cellI + comp));
                 fOutSeed << randomSeed << endl;
                 U[cellI][comp].setGradient(randomSeed.getValue());
             }
@@ -67,14 +71,14 @@ int main(int argc, char* argv[])
 
         forAll(p, cellI)
         {
-            scalar randomSeed = sin(0.1 * cellI);
+            scalar randomSeed = pRef * sin(0.1 * cellI);
             fOutSeed << randomSeed << endl;
             p[cellI].setGradient(randomSeed.getValue());
         }
 
         forAll(phi, faceI)
         {
-            scalar randomSeed = sin(0.1 * faceI);
+            scalar randomSeed = phiRef * sin(0.1 * faceI);
             fOutSeed << randomSeed << endl;
             phi[faceI].setGradient(randomSeed.getValue());
         }
@@ -83,7 +87,7 @@ int main(int argc, char* argv[])
         {
             forAll(phi.boundaryField()[patchI], faceI)
             {
-                scalar randomSeed = sin(0.1 * (patchI + faceI));
+                scalar randomSeed = phiRef * sin(0.1 * (patchI + faceI));
                 fOutSeed << randomSeed << endl;
                 phi.boundaryFieldRef()[patchI][faceI].setGradient(randomSeed.getValue());
             }
@@ -205,20 +209,20 @@ int main(int argc, char* argv[])
         {
             for (label comp = 0; comp < 3; comp++)
             {
-                scalar randomSeed = sin(0.1 * (cellI + comp));
+                scalar randomSeed = URef * sin(0.1 * (cellI + comp));
                 U[cellI][comp] += randomSeed * eps;
             }
         }
 
         forAll(p, cellI)
         {
-            scalar randomSeed = sin(0.1 * cellI);
+            scalar randomSeed = pRef * sin(0.1 * cellI);
             p[cellI] += randomSeed * eps;
         }
 
         forAll(phi, faceI)
         {
-            scalar randomSeed = sin(0.1 * faceI);
+            scalar randomSeed = phiRef * sin(0.1 * faceI);
             phi[faceI] += randomSeed * eps;
         }
 
@@ -226,7 +230,7 @@ int main(int argc, char* argv[])
         {
             forAll(phi.boundaryField()[patchI], faceI)
             {
-                scalar randomSeed = sin(0.1 * (patchI + faceI));
+                scalar randomSeed = phiRef * sin(0.1 * (patchI + faceI));
                 phi.boundaryFieldRef()[patchI][faceI] += randomSeed * eps;
             }
         }
@@ -307,10 +311,9 @@ int main(int argc, char* argv[])
                 }
             }
         }
-
     }
 
-    Info<<"Done!"<<endl;
+    Info << "Done!" << endl;
     return 0;
 }
 
