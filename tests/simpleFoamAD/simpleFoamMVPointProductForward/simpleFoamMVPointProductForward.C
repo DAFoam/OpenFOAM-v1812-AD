@@ -4,7 +4,7 @@
     Version : v2
 
     Description:
-        Test forwad mode matrix vector product dRdW * Psi and compare with FD
+        Test forwad mode matrix vector product dRdXv * Psi and compare with FD
 
 \*---------------------------------------------------------------------------*/
 
@@ -53,44 +53,20 @@ int main(int argc, char* argv[])
         // psi = sin(0.1*cellI) or sin(0.1*(cellI + comp))
 
         // set seeds
-        word productNameSeed = "dRdWPsi_" + name(myProc) + "_AD_Seeds.txt";
+        word productNameSeed = "dRdXvPsi_" + name(myProc) + "_AD_Seeds.txt";
         OFstream fOutSeed(productNameSeed);
-        forAll(U, cellI)
+
+        pointField meshPoints = mesh.points();
+        forAll(meshPoints, pointI)
         {
             for (label comp = 0; comp < 3; comp++)
             {
                 scalar randomSeed = sin(0.1 * (cellI + comp));
                 fOutSeed << randomSeed << endl;
-                U[cellI][comp].setGradient(randomSeed.getValue());
+                meshPoints[cellI][comp].setGradient(randomSeed.getValue());
             }
         }
-
-        forAll(p, cellI)
-        {
-            scalar randomSeed = sin(0.1 * cellI);
-            fOutSeed << randomSeed << endl;
-            p[cellI].setGradient(randomSeed.getValue());
-        }
-
-        forAll(phi, faceI)
-        {
-            scalar randomSeed = sin(0.1 * faceI);
-            fOutSeed << randomSeed << endl;
-            phi[faceI].setGradient(randomSeed.getValue());
-        }
-
-        forAll(phi.boundaryField(), patchI)
-        {
-            forAll(phi.boundaryField()[patchI], faceI)
-            {
-                scalar randomSeed = sin(0.1 * (patchI + faceI));
-                fOutSeed << randomSeed << endl;
-                phi.boundaryFieldRef()[patchI][faceI].setGradient(randomSeed.getValue());
-            }
-        }
-
-        U.correctBoundaryConditions();
-        p.correctBoundaryConditions();
+        mesh.movePoints(meshPoints);
 
         // URes
         fvVectorMatrix UEqn(fvm::div(phi, U) + turbulence->divDevReff(U));
@@ -111,7 +87,7 @@ int main(int argc, char* argv[])
         surfaceScalarField phiRes = phiHbyA - pEqn.flux() - phi;
 
         // output the matrix-vector product to files
-        word productName = "dRdWPsi_" + name(myProc) + "_AD_Values.txt";
+        word productName = "dRdXvPsi_" + name(myProc) + "_AD_Values.txt";
         OFstream fOut(productName);
         forAll(URes, cellI)
         {
@@ -178,7 +154,7 @@ int main(int argc, char* argv[])
         // psi = sin(0.1*cellI) or sin(0.1*(cellI + comp))
 
         // FD perturbation
-        scalar eps = 1.0e-6;
+        scalar eps = 1.0e-4;
 
         // ref Res
         U.correctBoundaryConditions();
@@ -200,36 +176,17 @@ int main(int argc, char* argv[])
         volScalarField pRes = pEqn & p;
         // phiRes
         surfaceScalarField phiRes = phiHbyA - pEqn.flux() - phi;
-        // perturb states
-        forAll(U, cellI)
+        // perturb points
+        pointField meshPoints = mesh.points();
+        forAll(meshPoints, pointI)
         {
             for (label comp = 0; comp < 3; comp++)
             {
                 scalar randomSeed = sin(0.1 * (cellI + comp));
-                U[cellI][comp] += randomSeed * eps;
+                meshPoints[cellI][comp] += randomSeed * eps;
             }
         }
-
-        forAll(p, cellI)
-        {
-            scalar randomSeed = sin(0.1 * cellI);
-            p[cellI] += randomSeed * eps;
-        }
-
-        forAll(phi, faceI)
-        {
-            scalar randomSeed = sin(0.1 * faceI);
-            phi[faceI] += randomSeed * eps;
-        }
-
-        forAll(phi.boundaryField(), patchI)
-        {
-            forAll(phi.boundaryField()[patchI], faceI)
-            {
-                scalar randomSeed = sin(0.1 * (patchI + faceI));
-                phi.boundaryFieldRef()[patchI][faceI] += randomSeed * eps;
-            }
-        }
+        mesh.movePoints(meshPoints);
 
         // compute perturbed Res
         U.correctBoundaryConditions();
@@ -248,7 +205,7 @@ int main(int argc, char* argv[])
         surfaceScalarField phiResP = phiHbyAP - pEqnP.flux() - phi;
 
         // output the matrix-vector product to files
-        word productName = "dRdWPsi_" + name(myProc) + "_FD_Values.txt";
+        word productName = "dRdXvPsi_" + name(myProc) + "_FD_Values.txt";
         OFstream fOut(productName);
         forAll(URes, cellI)
         {
