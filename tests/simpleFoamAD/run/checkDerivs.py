@@ -1,30 +1,42 @@
 import numpy as np
-import sys
+from numpy import linalg as LA
 
-file1=sys.argv[1]
-file2=sys.argv[2]
+stateFADVal = open("dRdWPsi_0_AD_Values.txt", "r")
+stateFADSeed = open("dRdWPsi_0_AD_Seeds.txt", "r")
+stateFDVal = open("dRdWPsi_0_FD_Values.txt", "r")
+stateRADVal = open("dRdWTPsi_0_AD_Values.txt", "r")
+stateRADSeed = open("dRdWTPsi_0_AD_Seeds.txt", "r")
 
-f1=open(file1,"r")
-f2=open(file2,"r")
-lines1=f1.readlines()
-lines2=f2.readlines()
+stateFADValLines = stateFADVal.readlines()
+stateFADSeedLines = stateFADSeed.readlines()
+stateFDValLines = stateFDVal.readlines()
+stateRADValLines = stateRADVal.readlines()
+stateRADSeedLines = stateRADSeed.readlines()
 
-val1=[]
-val2=[]
+stateFADValList = []
+stateFADSeedList = []
+stateFDValList = []
+stateRADValList = []
+stateRADSeedList = []
+for idx in range(len(stateFADValLines)):
+    stateFADValList.append(float(stateFADValLines[idx]))
+    stateFADSeedList.append(float(stateFADSeedLines[idx]))
+    stateFDValList.append(float(stateFDValLines[idx]))
+    stateRADValList.append(float(stateRADValLines[idx]))
+    stateRADSeedList.append(float(stateRADSeedLines[idx]))
 
-for line in lines1:
-    cols=line.split()
-    val1.append(float(cols[3]))
+stateFADValList = np.asarray(stateFADValList)
+stateFADSeedList = np.asarray(stateFADSeedList)
+stateFDValList = np.asarray(stateFDValList)
+stateRADValList = np.asarray(stateRADValList)
+stateRADSeedList = np.asarray(stateRADSeedList)
 
-for line in lines2:
-    cols=line.split()
-    val2.append(float(cols[3]))
+diffADFD = stateFADValList - stateFDValList
 
-val1=np.asarray(val1)
-val2=np.asarray(val2)
+dot1 = np.dot(stateFDValList, stateRADSeedList)
+dot2 = np.dot(stateRADValList, stateFADSeedList)
 
-diff = abs(val1-val2)
-maxIdx = np.argmax(diff)
-print ("max:", max(diff), " maxIdx: ", maxIdx, " val1: ", val1[maxIdx], " val2: ", val2[maxIdx])
-
-print ("mean:", sum(diff)/len(diff))
+print("maxDiff: ", diffADFD.max())
+print("normDiff: ", LA.norm(diffADFD))
+print("MVF", dot1)
+print("MVR", dot2)
