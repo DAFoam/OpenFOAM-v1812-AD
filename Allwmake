@@ -59,7 +59,9 @@ wmake applications/utilities/mesh/manipulation/checkMesh
 wmake applications/solvers/incompressible/simpleFoam
 wmake applications/solvers/compressible/rhoSimpleFoam
 wmake applications/utilities/postProcessing/postProcess
-wmake applications/solvers/incompressible/DASimpleFoamReverseAD
+if [ "$WM_CODI_AD_MODE" = "CODI_AD_REVERSE" ]; then
+ wmake applications/solvers/incompressible/DASimpleFoamReverseAD
+fi
 
 # Additional components/modules
 #if [ -d "$WM_PROJECT_DIR/modules" ]
