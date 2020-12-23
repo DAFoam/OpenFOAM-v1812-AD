@@ -169,6 +169,7 @@ Foam::UOPstream::~UOPstream()
                 toProcNo_,
                 sendBuf_.begin(),
                 sendBuf_.size(),
+                typeid(sendBuf_.begin()),
                 tag_,
                 comm_
             )

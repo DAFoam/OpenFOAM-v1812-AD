@@ -892,6 +892,7 @@ bool Foam::decomposedBlockData::writeBlocks
                     proci,
                     elems.begin(),
                     elems.size(),
+                    typeid(elems.begin()),
                     Pstream::msgType(),
                     comm
                 );
@@ -911,6 +912,7 @@ bool Foam::decomposedBlockData::writeBlocks
                 UPstream::masterNo(),
                 data.begin(),
                 data.byteSize(),
+                typeid(data.begin()),
                 Pstream::msgType(),
                 comm
             );

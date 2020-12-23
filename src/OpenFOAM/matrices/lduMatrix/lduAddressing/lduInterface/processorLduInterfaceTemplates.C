@@ -50,6 +50,7 @@ void Foam::processorLduInterface::send
             neighbProcNo(),
             reinterpret_cast<const char*>(f.begin()),
             nBytes,
+            typeid(f.begin()),
             tag(),
             comm()
         );
@@ -64,6 +65,7 @@ void Foam::processorLduInterface::send
             neighbProcNo(),
             receiveBuf_.begin(),
             nBytes,
+            typeid(f.begin()),
             tag(),
             comm()
         );
@@ -77,6 +79,7 @@ void Foam::processorLduInterface::send
             neighbProcNo(),
             sendBuf_.begin(),
             nBytes,
+            typeid(f.begin()),
             tag(),
             comm()
         );
@@ -109,6 +112,7 @@ void Foam::processorLduInterface::receive
             neighbProcNo(),
             reinterpret_cast<char*>(f.begin()),
             f.byteSize(),
+            typeid(f.begin()),
             tag(),
             comm()
         );
@@ -178,6 +182,7 @@ void Foam::processorLduInterface::compressedSend
                 neighbProcNo(),
                 sendBuf_.begin(),
                 nBytes,
+                typeid(f.begin()),
                 tag(),
                 comm()
             );
@@ -192,6 +197,7 @@ void Foam::processorLduInterface::compressedSend
                 neighbProcNo(),
                 receiveBuf_.begin(),
                 nBytes,
+                typeid(f.begin()),
                 tag(),
                 comm()
             );
@@ -202,6 +208,7 @@ void Foam::processorLduInterface::compressedSend
                 neighbProcNo(),
                 sendBuf_.begin(),
                 nBytes,
+                typeid(f.begin()),
                 tag(),
                 comm()
             );
@@ -248,6 +255,7 @@ void Foam::processorLduInterface::compressedReceive
                 neighbProcNo(),
                 receiveBuf_.begin(),
                 nBytes,
+                typeid(f.begin()),
                 tag(),
                 comm()
             );

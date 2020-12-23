@@ -143,6 +143,7 @@ public:
                 const int fromProcNo,
                 char* buf,
                 const std::streamsize bufSize,
+                const std::type_info& typeInfo,
                 const int tag = UPstream::msgType(),
                 const label communicator = 0
             );

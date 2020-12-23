@@ -512,6 +512,7 @@ void Foam::mapDistributeBase::distribute
                         domain,
                         reinterpret_cast<const char*>(subField.begin()),
                         subField.byteSize(),
+                        typeid(subField.begin()),
                         tag
                     );
                 }
@@ -534,6 +535,7 @@ void Foam::mapDistributeBase::distribute
                         domain,
                         reinterpret_cast<char*>(recvFields[domain].begin()),
                         recvFields[domain].byteSize(),
+                        typeid(recvFields[domain].begin()),
                         tag
                     );
                 }
@@ -1013,6 +1015,7 @@ void Foam::mapDistributeBase::distribute
                         domain,
                         reinterpret_cast<const char*>(subField.begin()),
                         subField.size()*sizeof(T),
+                        typeid(subField.begin()),
                         tag
                     );
                 }
@@ -1035,6 +1038,7 @@ void Foam::mapDistributeBase::distribute
                         domain,
                         reinterpret_cast<char*>(recvFields[domain].begin()),
                         recvFields[domain].size()*sizeof(T),
+                        typeid(recvFields[domain].begin()),
                         tag
                     );
                 }
