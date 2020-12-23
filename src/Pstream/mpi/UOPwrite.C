@@ -36,7 +36,6 @@ Description
 #include <codi.hpp>
 #include <codi/externals/codiMpiTypes.hpp>
 using namespace medi;
-
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 bool Foam::UOPstream::write
@@ -71,20 +70,38 @@ bool Foam::UOPstream::write
 
     PstreamGlobals::checkCommunicator(communicator, toProcNo);
 
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeid(buf))
+                        && codi::RealReverse::getGlobalTape().isActive();
+
+    Foam::Pout<<"In UOPStream. TypeID"<< typeid(buf).name() <<" isActive: "<<typeActive<<Foam::endl;
 
     bool transferFailed = true;
     // not checking the type
     if (commsType == commsTypes::blocking)
     {
+        if(typeActive) {
         transferFailed = AMPI_Bsend
         (
-            const_cast<char*>(buf),
-            bufSize,
-            AMPI_BYTE, // mpiTypes->MPI_TYPE, // AMPI_Type_No_Check, //mpiTypes->MPI_TYPE, // MPI_BYTE,
+            reinterpret_cast<scalar*>(const_cast<char*>(buf)),
+            bufSize/sizeof(scalar),
+            PstreamGlobals::mpiTypes_->MPI_TYPE,
             toProcNo,   //procID(toProcNo),
             tag,
             PstreamGlobals::MPICommunicators_[communicator] //MPI_COMM_WORLD
         );
+} 
+else
+{
+        transferFailed = AMPI_Bsend
+        (
+            const_cast<char*>(buf),
+            bufSize,
+            AMPI_BYTE,
+            toProcNo,   //procID(toProcNo),
+            tag,
+            PstreamGlobals::MPICommunicators_[communicator] //MPI_COMM_WORLD
+        );
+}
 
         if (debug)
         {

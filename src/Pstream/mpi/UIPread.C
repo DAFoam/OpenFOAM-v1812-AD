@@ -260,13 +260,31 @@ Foam::label Foam::UIPstream::read
         error::printStack(Pout);
     }
 
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeid(buf))
+                        && codi::RealReverse::getGlobalTape().isActive();
+
+    Foam::Pout<<"In UIread. TypeID"<< typeid(buf).name() <<" isActive: "<<typeActive<<Foam::endl;
+
     if (commsType == commsTypes::blocking || commsType == commsTypes::scheduled)
     {
         AMPI_Status status;
-
-        if
-        (
-            AMPI_Recv
+        label Err = 0;
+        if(typeActive)
+        {
+            Err = AMPI_Recv
+            (
+                reinterpret_cast<scalar*>(buf),
+                bufSize/sizeof(scalar),
+                PstreamGlobals::mpiTypes_->MPI_TYPE,
+                fromProcNo,
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator],
+                &status
+            );
+        }
+        else
+        {
+            Err = AMPI_Recv
             (
                 buf,
                 bufSize,
@@ -275,8 +293,9 @@ Foam::label Foam::UIPstream::read
                 tag,
                 PstreamGlobals::MPICommunicators_[communicator],
                 &status
-            )
-        )
+            );
+        }
+        if(Err)
         {
             FatalErrorInFunction
                 << "MPI_Recv cannot receive incoming message"

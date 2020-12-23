@@ -44,6 +44,13 @@ SourceFiles
 #include <codi.hpp>
 #include <codi/externals/codiMpiTypes.hpp>
 using namespace medi;
+#ifdef CODI_AD_FORWARD
+using MpiTypes = CoDiMpiTypes<codi::RealForward>;
+#endif
+#ifdef CODI_AD_REVERSE
+using MpiTypes = CoDiMpiTypes<codi::RealReverse>;
+#endif
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -64,9 +71,13 @@ extern DynamicList<int> freedTags_;
 extern DynamicList<AMPI_Comm> MPICommunicators_;
 extern DynamicList<AMPI_Group> MPIGroups_;
 
+// MPI type for AD
+extern MpiTypes* mpiTypes_;
 
 void checkCommunicator(const label comm, const label toProcNo);
 
+// check whether the type is active
+bool isTypeActive(const std::type_info& type);
 };
 
 
