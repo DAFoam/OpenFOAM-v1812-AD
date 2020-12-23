@@ -44,6 +44,7 @@ bool Foam::UOPstream::write
     const int toProcNo,
     const char* buf,
     const std::streamsize bufSize,
+    const std::type_info& typeInfo,
     const int tag,
     const label communicator
 )
@@ -70,10 +71,10 @@ bool Foam::UOPstream::write
 
     PstreamGlobals::checkCommunicator(communicator, toProcNo);
 
-    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeid(buf))
-                        && codi::RealReverse::getGlobalTape().isActive();
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+                   && codi::RealReverse::getGlobalTape().isActive();
 
-    Foam::Pout<<"In UOPStream. TypeID"<< typeid(buf).name() <<" isActive: "<<typeActive<<Foam::endl;
+    // Foam::Pout<<"In UOPwrite.C. TypeInfo: "<< typeInfo.name() <<" isActive: "<<typeActive<<Foam::endl;
 
     bool transferFailed = true;
     // not checking the type

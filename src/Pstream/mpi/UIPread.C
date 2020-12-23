@@ -113,6 +113,7 @@ Foam::UIPstream::UIPstream
             fromProcNo_,
             externalBuf_.begin(),
             wantedSize,
+            typeid(externalBuf_.begin()),
             tag_,
             comm_
         );
@@ -214,6 +215,7 @@ Foam::UIPstream::UIPstream(const int fromProcNo, PstreamBuffers& buffers)
             fromProcNo_,
             externalBuf_.begin(),
             wantedSize,
+            typeid(externalBuf_.begin()),
             tag_,
             comm_
         );
@@ -237,6 +239,7 @@ Foam::label Foam::UIPstream::read
     const int fromProcNo,
     char* buf,
     const std::streamsize bufSize,
+    const std::type_info& typeInfo,
     const int tag,
     const label communicator
 )
@@ -260,10 +263,10 @@ Foam::label Foam::UIPstream::read
         error::printStack(Pout);
     }
 
-    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeid(buf))
-                        && codi::RealReverse::getGlobalTape().isActive();
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+                   && codi::RealReverse::getGlobalTape().isActive();
 
-    Foam::Pout<<"In UIread. TypeID"<< typeid(buf).name() <<" isActive: "<<typeActive<<Foam::endl;
+    // Foam::Pout<<"In UIPread.C. TypeInfo: "<< typeInfo.name() <<" isActive: "<<typeActive<<Foam::endl;
 
     if (commsType == commsTypes::blocking || commsType == commsTypes::scheduled)
     {
