@@ -266,8 +266,6 @@ Foam::label Foam::UIPstream::read
     bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
-    // Foam::Pout<<"In UIPread.C. TypeInfo: "<< typeInfo.name() <<" isActive: "<<typeActive<<Foam::endl;
-
     if (commsType == commsTypes::blocking || commsType == commsTypes::scheduled)
     {
         AMPI_Status status;
@@ -334,12 +332,24 @@ Foam::label Foam::UIPstream::read
     }
     else if (commsType == commsTypes::nonBlocking)
     {
-        // CoDiPack4OpenFOAM TODO nonBlocking AMPI not supported yet
         AMPI_Request request;
-
-        if
-        (
-            AMPI_Irecv
+        label Err = 0;
+        if (typeActive)
+        {
+            Err = AMPI_Irecv
+            (
+                reinterpret_cast<scalar*>(buf),
+                bufSize/sizeof(scalar),
+                PstreamGlobals::mpiTypes_->MPI_TYPE,
+                fromProcNo,
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator],
+                &request
+            );
+        }
+        else
+        {
+            Err = AMPI_Irecv
             (
                 buf,
                 bufSize,
@@ -348,8 +358,10 @@ Foam::label Foam::UIPstream::read
                 tag,
                 PstreamGlobals::MPICommunicators_[communicator],
                 &request
-            )
-        )
+            );
+        }
+
+        if (Err)
         {
             FatalErrorInFunction
                 << "MPI_Recv cannot start non-blocking receive"
