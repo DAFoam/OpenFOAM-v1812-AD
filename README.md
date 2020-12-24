@@ -20,4 +20,6 @@ OpenFOAM-v1812-AD uses the AD tools [CoDiPack](https://github.com/scicompkl/codi
 License
 -------
 
+Copyright 2020 iDesign Lab, Aerospace Engineering Department, Iowa State University.
+
 Distributed using the GNU General Public License (GPL), version 3; see the COPYING file for details.
