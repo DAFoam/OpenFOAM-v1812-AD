@@ -7,7 +7,13 @@ import numpy as np
 from numpy import linalg as LA
 import sys
 
-nProcs = sys.argv[1]
+nProcs = int(sys.argv[1])
+mode = sys.argv[2]
+
+if mode == "state":
+    partName = "dRdW"
+elif mode == "point":
+    partName = "dRdXv"
 
 dot1 = 0.0
 dot2 = 0.0
@@ -16,11 +22,11 @@ for n in range(nProcs):
 
     print("Processing %d" % n)
 
-    stateFADVal = open("dRdWPsi_%d_AD_Values.txt" % n, "r")
-    stateFADSeed = open("dRdWPsi_%d_AD_Seeds.txt" % n, "r")
-    stateFDVal = open("dRdWPsi_%d_FD_Values.txt" % n, "r")
-    stateRADVal = open("dRdWTPsi_%d_AD_Values.txt" % n, "r")
-    stateRADSeed = open("dRdWTPsi_%d_AD_Seeds.txt" % n, "r")
+    stateFADVal = open(partName + "Psi_%d_AD_Values.txt" % n, "r")
+    stateFADSeed = open(partName + "Psi_%d_AD_Seeds.txt" % n, "r")
+    stateFDVal = open(partName + "Psi_%d_FD_Values.txt" % n, "r")
+    stateRADVal = open(partName + "TPsi_%d_AD_Values.txt" % n, "r")
+    stateRADSeed = open(partName + "TPsi_%d_AD_Seeds.txt" % n, "r")
 
     stateFADValLines = stateFADVal.readlines()
     stateFADSeedLines = stateFADSeed.readlines()
@@ -41,10 +47,12 @@ for n in range(nProcs):
     stateRADSeedList = []
     for idx in range(len(stateFADValLines)):
         stateFADValList.append(float(stateFADValLines[idx]))
-        stateFADSeedList.append(float(stateFADSeedLines[idx]))
         stateFDValList.append(float(stateFDValLines[idx]))
-        stateRADValList.append(float(stateRADValLines[idx]))
         stateRADSeedList.append(float(stateRADSeedLines[idx]))
+
+    for idx in range(len(stateFADSeedLines)):
+        stateFADSeedList.append(float(stateFADSeedLines[idx]))
+        stateRADValList.append(float(stateRADValLines[idx]))
 
     stateFADValList = np.asarray(stateFADValList)
     stateFADSeedList = np.asarray(stateFADSeedList)

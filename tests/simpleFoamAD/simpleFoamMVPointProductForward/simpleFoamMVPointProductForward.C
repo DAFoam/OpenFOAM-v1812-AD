@@ -61,9 +61,9 @@ int main(int argc, char* argv[])
         {
             for (label comp = 0; comp < 3; comp++)
             {
-                scalar randomSeed = sin(0.1 * (cellI + comp));
+                scalar randomSeed = sin(0.1 * (pointI + comp));
                 fOutSeed << randomSeed << endl;
-                meshPoints[cellI][comp].setGradient(randomSeed.getValue());
+                meshPoints[pointI][comp].setGradient(randomSeed.getValue());
             }
         }
         mesh.movePoints(meshPoints);
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
         // psi = sin(0.1*cellI) or sin(0.1*(cellI + comp))
 
         // FD perturbation
-        scalar eps = 1.0e-4;
+        scalar eps = 1.0e-6;
 
         // ref Res
         U.correctBoundaryConditions();
@@ -182,8 +182,8 @@ int main(int argc, char* argv[])
         {
             for (label comp = 0; comp < 3; comp++)
             {
-                scalar randomSeed = sin(0.1 * (cellI + comp));
-                meshPoints[cellI][comp] += randomSeed * eps;
+                scalar randomSeed = sin(0.1 * (pointI + comp));
+                meshPoints[pointI][comp] += randomSeed * eps;
             }
         }
         mesh.movePoints(meshPoints);

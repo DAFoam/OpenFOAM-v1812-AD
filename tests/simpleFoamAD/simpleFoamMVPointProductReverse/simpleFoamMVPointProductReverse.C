@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
         {
             for (label comp = 0; comp < 3; comp++)
             {
-                tape.registerInput(meshPoints[cellI][comp]);
+                tape.registerInput(meshPoints[pointI][comp]);
             }
         }
 
@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
         {
             for (label comp = 0; comp < 3; comp++)
             {
-                scalar val = meshPoints[cellI][comp].getGradient();
+                scalar val = meshPoints[pointI][comp].getGradient();
                 if (fabs(val) > 1e-16)
                 {
                     fOut << val << endl;
