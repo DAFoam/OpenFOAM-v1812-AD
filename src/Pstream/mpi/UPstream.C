@@ -519,7 +519,7 @@ void Foam::UPstream::allToAll
         (
             // CoDiPack4OpenFOAM TODO Alltoall function is not AMPI yet
             // This shouldn't be an issue since the allToAll function is only used in
-            // src/OpenFOAM/db/IOstreams/Pstreams/exchange.C 
+            // src/OpenFOAM/db/IOstreams/Pstreams/exchange.C to exchange sizes 
             MPI_Alltoall
             (
                 // NOTE: const_cast is a temporary hack for
@@ -548,11 +548,10 @@ void Foam::UPstream::allToAll
     const char* sendData,
     const UList<int>& sendSizes,
     const UList<int>& sendOffsets,
-
     char* recvData,
     const UList<int>& recvSizes,
     const UList<int>& recvOffsets,
-
+    const std::type_info& typeInfo,
     const label communicator
 )
 {
@@ -576,6 +575,9 @@ void Foam::UPstream::allToAll
             << Foam::abort(FatalError);
     }
 
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+                   && codi::RealReverse::getGlobalTape().isActive();
+
     if (!UPstream::parRun())
     {
         if (recvSizes[0] != sendSizes[0])
@@ -589,9 +591,25 @@ void Foam::UPstream::allToAll
     }
     else
     {
-        if
-        (
-            AMPI_Alltoallv
+        label Err = 0;
+        if (typeActive)
+        {
+            Err = AMPI_Alltoallv
+            (
+                reinterpret_cast<scalar*>(const_cast<char*>(sendData)),
+                const_cast<int*>(sendSizes.begin()),
+                const_cast<int*>(sendOffsets.begin()),
+                PstreamGlobals::mpiTypes_->MPI_TYPE,
+                reinterpret_cast<scalar*>(recvData),
+                const_cast<int*>(recvSizes.begin()),
+                const_cast<int*>(recvOffsets.begin()),
+                PstreamGlobals::mpiTypes_->MPI_TYPE,
+                PstreamGlobals::MPICommunicators_[communicator]
+            );
+        }
+        else
+        {
+            Err = AMPI_Alltoallv
             (
                 const_cast<char*>(sendData),
                 const_cast<int*>(sendSizes.begin()),
@@ -602,8 +620,9 @@ void Foam::UPstream::allToAll
                 const_cast<int*>(recvOffsets.begin()),
                 AMPI_BYTE,
                 PstreamGlobals::MPICommunicators_[communicator]
-            )
-        )
+            );
+        }
+        if (Err)
         {
             FatalErrorInFunction
                 << "MPI_Alltoallv failed for sendSizes " << sendSizes
@@ -623,6 +642,7 @@ void Foam::UPstream::gather
     char* recvData,
     const UList<int>& recvSizes,
     const UList<int>& recvOffsets,
+    const std::type_info& typeInfo,
     const label communicator
 )
 {
@@ -645,15 +665,34 @@ void Foam::UPstream::gather
             << Foam::abort(FatalError);
     }
 
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+                   && codi::RealReverse::getGlobalTape().isActive();
+
     if (!UPstream::parRun())
     {
         memmove(recvData, sendData, sendSize);
     }
     else
     {
-        if
-        (
-            AMPI_Gatherv
+        label Err = 0;
+        if (typeActive)
+        {
+            Err = AMPI_Gatherv
+            (
+                reinterpret_cast<scalar*>(const_cast<char*>(sendData)),
+                sendSize,
+                PstreamGlobals::mpiTypes_->MPI_TYPE,
+                reinterpret_cast<scalar*>(recvData),
+                const_cast<int*>(recvSizes.begin()),
+                const_cast<int*>(recvOffsets.begin()),
+                PstreamGlobals::mpiTypes_->MPI_TYPE,
+                0,
+                AMPI_Comm(PstreamGlobals::MPICommunicators_[communicator])
+            );
+        }
+        else
+        {
+            Err = AMPI_Gatherv
             (
                 const_cast<char*>(sendData),
                 sendSize,
@@ -664,8 +703,10 @@ void Foam::UPstream::gather
                 AMPI_BYTE,
                 0,
                 AMPI_Comm(PstreamGlobals::MPICommunicators_[communicator])
-            )
-        )
+            );
+        }
+
+        if (Err)
         {
             FatalErrorInFunction
                 << "MPI_Gatherv failed for sendSize " << sendSize
@@ -685,6 +726,7 @@ void Foam::UPstream::scatter
 
     char* recvData,
     int recvSize,
+    const std::type_info& typeInfo,
     const label communicator
 )
 {
@@ -704,15 +746,34 @@ void Foam::UPstream::scatter
             << Foam::abort(FatalError);
     }
 
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+                   && codi::RealReverse::getGlobalTape().isActive();
+
     if (!UPstream::parRun())
     {
         memmove(recvData, sendData, recvSize);
     }
     else
     {
-        if
-        (
-            AMPI_Scatterv
+        label Err = 0;
+        if (typeActive)
+        {
+            Err = AMPI_Scatterv
+            (
+                reinterpret_cast<scalar*>(const_cast<char*>(sendData)),
+                const_cast<int*>(sendSizes.begin()),
+                const_cast<int*>(sendOffsets.begin()),
+                PstreamGlobals::mpiTypes_->MPI_TYPE,
+                reinterpret_cast<scalar*>(recvData),
+                recvSize,
+                PstreamGlobals::mpiTypes_->MPI_TYPE,
+                0,
+                AMPI_Comm(PstreamGlobals::MPICommunicators_[communicator])
+            );
+        }
+        else
+        {
+            Err = AMPI_Scatterv
             (
                 const_cast<char*>(sendData),
                 const_cast<int*>(sendSizes.begin()),
@@ -723,8 +784,10 @@ void Foam::UPstream::scatter
                 AMPI_BYTE,
                 0,
                 AMPI_Comm(PstreamGlobals::MPICommunicators_[communicator])
-            )
-        )
+            );
+        }
+
+        if (Err)
         {
             FatalErrorInFunction
                 << "MPI_Scatterv failed for sendSizes " << sendSizes
