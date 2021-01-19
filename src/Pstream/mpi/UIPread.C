@@ -244,12 +244,17 @@ Foam::label Foam::UIPstream::read
     const label communicator
 )
 {
+
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+                   && codi::RealReverse::getGlobalTape().isActive();
+
     if (debug)
     {
         Pout<< "UIPstream::read : starting read from:" << fromProcNo
             << " tag:" << tag << " comm:" << communicator
             << " wanted size:" << label(bufSize)
             << " commsType:" << UPstream::commsTypeNames[commsType]
+            << " typeActive: " << typeActive << " typeid: " << typeInfo.name()
             << Foam::endl;
     }
     if (UPstream::warnComm != -1 && communicator != UPstream::warnComm)
@@ -262,9 +267,6 @@ Foam::label Foam::UIPstream::read
             << Foam::endl;
         error::printStack(Pout);
     }
-
-    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
-                   && codi::RealReverse::getGlobalTape().isActive();
 
     if (commsType == commsTypes::blocking || commsType == commsTypes::scheduled)
     {

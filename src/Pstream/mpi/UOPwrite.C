@@ -49,12 +49,16 @@ bool Foam::UOPstream::write
     const label communicator
 )
 {
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+                   && codi::RealReverse::getGlobalTape().isActive();
+
     if (debug)
     {
         Pout<< "UOPstream::write : starting write to:" << toProcNo
             << " tag:" << tag
             << " comm:" << communicator << " size:" << label(bufSize)
             << " commsType:" << UPstream::commsTypeNames[commsType]
+            << " typeActive: " << typeActive << " typeid: " << typeInfo.name()
             << Foam::endl;
     }
     if (UPstream::warnComm != -1 && communicator != UPstream::warnComm)
@@ -70,9 +74,6 @@ bool Foam::UOPstream::write
 
 
     PstreamGlobals::checkCommunicator(communicator, toProcNo);
-
-    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
-                   && codi::RealReverse::getGlobalTape().isActive();
 
     bool transferFailed = true;
     // not checking the type

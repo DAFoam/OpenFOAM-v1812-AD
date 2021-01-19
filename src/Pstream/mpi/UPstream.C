@@ -578,6 +578,13 @@ void Foam::UPstream::allToAll
     bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
+    if (debug)
+    {
+        Pout<< "UPstream::allToAll :"
+            << " typeActive: " << typeActive << " typeid: " << typeInfo.name()
+            << Foam::endl;
+    }
+
     if (!UPstream::parRun())
     {
         if (recvSizes[0] != sendSizes[0])
@@ -668,6 +675,13 @@ void Foam::UPstream::gather
     bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
+    if (debug)
+    {
+        Pout<< "UPstream::gather :"
+            << " typeActive: " << typeActive << " typeid: " << typeInfo.name()
+            << Foam::endl;
+    }
+
     if (!UPstream::parRun())
     {
         memmove(recvData, sendData, sendSize);
@@ -748,6 +762,13 @@ void Foam::UPstream::scatter
 
     bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
+
+    if (debug)
+    {
+        Pout<< "UPstream::scatter :"
+            << " typeActive: " << typeActive << " typeid: " << typeInfo.name()
+            << Foam::endl;
+    }
 
     if (!UPstream::parRun())
     {

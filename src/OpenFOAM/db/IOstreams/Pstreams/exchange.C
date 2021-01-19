@@ -58,7 +58,7 @@ void Foam::Pstream::exchangeContainer
                 proci,
                 reinterpret_cast<char*>(recvBufs[proci].begin()),
                 recvSizes[proci]*sizeof(T),
-                typeid(recvBufs.begin()),
+                typeid(recvBufs[proci].begin()),
                 tag,
                 comm
             );
@@ -81,7 +81,7 @@ void Foam::Pstream::exchangeContainer
                     proci,
                     reinterpret_cast<const char*>(sendBufs[proci].begin()),
                     sendBufs[proci].size()*sizeof(T),
-                    typeid(sendBufs.begin()),
+                    typeid(sendBufs[proci].begin()),
                     tag,
                     comm
                 )
@@ -134,7 +134,7 @@ void Foam::Pstream::exchangeBuf
                 proci,
                 recvBufs[proci],
                 recvSizes[proci]*sizeof(T),
-                typeid(T),
+                typeid(recvBufs[proci]),
                 tag,
                 comm
             );
@@ -157,7 +157,7 @@ void Foam::Pstream::exchangeBuf
                     proci,
                     sendBufs[proci],
                     sendSizes[proci]*sizeof(T),
-                    typeid(sendBufs.begin()),
+                    typeid(sendBufs[proci]),
                     tag,
                     comm
                 )
