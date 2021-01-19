@@ -55,18 +55,16 @@ int main(int argc, char* argv[])
             forAll(gradP, idxI) f+=mag(gradP[idxI]);
         }
 
-        // reduce(f, sumOp<scalar>()); 
-
         tape.registerOutput(f);
         // stop recording
         tape.setPassive();
 
         // Note: since we used reduced objFunc, we only need to
         // assign the seed for master proc
-        if (Pstream::master())
-        {
+        //if (Pstream::master())
+        //{
             f.setGradient(1.0);
-        }
+        //}
         // evaluate tape to compute derivative
         tape.evaluate();
 
