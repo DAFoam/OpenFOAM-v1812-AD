@@ -44,6 +44,7 @@ bool Foam::UOPstream::write
     const int toProcNo,
     const char* buf,
     const std::streamsize bufSize,
+    const std::string& callerInfo,
     const std::type_info& typeInfo,
     const int tag,
     const label communicator
@@ -58,7 +59,11 @@ bool Foam::UOPstream::write
             << " tag:" << tag
             << " comm:" << communicator << " size:" << label(bufSize)
             << " commsType:" << UPstream::commsTypeNames[commsType]
-            << " typeActive: " << typeActive << " typeid: " << typeInfo.name()
+            << Foam::endl;
+
+        Pout<< " caller " << callerInfo
+            << " typeActive: " << typeActive
+            << " typeid: " << typeInfo.name()
             << Foam::endl;
     }
     if (UPstream::warnComm != -1 && communicator != UPstream::warnComm)

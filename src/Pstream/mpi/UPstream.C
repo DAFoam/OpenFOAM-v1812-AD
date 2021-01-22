@@ -551,6 +551,7 @@ void Foam::UPstream::allToAll
     char* recvData,
     const UList<int>& recvSizes,
     const UList<int>& recvOffsets,
+    const std::string& callerInfo,
     const std::type_info& typeInfo,
     const label communicator
 )
@@ -649,6 +650,7 @@ void Foam::UPstream::gather
     char* recvData,
     const UList<int>& recvSizes,
     const UList<int>& recvOffsets,
+    const std::string& callerInfo,
     const std::type_info& typeInfo,
     const label communicator
 )
@@ -740,6 +742,7 @@ void Foam::UPstream::scatter
 
     char* recvData,
     int recvSize,
+    const std::string& callerInfo,
     const std::type_info& typeInfo,
     const label communicator
 )

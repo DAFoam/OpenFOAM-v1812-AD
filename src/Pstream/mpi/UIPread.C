@@ -113,6 +113,7 @@ Foam::UIPstream::UIPstream
             fromProcNo_,
             externalBuf_.begin(),
             wantedSize,
+            callerInfo(),
             typeid(externalBuf_.begin()),
             tag_,
             comm_
@@ -215,6 +216,7 @@ Foam::UIPstream::UIPstream(const int fromProcNo, PstreamBuffers& buffers)
             fromProcNo_,
             externalBuf_.begin(),
             wantedSize,
+            callerInfo(),
             typeid(externalBuf_.begin()),
             tag_,
             comm_
@@ -239,6 +241,7 @@ Foam::label Foam::UIPstream::read
     const int fromProcNo,
     char* buf,
     const std::streamsize bufSize,
+    const std::string& callerInfo,
     const std::type_info& typeInfo,
     const int tag,
     const label communicator
@@ -254,7 +257,10 @@ Foam::label Foam::UIPstream::read
             << " tag:" << tag << " comm:" << communicator
             << " wanted size:" << label(bufSize)
             << " commsType:" << UPstream::commsTypeNames[commsType]
-            << " typeActive: " << typeActive << " typeid: " << typeInfo.name()
+            << Foam::endl;
+        Pout<< " caller " << callerInfo 
+            << " typeActive: " << typeActive 
+            << " typeid: " << typeInfo.name()
             << Foam::endl;
     }
     if (UPstream::warnComm != -1 && communicator != UPstream::warnComm)

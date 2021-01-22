@@ -539,6 +539,7 @@ public:
             char* recvData,
             const UList<int>& recvSizes,
             const UList<int>& recvOffsets,
+            const std::string& callerInfo,
             const std::type_info& typeInfo,
             const label communicator = 0
         );
@@ -552,6 +553,7 @@ public:
             char* recvData,
             const UList<int>& recvSizes,
             const UList<int>& recvOffsets,
+            const std::string& callerInfo,
             const std::type_info& typeInfo,
             const label communicator = 0
         );
@@ -565,6 +567,7 @@ public:
 
             char* recvData,
             int recvSize,
+            const std::string& callerInfo,
             const std::type_info& typeInfo,
             const label communicator = 0
         );

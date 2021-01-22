@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,30 +22,21 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Description
-    Write primitive and binary block from OPstream
+    Print caller information for debugging the MPI functions with AD
+    Adapted from Towara 
 
 \*---------------------------------------------------------------------------*/
 
-#include "UOPstream.H"
+#include <string>
+#include <sstream>
+#include <typeinfo>
 
-// * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
-bool Foam::UOPstream::write
-(
-    const commsTypes commsType,
-    const int toProcNo,
-    const char* buf,
-    const std::streamsize bufSize,
-    const std::string& callerInfo,
-    const std::type_info& typeInfo,
-    const int tag,
-    const label communicator
-)
-{
-    NotImplemented;
-
-    return false;
+inline std::string intToStr(int i){
+    return std::to_string(i);
 }
 
-
-// ************************************************************************* //
+#ifdef __GNUC__
+#define callerInfo() "in " + std::string(__FILE__) + ": " + std::string(__PRETTY_FUNCTION__) + std::string(":") + intToStr(__LINE__)
+#else
+#define callerInfo() "in " + std::string(__FILE__) + ": " + std::string(__FUNC__) + std::string(":") + intToStr(__LINE__)
+#endif
