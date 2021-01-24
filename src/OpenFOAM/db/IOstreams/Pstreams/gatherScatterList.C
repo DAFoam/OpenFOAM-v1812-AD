@@ -83,7 +83,7 @@ void Pstream::gatherList
                     belowID,
                     reinterpret_cast<char*>(receivedValues.begin()),
                     receivedValues.byteSize(),
-                    callerInfo(),
+                    "Pstream::gatherList",
                     typeid(receivedValues.begin()),
                     tag,
                     comm
@@ -161,7 +161,7 @@ void Pstream::gatherList
                     myComm.above(),
                     reinterpret_cast<const char*>(sendingValues.begin()),
                     sendingValues.byteSize(),
-                    callerInfo(),
+                    "Pstream::gatherList",
                     typeid(sendingValues.begin()),
                     tag,
                     comm
@@ -249,7 +249,7 @@ void Pstream::scatterList
                     myComm.above(),
                     reinterpret_cast<char*>(receivedValues.begin()),
                     receivedValues.byteSize(),
-                    callerInfo(),
+                    "Pstream::scatterList",
                     typeid(receivedValues.begin()),
                     tag,
                     comm
@@ -307,7 +307,7 @@ void Pstream::scatterList
                     belowID,
                     reinterpret_cast<const char*>(sendingValues.begin()),
                     sendingValues.byteSize(),
-                    callerInfo(),
+                    "Pstream::scatterList",
                     typeid(sendingValues.begin()),
                     tag,
                     comm

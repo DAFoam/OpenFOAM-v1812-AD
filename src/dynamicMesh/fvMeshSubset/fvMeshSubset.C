@@ -129,7 +129,7 @@ void Foam::fvMeshSubset::doCoupledPatches
 
     if (syncPar && Pstream::parRun())
     {
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::fvMeshSubset::doCoupledPatches", false);
 
         // Send face usage across processor patches
         for (const polyPatch& pp : oldPatches)

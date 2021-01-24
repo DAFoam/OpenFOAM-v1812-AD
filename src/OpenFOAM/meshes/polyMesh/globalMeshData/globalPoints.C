@@ -902,7 +902,9 @@ void Foam::globalPoints::calculateSharedPoints
                 Pstream::defaultCommsType == Pstream::commsTypes::scheduled
               ? Pstream::commsTypes::nonBlocking
               : Pstream::defaultCommsType
-            )
+	    ),
+	    "Foam::globalPoints::calculateSharedPoints",
+	    false
         );
         sendPatchPoints
         (
@@ -940,7 +942,9 @@ void Foam::globalPoints::calculateSharedPoints
                 Pstream::defaultCommsType == Pstream::commsTypes::scheduled
               ? Pstream::commsTypes::nonBlocking
               : Pstream::defaultCommsType
-            )
+	    ),
+	    "Foam::globalPoints::calculateSharedPoints",
+	    false
         );
         sendPatchPoints
         (

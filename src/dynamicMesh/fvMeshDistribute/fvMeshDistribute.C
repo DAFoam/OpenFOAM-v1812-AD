@@ -1988,7 +1988,7 @@ Foam::autoPtr<Foam::mapDistributePolyMesh> Foam::fvMeshDistribute::distribute
 
 
     // Allocate buffers
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::fvMeshDistribute::distribute", false);
 
 
     // What to send to neighbouring domains

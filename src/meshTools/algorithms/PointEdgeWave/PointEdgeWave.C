@@ -311,7 +311,7 @@ void Foam::PointEdgeWave<Type, TrackingData>::handleProcPatches()
 {
     // 1. Send all point info on processor patches.
 
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::PointEdgeWave<Type, TrackingData>::handleProcPatches()", false);
 
     DynamicList<Type> patchInfo;
     DynamicList<label> thisPoints;

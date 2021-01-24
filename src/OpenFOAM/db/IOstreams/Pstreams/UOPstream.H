@@ -67,6 +67,10 @@ class UOPstream
 
         const label comm_;
 
+        word callerInfo_ = "dummyCallerInfo";
+
+        bool typeActive_ = false;
+
         const bool sendAtDestruct_;
 
 
@@ -142,7 +146,7 @@ public:
                 const int toProcNo,
                 const char* buf,
                 const std::streamsize bufSize,
-                const std::string& callerInfo,
+                const word callerInfo,
                 const std::type_info& typeInfo,
                 const int tag = UPstream::msgType(),
                 const label communicator = 0

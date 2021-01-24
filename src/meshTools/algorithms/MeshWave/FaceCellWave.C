@@ -534,7 +534,7 @@ void Foam::FaceCellWave<Type, TrackingData>::handleProcPatches()
 
     // Send all
 
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::FaceCellWave<Type, TrackingData>::handleProcPatches()", false);
 
     for (const label patchi : procPatches)
     {

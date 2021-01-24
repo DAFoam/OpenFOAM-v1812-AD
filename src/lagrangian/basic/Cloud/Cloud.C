@@ -191,7 +191,7 @@ void Foam::Cloud<ParticleType>::move
     );
 
     // Allocate transfer buffers
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::Cloud<ParticleType>::move", false);
 
     // Clear the global positions as there are about to change
     globalPositionsPtr_.clear();

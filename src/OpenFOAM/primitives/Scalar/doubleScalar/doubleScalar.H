@@ -40,7 +40,6 @@ SourceFiles
 #include "word.H"
 // Add CoDiPack header
 #include "codi.hpp"
-#include "callerInfo.C"
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam

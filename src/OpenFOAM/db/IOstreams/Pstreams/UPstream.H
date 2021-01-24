@@ -46,6 +46,8 @@ SourceFiles
 #include "Enum.H"
 #include "ListOps.H"
 #include "LIFOStack.H"
+#include "Vector.H"
+#include "Tensor.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -539,7 +541,7 @@ public:
             char* recvData,
             const UList<int>& recvSizes,
             const UList<int>& recvOffsets,
-            const std::string& callerInfo,
+            const word callerInfo,
             const std::type_info& typeInfo,
             const label communicator = 0
         );
@@ -553,7 +555,7 @@ public:
             char* recvData,
             const UList<int>& recvSizes,
             const UList<int>& recvOffsets,
-            const std::string& callerInfo,
+            const word callerInfo,
             const std::type_info& typeInfo,
             const label communicator = 0
         );
@@ -567,10 +569,21 @@ public:
 
             char* recvData,
             int recvSize,
-            const std::string& callerInfo,
+            const word callerInfo,
             const std::type_info& typeInfo,
             const label communicator = 0
         );
+
+        // check if the input type is active, which will be used in Pstream functions
+        static bool isTypeActive(const std::type_info& type)
+        {
+            return  type == typeid(scalar*)
+                ||  type == typeid(const scalar*)
+                ||  type == typeid(Foam::Vector<scalar>*)
+                ||  type == typeid(const Foam::Vector<scalar>*)
+                ||  type == typeid(Foam::Tensor<scalar>*)
+                ||  type == typeid(const Foam::Tensor<scalar>*);
+        }
 };
 
 

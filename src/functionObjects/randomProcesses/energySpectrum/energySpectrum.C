@@ -219,7 +219,7 @@ bool Foam::functionObjects::energySpectrum::write()
 
     if (Pstream::parRun())
     {
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::functionObjects::energySpectrum::write()", false);
 
         UOPstream toProc(0, pBufs);
 

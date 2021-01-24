@@ -113,7 +113,7 @@ Foam::UIPstream::UIPstream
             fromProcNo_,
             externalBuf_.begin(),
             wantedSize,
-            callerInfo(),
+            "UIPstream::UIPstream",
             typeid(externalBuf_.begin()),
             tag_,
             comm_
@@ -142,6 +142,15 @@ Foam::UIPstream::UIPstream(const int fromProcNo, PstreamBuffers& buffers)
     clearAtEnd_(true),
     messageSize_(0)
 {
+
+    if (debug)
+    {
+        Pout<< "UIPstream::UIPstream :" << Foam::endl;
+        Pout<< " caller " << buffers.getCallerInfo() 
+            << " typeActive: " << buffers.getTypeActive() 
+            << Foam::endl;
+    }
+
     if
     (
         commsType() != UPstream::commsTypes::scheduled
@@ -210,17 +219,36 @@ Foam::UIPstream::UIPstream(const int fromProcNo, PstreamBuffers& buffers)
             }
         }
 
-        messageSize_ = UIPstream::read
-        (
-            commsType(),
-            fromProcNo_,
-            externalBuf_.begin(),
-            wantedSize,
-            callerInfo(),
-            typeid(externalBuf_.begin()),
-            tag_,
-            comm_
-        );
+        if (buffers.getTypeActive())
+        {
+            scalar dummyActiveType = 1.0;
+            messageSize_ = UIPstream::read
+            (
+                commsType(),
+                fromProcNo_,
+                externalBuf_.begin(),
+                wantedSize,
+                buffers.getCallerInfo(),
+                typeid(&dummyActiveType),
+                tag_,
+                comm_
+            );
+        }
+        else
+        {
+            label dummyPassiveType = 0;
+            messageSize_ = UIPstream::read
+            (
+                commsType(),
+                fromProcNo_,
+                externalBuf_.begin(),
+                wantedSize,
+                buffers.getCallerInfo(),
+                typeid(&dummyPassiveType),
+                tag_,
+                comm_
+            );
+        }
 
         // Set addressed size. Leave actual allocated memory intact.
         externalBuf_.setSize(messageSize_);
@@ -241,14 +269,14 @@ Foam::label Foam::UIPstream::read
     const int fromProcNo,
     char* buf,
     const std::streamsize bufSize,
-    const std::string& callerInfo,
+    const word callerInfo,
     const std::type_info& typeInfo,
     const int tag,
     const label communicator
 )
 {
 
-    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+    bool typeActive = Foam::UPstream::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
     if (debug)

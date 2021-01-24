@@ -76,11 +76,7 @@ extern MpiTypes* mpiTypes_;
 
 void checkCommunicator(const label comm, const label toProcNo);
 
-// check whether the type is active
-bool isTypeActive(const std::type_info& type);
 };
-
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 } // End namespace Foam

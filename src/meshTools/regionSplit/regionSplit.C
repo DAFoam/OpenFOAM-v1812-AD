@@ -742,7 +742,9 @@ Foam::autoPtr<Foam::globalIndex> Foam::regionSplit::reduceRegions
     Pstream::exchange<labelList, label>
     (
         sendNonLocal,
-        recvNonLocal
+        recvNonLocal,
+	"Foam::regionSplit::reduceRegions",
+	false
     );
 
 
@@ -764,7 +766,9 @@ Foam::autoPtr<Foam::globalIndex> Foam::regionSplit::reduceRegions
         Pstream::exchange<labelList, label>
         (
             sendLocal,
-            recvNonLocal
+            recvNonLocal,
+	    "Foam::regionSplit::reduceRegions",
+	    false
         );
     }
 

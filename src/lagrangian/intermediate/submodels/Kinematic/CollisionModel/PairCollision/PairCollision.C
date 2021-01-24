@@ -57,7 +57,7 @@ void Foam::PairCollision<CloudType>::preInteraction()
 template<class CloudType>
 void Foam::PairCollision<CloudType>::parcelInteraction()
 {
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::PairCollision<CloudType>::parcelInteraction()", false);
 
     label startOfRequests = Pstream::nRequests();
 

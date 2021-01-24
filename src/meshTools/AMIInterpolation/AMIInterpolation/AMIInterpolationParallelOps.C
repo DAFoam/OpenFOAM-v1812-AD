@@ -126,7 +126,7 @@ void Foam::AMIInterpolation<SourcePatch, TargetPatch>::distributePatches
     List<labelList>& faceIDs
 ) const
 {
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::AMIInterpolation<SourcePatch, TargetPatch>::distributePatches", false);
 
     for (label domain = 0; domain < Pstream::nProcs(); ++domain)
     {

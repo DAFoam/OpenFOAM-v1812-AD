@@ -736,7 +736,7 @@ void Foam::isoAdvection::syncProcPatches
 
     if (Pstream::parRun())
     {
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::isoAdvection::syncProcPatches", false);
 
         // Send
         forAll(procPatchLabels_, i)

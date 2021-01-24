@@ -148,6 +148,8 @@ Foam::UOPstream::UOPstream(const int toProcNo, PstreamBuffers& buffers)
     sendBuf_(buffers.sendBuf_[toProcNo]),
     tag_(buffers.tag_),
     comm_(buffers.comm_),
+    callerInfo_(buffers.getCallerInfo()),
+    typeActive_(buffers.getTypeActive()),
     sendAtDestruct_(buffers.commsType_ != UPstream::commsTypes::nonBlocking)
 {
     setOpened();
@@ -161,20 +163,47 @@ Foam::UOPstream::~UOPstream()
 {
     if (sendAtDestruct_)
     {
-        if
-        (
-            !UOPstream::write
+        if (debug)
+        {
+            Pout<< "UOPstream::~UOPstream() :" << Foam::endl;
+            Pout<< " caller " << callerInfo_
+                << " typeActive: " << typeActive_
+                << Foam::endl;
+        }
+
+        bool failed = false;
+        if(typeActive_)
+        {
+            scalar dummyActiveType = 1.0;
+            failed = !UOPstream::write
             (
                 commsType_,
                 toProcNo_,
                 sendBuf_.begin(),
                 sendBuf_.size(),
-                callerInfo(),
-                typeid(sendBuf_.begin()),
+                callerInfo_,
+                typeid(&dummyActiveType),
                 tag_,
                 comm_
-            )
-        )
+            );
+        }
+        else
+        {
+            label dummyPassiveType = 0;
+            failed = !UOPstream::write
+            (
+                commsType_,
+                toProcNo_,
+                sendBuf_.begin(),
+                sendBuf_.size(),
+                callerInfo_,
+                typeid(&dummyPassiveType),
+                tag_,
+                comm_
+            );
+        }
+
+        if (failed)
         {
             FatalErrorInFunction
                 << "Failed sending outgoing message of size " << sendBuf_.size()

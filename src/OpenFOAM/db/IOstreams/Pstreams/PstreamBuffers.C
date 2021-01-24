@@ -35,6 +35,8 @@ Foam::DynamicList<char> Foam::PstreamBuffers::nullBuf(0);
 Foam::PstreamBuffers::PstreamBuffers
 (
     const UPstream::commsTypes commsType,
+    const word callerInfo,
+    const bool typeActive,
     const int tag,
     const label comm,
     IOstream::streamFormat format,
@@ -42,6 +44,8 @@ Foam::PstreamBuffers::PstreamBuffers
 )
 :
     commsType_(commsType),
+    callerInfo_(callerInfo),
+    typeActive_(typeActive),
     tag_(tag),
     comm_(comm),
     format_(format),
@@ -85,6 +89,8 @@ void Foam::PstreamBuffers::finishedSends(const bool block)
         (
             sendBuf_,
             recvBuf_,
+            callerInfo_,
+            typeActive_,
             tag_,
             comm_,
             block
@@ -106,6 +112,8 @@ void Foam::PstreamBuffers::finishedSends(labelList& recvSizes, const bool block)
             sendBuf_,
             recvSizes,
             recvBuf_,
+            callerInfo_,
+            typeActive_,
             tag_,
             comm_,
             block

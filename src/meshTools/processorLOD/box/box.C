@@ -106,7 +106,7 @@ void Foam::processorLODs::box::setRefineFlags
     labelList& nElems
 ) const
 {
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::processorLODs::box::setRefineFlags", false);
 
     // Identify src boxes that can be refined and send to all remote procs
     for (label proci = 0; proci < Pstream::nProcs(); ++proci)
@@ -322,7 +322,7 @@ bool Foam::processorLODs::box::doRefineBoxes
     List<DynamicList<treeBoundBox>>& fixedBoxes
 )
 {
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::processorLODs::box::doRefineBoxes", false);
 
     // Send refine info back for list of evolving src boxes
     forAll(refineFlags, proci)

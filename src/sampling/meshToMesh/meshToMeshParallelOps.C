@@ -311,7 +311,7 @@ void Foam::meshToMesh::distributeCells
     List<labelList>& procLocalFaceIDs
 ) const
 {
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::meshToMesh::distributeCells", false);
 
     points.setSize(Pstream::nProcs());
     nInternalFaces.setSize(Pstream::nProcs(), 0);

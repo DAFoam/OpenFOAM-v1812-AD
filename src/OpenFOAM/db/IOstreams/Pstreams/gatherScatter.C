@@ -70,7 +70,7 @@ void Pstream::gather
                     myComm.below()[belowI],
                     reinterpret_cast<char*>(&value),
                     sizeof(T),
-                    callerInfo(),
+                    "Pstream::gather",
                     typeid(&value),
                     tag,
                     comm
@@ -103,7 +103,7 @@ void Pstream::gather
                     myComm.above(),
                     reinterpret_cast<const char*>(&Value),
                     sizeof(T),
-                    callerInfo(),
+                    "Pstream::gather",
                     typeid(&Value),
                     tag,
                     comm
@@ -171,7 +171,7 @@ void Pstream::scatter
                     myComm.above(),
                     reinterpret_cast<char*>(&Value),
                     sizeof(T),
-                    callerInfo(),
+                    "Pstream::scatter",
                     typeid(&Value),
                     tag,
                     comm
@@ -204,7 +204,7 @@ void Pstream::scatter
                     myComm.below()[belowI],
                     reinterpret_cast<const char*>(&Value),
                     sizeof(T),
-                    callerInfo(),
+                    "Pstream::scatter",
                     typeid(&Value),
                     tag,
                     comm

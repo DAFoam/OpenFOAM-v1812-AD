@@ -1090,7 +1090,7 @@ void Foam::faMesh::calcPointAreaNormals() const
                 procPatch.neighbProcNo(),
                 reinterpret_cast<const char*>(patchPointNormals.begin()),
                 patchPointNormals.byteSize(),
-                callerInfo(),
+                "Foam::faMesh::calcPointAreaNormals",
                 typeid(patchPointNormals.begin())
             );
             }
@@ -1108,7 +1108,7 @@ void Foam::faMesh::calcPointAreaNormals() const
                     procPatch.neighbProcNo(),
                     reinterpret_cast<char*>(ngbPatchPointNormals.begin()),
                     ngbPatchPointNormals.byteSize(),
-                    callerInfo(),
+                    "Foam::faMesh::calcPointAreaNormals",
                     typeid(ngbPatchPointNormals.begin())
                 );
             }

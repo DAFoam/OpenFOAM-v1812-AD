@@ -551,7 +551,7 @@ void Foam::UPstream::allToAll
     char* recvData,
     const UList<int>& recvSizes,
     const UList<int>& recvOffsets,
-    const std::string& callerInfo,
+    const word callerInfo,
     const std::type_info& typeInfo,
     const label communicator
 )
@@ -576,7 +576,7 @@ void Foam::UPstream::allToAll
             << Foam::abort(FatalError);
     }
 
-    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+    bool typeActive = Foam::UPstream::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
     if (debug)
@@ -650,7 +650,7 @@ void Foam::UPstream::gather
     char* recvData,
     const UList<int>& recvSizes,
     const UList<int>& recvOffsets,
-    const std::string& callerInfo,
+    const word callerInfo,
     const std::type_info& typeInfo,
     const label communicator
 )
@@ -674,7 +674,7 @@ void Foam::UPstream::gather
             << Foam::abort(FatalError);
     }
 
-    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+    bool typeActive = Foam::UPstream::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
     if (debug)
@@ -742,7 +742,7 @@ void Foam::UPstream::scatter
 
     char* recvData,
     int recvSize,
-    const std::string& callerInfo,
+    const word callerInfo,
     const std::type_info& typeInfo,
     const label communicator
 )
@@ -763,7 +763,7 @@ void Foam::UPstream::scatter
             << Foam::abort(FatalError);
     }
 
-    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+    bool typeActive = Foam::UPstream::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
     if (debug)

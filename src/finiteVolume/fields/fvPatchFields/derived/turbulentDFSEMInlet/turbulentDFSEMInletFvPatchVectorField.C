@@ -678,7 +678,7 @@ void Foam::turbulentDFSEMInletFvPatchVectorField::calcOverlappingProcEddies
 
     mapDistribute map(segmentI, std::move(sendMap), std::move(constructMap));
 
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::turbulentDFSEMInletFvPatchVectorField::calcOverlappingProcEddies", false);
 
     for (label domain = 0; domain < Pstream::nProcs(); domain++)
     {

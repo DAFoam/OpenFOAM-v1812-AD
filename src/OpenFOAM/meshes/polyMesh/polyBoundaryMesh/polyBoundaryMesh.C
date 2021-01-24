@@ -272,7 +272,7 @@ void Foam::polyBoundaryMesh::clearAddressing()
 
 void Foam::polyBoundaryMesh::calcGeometry()
 {
-    PstreamBuffers pBufs(Pstream::defaultCommsType);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::calcGeometry()", true);
 
     if
     (
@@ -1069,7 +1069,7 @@ bool Foam::polyBoundaryMesh::checkDefinition(const bool report) const
 
 void Foam::polyBoundaryMesh::movePoints(const pointField& p)
 {
-    PstreamBuffers pBufs(Pstream::defaultCommsType);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::movePoints", true);
 
     if
     (
@@ -1119,7 +1119,7 @@ void Foam::polyBoundaryMesh::updateMesh()
     patchIDPtr_.clear();
     groupPatchIDsPtr_.clear();
 
-    PstreamBuffers pBufs(Pstream::defaultCommsType);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::updateMesh()", false);
 
     if
     (

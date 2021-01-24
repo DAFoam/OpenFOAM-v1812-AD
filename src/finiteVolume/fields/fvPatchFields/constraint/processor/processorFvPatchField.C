@@ -231,7 +231,7 @@ void Foam::processorFvPatchField<Type>::initEvaluate
                 procPatch_.neighbProcNo(),
                 reinterpret_cast<char*>(this->begin()),
                 this->byteSize(),
-                callerInfo(),
+                "Foam::processorFvPatchField<Type>::initEvaluate",
                 typeid(this->begin()),
                 procPatch_.tag(),
                 procPatch_.comm()
@@ -244,7 +244,7 @@ void Foam::processorFvPatchField<Type>::initEvaluate
                 procPatch_.neighbProcNo(),
                 reinterpret_cast<const char*>(sendBuf_.begin()),
                 this->byteSize(),
-                callerInfo(),
+                "Foam::processorFvPatchField<Type>::initEvaluate",
                 typeid(sendBuf_.begin()),
                 procPatch_.tag(),
                 procPatch_.comm()
@@ -346,7 +346,7 @@ void Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate
             procPatch_.neighbProcNo(),
             reinterpret_cast<char*>(scalarReceiveBuf_.begin()),
             scalarReceiveBuf_.byteSize(),
-            callerInfo(),
+            "Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate",
             typeid(scalarReceiveBuf_.begin()),
             procPatch_.tag(),
             procPatch_.comm()
@@ -359,7 +359,7 @@ void Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate
             procPatch_.neighbProcNo(),
             reinterpret_cast<const char*>(scalarSendBuf_.begin()),
             scalarSendBuf_.byteSize(),
-            callerInfo(),
+            "Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate",
             typeid(scalarSendBuf_.begin()),
             procPatch_.tag(),
             procPatch_.comm()
@@ -471,7 +471,7 @@ void Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate
             procPatch_.neighbProcNo(),
             reinterpret_cast<char*>(receiveBuf_.begin()),
             receiveBuf_.byteSize(),
-            callerInfo(),
+            "Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate",
             typeid(receiveBuf_.begin()),
             procPatch_.tag(),
             procPatch_.comm()
@@ -484,7 +484,7 @@ void Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate
             procPatch_.neighbProcNo(),
             reinterpret_cast<const char*>(sendBuf_.begin()),
             sendBuf_.byteSize(),
-            callerInfo(),
+            "Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate",
             typeid(sendBuf_.begin()),
             procPatch_.tag(),
             procPatch_.comm()

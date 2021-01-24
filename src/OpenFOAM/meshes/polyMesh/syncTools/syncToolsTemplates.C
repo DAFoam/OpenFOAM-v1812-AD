@@ -127,7 +127,7 @@ void Foam::syncTools::syncPointMap
 
     if (Pstream::parRun())
     {
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::syncTools::syncPointMap", false);
 
         // Send
 
@@ -393,7 +393,7 @@ void Foam::syncTools::syncEdgeMap
 
     if (Pstream::parRun())
     {
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::syncTools::syncEdgeMap", false);
 
         // Send
 
@@ -943,7 +943,7 @@ void Foam::syncTools::syncBoundaryFaceList
 
     if (parRun)
     {
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::syncTools::syncBoundaryFaceList", false);
 
         // Send
 
@@ -1055,7 +1055,7 @@ void Foam::syncTools::syncFaceList
 
     if (parRun)
     {
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::syncTools::syncFaceList", false);
 
         // Send
 

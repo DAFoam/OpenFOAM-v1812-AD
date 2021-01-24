@@ -44,13 +44,13 @@ bool Foam::UOPstream::write
     const int toProcNo,
     const char* buf,
     const std::streamsize bufSize,
-    const std::string& callerInfo,
+    const word callerInfo,
     const std::type_info& typeInfo,
     const int tag,
     const label communicator
 )
 {
-    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+    bool typeActive = Foam::UPstream::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
     if (debug)
@@ -76,7 +76,6 @@ bool Foam::UOPstream::write
             << Foam::endl;
         error::printStack(Pout);
     }
-
 
     PstreamGlobals::checkCommunicator(communicator, toProcNo);
 

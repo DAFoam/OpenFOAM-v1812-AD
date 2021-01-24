@@ -37,7 +37,7 @@ Type Foam::fileOperations::masterUncollatedFileOperation::scatterList
 ) const
 {
     // TBD: more efficient scatter
-    PstreamBuffers pBufs(UPstream::commsTypes::nonBlocking, tag, comm);
+    PstreamBuffers pBufs(UPstream::commsTypes::nonBlocking, "Foam::fileOperations::masterUncollatedFileOperation::scatterList", false, tag, comm);
     if (Pstream::master(comm))
     {
         for (label proci = 1; proci < Pstream::nProcs(comm); proci++)

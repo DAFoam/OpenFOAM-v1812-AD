@@ -1887,7 +1887,7 @@ void Foam::polyTopoChange::reorderCoupledFaces
     // Rotation on new faces.
     labelList rotation(faces_.size(), 0);
 
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::polyTopoChange::reorderCoupledFaces", false);
 
     // Send ordering
     forAll(boundary, patchi)

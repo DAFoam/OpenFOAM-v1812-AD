@@ -409,6 +409,8 @@ bool Foam::decomposedBlockData::readBlocks
         PstreamBuffers pBufs
         (
             UPstream::commsTypes::nonBlocking,
+	    "Foam::decomposedBlockData::readBlocks",
+	    false,
             UPstream::msgType(),
             comm
         );
@@ -564,6 +566,8 @@ Foam::autoPtr<Foam::ISstream> Foam::decomposedBlockData::readBlocks
         PstreamBuffers pBufs
         (
             UPstream::commsTypes::nonBlocking,
+	    "Foam::decomposedBlockData::readBlocks",
+	    false,
             UPstream::msgType(),
             comm
         );
@@ -701,7 +705,7 @@ void Foam::decomposedBlockData::gather
         data0Ptr,
         recvSizes,
         recvOffsets,
-        callerInfo(),
+        "Foam::decomposedBlockData::gather",
         typeid(&data),
         comm
     );
@@ -763,7 +767,7 @@ void Foam::decomposedBlockData::gatherSlaveData
         recvData.begin(),
         sliceSizes,
         sliceOffsets,
-        callerInfo(),
+        "Foam::decomposedBlockData::gatherSlaveData",
         typeid(data.begin()),
         comm
     );
@@ -803,7 +807,7 @@ Foam::label Foam::decomposedBlockData::calcNumProcs
         List<int>(nProcs, 0),
         reinterpret_cast<char*>(&n),
         sizeof(n),
-        callerInfo(),
+        "Foam::decomposedBlockData::calcNumProcs",
         typeid(&nSendProcs),
         comm
     );
@@ -898,7 +902,7 @@ bool Foam::decomposedBlockData::writeBlocks
                     proci,
                     elems.begin(),
                     elems.size(),
-                    callerInfo(),
+                    "Foam::decomposedBlockData::writeBlocks",
                     typeid(elems.begin()),
                     Pstream::msgType(),
                     comm
@@ -919,7 +923,7 @@ bool Foam::decomposedBlockData::writeBlocks
                 UPstream::masterNo(),
                 data.begin(),
                 data.byteSize(),
-                callerInfo(),
+                "Foam::decomposedBlockData::writeBlocks",
                 typeid(data.begin()),
                 Pstream::msgType(),
                 comm

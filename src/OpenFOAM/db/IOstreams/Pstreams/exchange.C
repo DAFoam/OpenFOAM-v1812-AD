@@ -38,6 +38,8 @@ void Foam::Pstream::exchangeContainer
     const UList<Container>& sendBufs,
     const labelUList& recvSizes,
     List<Container>& recvBufs,
+    const word callerInfo,
+    const label typeActive,
     const int tag,
     const label comm,
     const bool block
@@ -52,17 +54,36 @@ void Foam::Pstream::exchangeContainer
     {
         if (proci != Pstream::myProcNo(comm) && recvSizes[proci] > 0)
         {
-            UIPstream::read
-            (
-                UPstream::commsTypes::nonBlocking,
-                proci,
-                reinterpret_cast<char*>(recvBufs[proci].begin()),
-                recvSizes[proci]*sizeof(T),
-                callerInfo(),
-                typeid(T),
-                tag,
-                comm
-            );
+            if (typeActive)
+            {
+                scalar dummyActiveType = 1.0;
+                UIPstream::read
+                (
+                    UPstream::commsTypes::nonBlocking,
+                    proci,
+                    reinterpret_cast<char*>(recvBufs[proci].begin()),
+                    recvSizes[proci]*sizeof(T),
+                    callerInfo,
+                    typeid(&dummyActiveType),
+                    tag,
+                    comm
+                );
+            }
+            else
+            {
+                label dummyPassiveType = 0;
+                UIPstream::read
+                (
+                    UPstream::commsTypes::nonBlocking,
+                    proci,
+                    reinterpret_cast<char*>(recvBufs[proci].begin()),
+                    recvSizes[proci]*sizeof(T),
+                    callerInfo,
+                    typeid(&dummyPassiveType),
+                    tag,
+                    comm
+                );
+            }
         }
     }
 
@@ -74,20 +95,38 @@ void Foam::Pstream::exchangeContainer
     {
         if (proci != Pstream::myProcNo(comm) && sendBufs[proci].size() > 0)
         {
-            if
-            (
-               !UOPstream::write
+            bool failed = false;
+            if (typeActive)
+            {
+                scalar dummyActiveType = 1.0;
+                failed = !UOPstream::write
                 (
                     UPstream::commsTypes::nonBlocking,
                     proci,
                     reinterpret_cast<const char*>(sendBufs[proci].begin()),
                     sendBufs[proci].size()*sizeof(T),
-                    callerInfo(),
-                    typeid(T),
+                    callerInfo,
+                    typeid(&dummyActiveType),
                     tag,
                     comm
-                )
-            )
+                );
+            }
+            else
+            {
+                label dummyPassiveType = 0;
+                failed = !UOPstream::write
+                (
+                    UPstream::commsTypes::nonBlocking,
+                    proci,
+                    reinterpret_cast<const char*>(sendBufs[proci].begin()),
+                    sendBufs[proci].size()*sizeof(T),
+                    callerInfo,
+                    typeid(&dummyPassiveType),
+                    tag,
+                    comm
+                );
+            }
+            if (failed)
             {
                 FatalErrorInFunction
                     << "Cannot send outgoing message. "
@@ -116,6 +155,8 @@ void Foam::Pstream::exchangeBuf
     const UList<const char*>& sendBufs,
     const labelUList& recvSizes,
     List<char*>& recvBufs,
+    const word callerInfo,
+    const label typeActive,
     const int tag,
     const label comm,
     const bool block
@@ -130,17 +171,36 @@ void Foam::Pstream::exchangeBuf
     {
         if (proci != Pstream::myProcNo(comm) && recvSizes[proci] > 0)
         {
-            UIPstream::read
-            (
-                UPstream::commsTypes::nonBlocking,
-                proci,
-                recvBufs[proci],
-                recvSizes[proci]*sizeof(T),
-                callerInfo(),
-                typeid(T),
-                tag,
-                comm
-            );
+            if (typeActive)
+            {
+                scalar dummyActiveType = 1.0;
+                UIPstream::read
+                (
+                    UPstream::commsTypes::nonBlocking,
+                    proci,
+                    recvBufs[proci],
+                    recvSizes[proci]*sizeof(T),
+                    callerInfo,
+                    typeid(&dummyActiveType),
+                    tag,
+                    comm
+                );
+            }
+            else
+            {
+                label dummyPassiveType = 0;
+                UIPstream::read
+                (
+                    UPstream::commsTypes::nonBlocking,
+                    proci,
+                    recvBufs[proci],
+                    recvSizes[proci]*sizeof(T),
+                    callerInfo,
+                    typeid(&dummyPassiveType),
+                    tag,
+                    comm
+                );
+            }
         }
     }
 
@@ -152,20 +212,39 @@ void Foam::Pstream::exchangeBuf
     {
         if (proci != Pstream::myProcNo(comm) && sendSizes[proci] > 0)
         {
-            if
-            (
-               !UOPstream::write
+            bool failed = false;
+            if (typeActive)
+            {
+                scalar dummyActiveType = 1.0;
+                failed = !UOPstream::write
                 (
                     UPstream::commsTypes::nonBlocking,
                     proci,
                     sendBufs[proci],
                     sendSizes[proci]*sizeof(T),
-                    callerInfo(),
-                    typeid(T),
+                    callerInfo,
+                    typeid(&dummyActiveType),
                     tag,
                     comm
-                )
-            )
+                );
+            }
+            else
+            {
+                label dummyPassiveType = 0;
+                failed = !UOPstream::write
+                (
+                    UPstream::commsTypes::nonBlocking,
+                    proci,
+                    sendBufs[proci],
+                    sendSizes[proci]*sizeof(T),
+                    callerInfo,
+                    typeid(&dummyPassiveType),
+                    tag,
+                    comm
+                );
+            }
+
+            if (failed)
             {
                 FatalErrorInFunction
                     << "Cannot send outgoing message. "
@@ -193,6 +272,8 @@ void Foam::Pstream::exchange
     const UList<Container>& sendBufs,
     const labelUList& recvSizes,
     List<Container>& recvBufs,
+    const word callerInfo,
+    const label typeActive,
     const int tag,
     const label comm,
     const bool block
@@ -236,6 +317,8 @@ void Foam::Pstream::exchange
                 sendBufs,
                 recvSizes,
                 recvBufs,
+                callerInfo,
+                typeActive,
                 tag,
                 comm,
                 block
@@ -329,6 +412,8 @@ void Foam::Pstream::exchange
                     charSendBufs,
                     nRecv,
                     charRecvBufs,
+                    callerInfo,
+                    typeActive,
                     tag,
                     comm,
                     block
@@ -380,6 +465,8 @@ void Foam::Pstream::exchange
 (
     const UList<Container>& sendBufs,
     List<Container>& recvBufs,
+    const word callerInfo,
+    const label typeActive,
     const int tag,
     const label comm,
     const bool block
@@ -388,7 +475,7 @@ void Foam::Pstream::exchange
     labelList recvSizes;
     exchangeSizes(sendBufs, recvSizes, comm);
 
-    exchange<Container, T>(sendBufs, recvSizes, recvBufs, tag, comm, block);
+    exchange<Container, T>(sendBufs, recvSizes, recvBufs, callerInfo, typeActive, tag, comm, block);
 }
 
 
