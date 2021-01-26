@@ -209,10 +209,43 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
 
         UOPstream toNeighbProc(neighbProcNo(), pBufs);
 
-        toNeighbProc
-            << faceCentres()
-            << faceAreas()
-            << faceCellCentres();
+        //toNeighbProc
+        //    << faceCentres()
+        //    << faceAreas()
+        //    << faceCellCentres();
+
+        // we need to hack this, it seems that doing multiple 
+        // PstreamBuffer transfers gives seg fault if reverse AD is
+        // active, we need to combine faceCentres faceAreas, and
+        // faceCellCentres into one vectorField and transfer
+
+        vectorField faceCentresField = faceCentres();
+        vectorField faceAreasField = faceAreas();
+        vectorField faceCellCentresField = faceCellCentres();
+        vectorField combinedField(faceCentresField.size() + faceAreasField.size() + faceCellCentresField.size());
+        label glbIdx = 0;
+        for(label i=0;i<faceCentresField.size();i++)
+        {
+            combinedField[glbIdx] = faceCentresField[i];
+            glbIdx++;
+        }
+        for(label i=0;i<faceAreasField.size();i++)
+        {
+            combinedField[glbIdx] = faceAreasField[i];
+            glbIdx++;
+        }
+        for(label i=0;i<faceCellCentresField.size();i++)
+        {
+            combinedField[glbIdx] = faceCellCentresField[i];
+            glbIdx++;
+        }
+
+        // we can change the typeActive in PstreamBuffers here to force it 
+        // to be passive 
+        //bool& typeActive = const_cast<bool&>(pBufs.getTypeActive());
+        //typeActive = false;
+
+        toNeighbProc << combinedField;
     }
 }
 
@@ -224,10 +257,42 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
         {
             UIPstream fromNeighbProc(neighbProcNo(), pBufs);
 
-            fromNeighbProc
-                >> neighbFaceCentres_
-                >> neighbFaceAreas_
-                >> neighbFaceCellCentres_;
+            //fromNeighbProc
+            //    >> neighbFaceCentres_
+            //    >> neighbFaceAreas_
+            //    >> neighbFaceCellCentres_;
+
+            // we need to hack this, it seems that doing multiple 
+            // PstreamBuffer transfers gives seg fault if reverse AD is
+            // active, we need to combine faceCentres faceAreas, and
+            // faceCellCentres into one vectorField and transfer
+            vectorField faceCentresField = faceCentres();
+            vectorField faceAreasField = faceAreas();
+            vectorField faceCellCentresField = faceCellCentres();
+            vectorField combinedField(faceCentresField.size() + faceAreasField.size() + faceCellCentresField.size());
+
+            fromNeighbProc >> combinedField;
+
+            neighbFaceCentres_.setSize(faceCentresField.size());
+            neighbFaceAreas_.setSize(faceAreasField.size());
+            neighbFaceCellCentres_.setSize(faceCellCentresField.size());
+            
+            label glbIdx = 0;
+            for(label i=0;i<neighbFaceCentres_.size();i++)
+            {
+                neighbFaceCentres_[i] = combinedField[glbIdx];
+                glbIdx++;
+            }
+            for(label i=0;i<neighbFaceAreas_.size();i++)
+            {
+                neighbFaceAreas_[i] = combinedField[glbIdx];
+                glbIdx++;
+            }
+            for(label i=0;i<neighbFaceCellCentres_.size();i++)
+            {
+                neighbFaceCellCentres_[i] = combinedField[glbIdx];
+                glbIdx++;
+            }
         }
 
         // My normals

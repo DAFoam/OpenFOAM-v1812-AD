@@ -576,7 +576,7 @@ void Foam::UPstream::allToAll
             << Foam::abort(FatalError);
     }
 
-    bool typeActive = Foam::UPstream::isTypeActive(typeInfo)
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
     if (debug)
@@ -674,7 +674,7 @@ void Foam::UPstream::gather
             << Foam::abort(FatalError);
     }
 
-    bool typeActive = Foam::UPstream::isTypeActive(typeInfo)
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
     if (debug)
@@ -763,7 +763,7 @@ void Foam::UPstream::scatter
             << Foam::abort(FatalError);
     }
 
-    bool typeActive = Foam::UPstream::isTypeActive(typeInfo)
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
     if (debug)

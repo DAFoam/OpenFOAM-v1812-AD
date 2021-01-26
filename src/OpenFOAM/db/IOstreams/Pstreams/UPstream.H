@@ -574,16 +574,6 @@ public:
             const label communicator = 0
         );
 
-        // check if the input type is active, which will be used in Pstream functions
-        static bool isTypeActive(const std::type_info& type)
-        {
-            return  type == typeid(scalar*)
-                ||  type == typeid(const scalar*)
-                ||  type == typeid(Foam::Vector<scalar>*)
-                ||  type == typeid(const Foam::Vector<scalar>*)
-                ||  type == typeid(Foam::Tensor<scalar>*)
-                ||  type == typeid(const Foam::Tensor<scalar>*);
-        }
 };
 
 

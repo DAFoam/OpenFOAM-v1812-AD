@@ -155,7 +155,7 @@ public:
             return comm_;
         }
 
-        bool getTypeActive() const
+        const bool& getTypeActive() const
         {
             return typeActive_;
         }

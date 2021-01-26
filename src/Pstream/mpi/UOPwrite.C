@@ -50,7 +50,7 @@ bool Foam::UOPstream::write
     const label communicator
 )
 {
-    bool typeActive = Foam::UPstream::isTypeActive(typeInfo)
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
     if (debug)

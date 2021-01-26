@@ -276,7 +276,7 @@ Foam::label Foam::UIPstream::read
 )
 {
 
-    bool typeActive = Foam::UPstream::isTypeActive(typeInfo)
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
                    && codi::RealReverse::getGlobalTape().isActive();
 
     if (debug)

@@ -24,6 +24,8 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "PstreamGlobals.H"
+#include "Vector.H"
+#include "Tensor.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -58,6 +60,17 @@ void Foam::PstreamGlobals::checkCommunicator
             << PstreamGlobals::MPICommunicators_.size()
             << ')' << abort(FatalError);
     }
+}
+
+// check if the input type is active, which will be used in Pstream functions
+bool Foam::PstreamGlobals::isTypeActive(const std::type_info& type)
+{
+    return      type == typeid(scalar*)
+            ||  type == typeid(const scalar*)
+            ||  type == typeid(Foam::Vector<scalar>*)
+            ||  type == typeid(const Foam::Vector<scalar>*)
+            ||  type == typeid(Foam::Tensor<scalar>*)
+            ||  type == typeid(const Foam::Tensor<scalar>*);
 }
 
 
