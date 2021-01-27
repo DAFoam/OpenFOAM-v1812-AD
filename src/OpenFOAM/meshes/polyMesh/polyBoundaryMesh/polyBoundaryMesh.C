@@ -272,7 +272,7 @@ void Foam::polyBoundaryMesh::clearAddressing()
 
 void Foam::polyBoundaryMesh::calcGeometry()
 {
-    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::calcGeometry()", true);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::calcGeometry()", false);
 
     if
     (
