@@ -1,4 +1,4 @@
-ame: OF1812-AD
+name: OF1812-AD
 
 on: [push, pull_request]
 
