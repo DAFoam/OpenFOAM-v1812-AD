@@ -3,9 +3,8 @@ name: OF1812-AD
 on: [push, pull_request]
 
 env:
-  REPO_NAME: 'OpenFOAM-v1812-AD'
-  DOCKER_WORKING_DIR: '/home/dafoamuser/OpenFOAM/$REPO_NAME'
-  DOCKER_MOUNT_DIR: '/home/dafoamuser/mount/$REPO_NAME'
+  DOCKER_WORKING_DIR: '/home/dafoamuser/OpenFOAM/OpenFOAM-v1812-AD'
+  DOCKER_MOUNT_DIR: '/home/dafoamuser/mount/OpenFOAM-v1812-AD'
   DOCKER_TAG: 'latest'
 
 jobs:
