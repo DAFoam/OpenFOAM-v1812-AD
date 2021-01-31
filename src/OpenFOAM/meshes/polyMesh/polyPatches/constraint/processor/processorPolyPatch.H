@@ -79,6 +79,9 @@ class processorPolyPatch
         //  (so edges()[i] == neighb.edges()[neighbEdges_[i]])
         mutable autoPtr<labelList> neighbEdgesPtr_;
 
+        //- Outstanding send request for faceCenter
+        mutable label outstandingRecvRequest_;
+
 protected:
 
     // Protected constructors

@@ -207,45 +207,121 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
                 << exit(FatalError);
         }
 
-        UOPstream toNeighbProc(neighbProcNo(), pBufs);
+        // CoDiPack4OpenFOAM. We have hacked this function 
+        // The original communication was done through PstreamBuffers.
+        // However, it will return seg fault when using reverse-mode AD
+        // with medipack. So we have to change the communication to use
+        // UIPstream::read and UOPstream::write
+        // NOTE: this function will be used when calling mesh.movePoints()
 
-        //toNeighbProc
-        //    << faceCentres()
-        //    << faceAreas()
-        //    << faceCellCentres();
+        // this hack refers to the communication used in the initEvaluate function from
+        // src/finiteVolume/fields/fvPatchFields/constraint/processor/processorFvPatchField.C
 
-        // we need to hack this, it seems that doing multiple 
-        // PstreamBuffer transfers gives seg fault if reverse AD is
-        // active, we need to combine faceCentres faceAreas, and
-        // faceCellCentres into one vectorField and transfer
-
-        vectorField faceCentresField = faceCentres();
-        vectorField faceAreasField = faceAreas();
-        vectorField faceCellCentresField = faceCellCentres();
-        vectorField combinedField(faceCentresField.size() + faceAreasField.size() + faceCellCentresField.size());
-        label glbIdx = 0;
-        for(label i=0;i<faceCentresField.size();i++)
+        if
+        (
+            Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
+         && !Pstream::floatTransfer
+        )
         {
-            combinedField[glbIdx] = faceCentresField[i];
-            glbIdx++;
+
+            vectorField faceCentresField = faceCentres();
+            vectorField faceAreasField = faceAreas();
+            vectorField faceCellCentresField = faceCellCentres();
+    
+            neighbFaceCentres_.setSize(faceCentresField.size());
+            neighbFaceAreas_.setSize(faceAreasField.size());
+            neighbFaceCellCentres_.setSize(faceCellCentresField.size());
+    
+            scalar dummyActiveType = 1.0;
+    
+            // exchange faceCentresField
+            // NOTE: before doing read and write, we need to record the
+            // nRequest before the read and write calls such that we 
+            // know how many request to wait by calling Pstream::waitRequest
+            // we follow the one used in processorFvPatchField.C
+            outstandingRecvRequest_ = UPstream::nRequests();
+            UIPstream::read
+            (
+                Pstream::commsTypes::nonBlocking,
+                this->neighbProcNo(),
+                reinterpret_cast<char*>(neighbFaceCentres_.begin()),
+                this->size()*sizeof(vector),
+                "Foam::processorPolyPatch::initGeometry",
+                typeid(&dummyActiveType),
+                this->tag(),
+                this->comm()
+            );
+    
+            UOPstream::write
+            (
+                Pstream::commsTypes::nonBlocking,
+                this->neighbProcNo(),
+                reinterpret_cast<const char*>(faceCentresField.begin()),
+                this->size()*sizeof(vector),
+                "Foam::processorPolyPatch::initGeometry",
+                typeid(&dummyActiveType),
+                this->tag(),
+                this->comm()
+            );
+    
+            // exchange faceAreasField
+            UIPstream::read
+            (
+                Pstream::commsTypes::nonBlocking,
+                this->neighbProcNo(),
+                reinterpret_cast<char*>(neighbFaceAreas_.begin()),
+                this->size()*sizeof(vector),
+                "Foam::processorPolyPatch::initGeometry",
+                typeid(&dummyActiveType),
+                this->tag(),
+                this->comm()
+            );
+            
+            UOPstream::write
+            (
+                Pstream::commsTypes::nonBlocking,
+                this->neighbProcNo(),
+                reinterpret_cast<const char*>(faceAreasField.begin()),
+                this->size()*sizeof(vector),
+                "Foam::processorPolyPatch::initGeometry",
+                typeid(&dummyActiveType),
+                this->tag(),
+                this->comm()
+            );
+    
+            // exchange faceCellCentresField
+            UIPstream::read
+            (
+                Pstream::commsTypes::nonBlocking,
+                this->neighbProcNo(),
+                reinterpret_cast<char*>(neighbFaceCellCentres_.begin()),
+                this->size()*sizeof(vector),
+                "Foam::processorPolyPatch::initGeometry",
+                typeid(&dummyActiveType),
+                this->tag(),
+                this->comm()
+            );
+
+            UOPstream::write
+            (
+                Pstream::commsTypes::nonBlocking,
+                this->neighbProcNo(),
+                reinterpret_cast<const char*>(faceCellCentresField.begin()),
+                this->size()*sizeof(vector),
+                "Foam::processorPolyPatch::initGeometry",
+                typeid(&dummyActiveType),
+                this->tag(),
+                this->comm()
+            );
+
         }
-        for(label i=0;i<faceAreasField.size();i++)
+        else
         {
-            combinedField[glbIdx] = faceAreasField[i];
-            glbIdx++;
-        }
-        for(label i=0;i<faceCellCentresField.size();i++)
-        {
-            combinedField[glbIdx] = faceCellCentresField[i];
-            glbIdx++;
+            FatalErrorInFunction
+            << "Only support nonBlocking! " 
+            << abort(FatalError);
         }
 
-        // we can change the typeActive in PstreamBuffers here to force it 
-        // to be passive 
-        //bool& typeActive = const_cast<bool&>(pBufs.getTypeActive());
-        //typeActive = false;
-
-        toNeighbProc << combinedField;
     }
 }
 
@@ -254,45 +330,33 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
 {
     if (Pstream::parRun())
     {
+        // CoDiPack4OpenFOAM. We have hacked this function 
+        // The original communication was done through PstreamBuffers.
+        // However, it will return seg fault when using reverse-mode AD
+        // with medipack. So we have to change the communication to use
+        // UIPstream::read and UOPstream::write
+        // NOTE: this function will be used when calling mesh.movePoints()
+
+        // this hack refers to the communication used in the evaluate function from
+        // src/finiteVolume/fields/fvPatchFields/constraint/processor/processorFvPatchField.C
+        
+        // we need to wait until all the transfer are done
+        if
+        (
+            Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
+         && !Pstream::floatTransfer
+        )
         {
-            UIPstream fromNeighbProc(neighbProcNo(), pBufs);
-
-            //fromNeighbProc
-            //    >> neighbFaceCentres_
-            //    >> neighbFaceAreas_
-            //    >> neighbFaceCellCentres_;
-
-            // we need to hack this, it seems that doing multiple 
-            // PstreamBuffer transfers gives seg fault if reverse AD is
-            // active, we need to combine faceCentres faceAreas, and
-            // faceCellCentres into one vectorField and transfer
-            vectorField faceCentresField = faceCentres();
-            vectorField faceAreasField = faceAreas();
-            vectorField faceCellCentresField = faceCellCentres();
-            vectorField combinedField(faceCentresField.size() + faceAreasField.size() + faceCellCentresField.size());
-
-            fromNeighbProc >> combinedField;
-
-            neighbFaceCentres_.setSize(faceCentresField.size());
-            neighbFaceAreas_.setSize(faceAreasField.size());
-            neighbFaceCellCentres_.setSize(faceCellCentresField.size());
-            
-            label glbIdx = 0;
-            for(label i=0;i<neighbFaceCentres_.size();i++)
-            {
-                neighbFaceCentres_[i] = combinedField[glbIdx];
-                glbIdx++;
+            if
+            (
+                outstandingRecvRequest_ >= 0
+             && outstandingRecvRequest_ < Pstream::nRequests()
+            )
+            {  
+                UPstream::waitRequest(outstandingRecvRequest_);
             }
-            for(label i=0;i<neighbFaceAreas_.size();i++)
-            {
-                neighbFaceAreas_[i] = combinedField[glbIdx];
-                glbIdx++;
-            }
-            for(label i=0;i<neighbFaceCellCentres_.size();i++)
-            {
-                neighbFaceCellCentres_[i] = combinedField[glbIdx];
-                glbIdx++;
-            }
+
+            outstandingRecvRequest_ = -1;
         }
 
         // My normals

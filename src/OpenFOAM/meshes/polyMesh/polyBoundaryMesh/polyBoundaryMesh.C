@@ -280,12 +280,29 @@ void Foam::polyBoundaryMesh::calcGeometry()
      || Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
     )
     {
+        // CoDiPack4OpenFOAM. We have hacked this function 
+        // The original communication was done through PstreamBuffers.
+        // However, it will return seg fault when using reverse-mode AD
+        // with medipack. So we have to change the communication to use
+        // UIPstream::read and UOPstream::write
+        // NOTE: this function will be used when calling mesh.movePoints()
+
+        // this hack refers to the communication used in the evaluate function from
+        // src/OpenFOAM/fields/GeometricFields/GeometricField/GeometricBoundaryField.C
+
+        label nReq = Pstream::nRequests();
+
         forAll(*this, patchi)
         {
             operator[](patchi).initGeometry(pBufs);
         }
 
-        pBufs.finishedSends();
+        //pBufs.finishedSends();
+        // Block for any outstanding requests
+        if (Pstream::parRun())
+        {
+            Pstream::waitRequests(nReq);
+        }
 
         forAll(*this, patchi)
         {
@@ -1069,7 +1086,7 @@ bool Foam::polyBoundaryMesh::checkDefinition(const bool report) const
 
 void Foam::polyBoundaryMesh::movePoints(const pointField& p)
 {
-    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::movePoints", true);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::movePoints", false);
 
     if
     (
@@ -1077,12 +1094,19 @@ void Foam::polyBoundaryMesh::movePoints(const pointField& p)
      || Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
     )
     {
+        label nReq = Pstream::nRequests();
+
         forAll(*this, patchi)
         {
             operator[](patchi).initMovePoints(pBufs, p);
         }
 
-        pBufs.finishedSends();
+        //pBufs.finishedSends();
+        // Block for any outstanding requests
+        if (Pstream::parRun())
+        {
+            Pstream::waitRequests(nReq);
+        }
 
         forAll(*this, patchi)
         {

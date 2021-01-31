@@ -330,7 +330,7 @@ void Foam::coupledPolyPatch::calcTransformTensors
     }
     else
     {
-        scalar error = absTol*std::sqrt(1.0*Cf.size());
+        scalar error = absTol*sqrt(scalar(1.0*Cf.size()));
 
         if (debug)
         {
