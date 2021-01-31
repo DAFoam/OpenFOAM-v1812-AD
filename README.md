@@ -1,6 +1,8 @@
 OpenFOAM-v1812-AD
 =================
 
+![Build Status](https://github.com/DAFoam/OpenFOAM-v1812-AD/workflows/OF1812-AD/badge.svg)
+
 This repository contains the OpenFOAM-v1812 source codes differentiated by automatic differentiation (AD) in forward and reverse modes.
 
 Installation
