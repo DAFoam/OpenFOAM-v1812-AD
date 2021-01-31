@@ -34,9 +34,7 @@ runTimeModifiable true;
 
 DebugSwitches
 {
-//    Pstream 1;
-//    UPstream 1;
-//    boundaryMesh 1; fvMesh 1; fvMeshDistribute 1; globalMeshData 1; lduMesh 1; polyBoundaryMesh 1; polyMesh 1; polyMeshGeometry 1; polyMeshInfo 1; primitiveMesh 1; primitiveMeshGeometry 1;
+    UPstream 0;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
