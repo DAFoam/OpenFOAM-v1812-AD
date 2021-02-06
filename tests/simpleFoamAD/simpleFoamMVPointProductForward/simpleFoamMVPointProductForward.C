@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
         // psi = sin(0.1*cellI) or sin(0.1*(cellI + comp))
 
         // FD perturbation
-        scalar eps = 1.0e-6;
+        scalar eps = 1.0e-7;
 
         // ref Res
         U.correctBoundaryConditions();

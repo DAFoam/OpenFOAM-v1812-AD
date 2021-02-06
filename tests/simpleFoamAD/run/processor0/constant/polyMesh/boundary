@@ -15,47 +15,34 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-8
+5
 (
-    inlet
-    {
-        type            patch;
-        nFaces          12;
-        startFace       183;
-    }
-    outlet
-    {
-        type            patch;
-        nFaces          13;
-        startFace       195;
-    }
-    walls
+    wing
     {
         type            wall;
         inGroups        1(wall);
-        nFaces          28;
-        startFace       208;
+        nFaces          292;
+        startFace       9920;
     }
-    wallsbump
+    sym
     {
-        type            wall;
-        inGroups        1(wall);
+        type            symmetry;
+        inGroups        1(symmetry);
+        nFaces          264;
+        startFace       10212;
+    }
+    inout
+    {
+        type            patch;
         nFaces          0;
-        startFace       236;
-    }
-    frontandback
-    {
-        type            wall;
-        inGroups        1(wall);
-        nFaces          23;
-        startFace       236;
+        startFace       10476;
     }
     procBoundary0to1
     {
         type            processor;
         inGroups        1(processor);
-        nFaces          36;
-        startFace       259;
+        nFaces          336;
+        startFace       10476;
         matchTolerance  0.0001;
         transform       unknown;
         myProcNo        0;
@@ -65,23 +52,12 @@ FoamFile
     {
         type            processor;
         inGroups        1(processor);
-        nFaces          23;
-        startFace       295;
+        nFaces          292;
+        startFace       10812;
         matchTolerance  0.0001;
         transform       unknown;
         myProcNo        0;
         neighbProcNo    2;
-    }
-    procBoundary0to3
-    {
-        type            processor;
-        inGroups        1(processor);
-        nFaces          9;
-        startFace       318;
-        matchTolerance  0.0001;
-        transform       unknown;
-        myProcNo        0;
-        neighbProcNo    3;
     }
 )
 

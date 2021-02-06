@@ -21,7 +21,6 @@ RAS
     RASModel             SpalartAllmaras;
     turbulence           on;
     printCoeffs          off;
-    Prt                  1.0;
 } 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

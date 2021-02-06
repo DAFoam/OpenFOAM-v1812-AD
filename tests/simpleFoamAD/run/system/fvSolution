@@ -29,8 +29,14 @@ solvers
         smoother                       GaussSeidel;
         relTol                         0.1;
         tolerance                      0;
-        maxIter                        10;
     }
+    Phi
+    {
+        $p;
+        relTol                         0;
+        tolerance                      1e-6;
+    }
+
     "(U|T|e|h|nuTilda|k|omega|epsilon)"
     {
         solver                         smoothSolver;
@@ -38,7 +44,6 @@ solvers
         relTol                         0.1;
         tolerance                      0;
         nSweeps                        1;
-        maxIter                        10;
     }
 }
 
@@ -52,6 +57,11 @@ relaxationFactors
     {
         "(U|T|e|h|nuTilda|k|epsilon|omega)" 0.70;
     }
+}
+
+potentialFlow
+{
+    nNonOrthogonalCorrectors           20;
 }
 
 

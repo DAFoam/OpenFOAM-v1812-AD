@@ -71,9 +71,9 @@ for n in range(nProcs):
 print("Dot-product 1: ", dot1)
 print("Dot-product 2: ", dot2)
 
-if (dot1-dot2)/dot1 > 0.0001:
+if (dot1-dot2)/dot1 > 0.001:
     print("\n**********************************************")
-    print("Test Failed!!!!!! Relative error > 0.0001")
+    print("Test Failed!!!!!! Relative error > 0.001")
     print("**********************************************")
     exit(1)
 else:
