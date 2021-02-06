@@ -290,24 +290,55 @@ void Foam::polyBoundaryMesh::calcGeometry()
         // this hack refers to the communication used in the evaluate function from
         // src/OpenFOAM/fields/GeometricFields/GeometricField/GeometricBoundaryField.C
 
-        label nReq = Pstream::nRequests();
-
-        forAll(*this, patchi)
+        label nProcs = Pstream::nProcs();
+        label myProc = Pstream::myProcNo();
+        // calculate neighbProcList
+        List<DynamicList<label> > neighbProcList(nProcs);
+        DynamicList<label> myList;
+        forAll(mesh_.boundaryMesh(),patchI)
         {
-            operator[](patchi).initGeometry(pBufs);
+            if (mesh_.boundaryMesh()[patchI].coupled() && mesh_.boundaryMesh()[patchI].size() > 0)
+            {
+                const processorPolyPatch& pp = refCast<const processorPolyPatch>(mesh_.boundaryMesh()[patchI]);
+                myList.append(pp.neighbProcNo());
+            }
         }
+        // now gather all the info
+        // assign values for the listlists
+        neighbProcList[myProc] = myList;
+        // gather all info to the master proc
+        Pstream::gatherList(neighbProcList);
+        // scatter all info to every procs
+        Pstream::scatterList(neighbProcList);
 
-        //pBufs.finishedSends();
-        // Block for any outstanding requests
-        if (Pstream::parRun())
+        // now calculate oneToOneList
+        List<List<label>> oneToOneList={};
+        pBufs.calcOneToOneCommList(neighbProcList, oneToOneList);
+
+        // loop over all oneToOneList
+        forAll(oneToOneList, idxI)
         {
-            Pstream::waitRequests(nReq);
+            label nReq = Pstream::nRequests();
+            const List<label>& mySubList=oneToOneList[idxI];
+            pBufs.setOneToOneList(mySubList);
+
+            forAll(*this, patchi)
+            {
+                operator[](patchi).initGeometry(pBufs);
+            }
+
+            // Block for any outstanding requests
+            if (Pstream::parRun())
+            {
+                Pstream::waitRequests(nReq);
+            }
         }
 
         forAll(*this, patchi)
         {
             operator[](patchi).calcGeometry(pBufs);
         }
+
     }
     else if (Pstream::defaultCommsType == Pstream::commsTypes::scheduled)
     {
@@ -1094,18 +1125,68 @@ void Foam::polyBoundaryMesh::movePoints(const pointField& p)
      || Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
     )
     {
-        label nReq = Pstream::nRequests();
+        // CoDiPack4OpenFOAM. We have hacked this function 
+        // The original communication was done through PstreamBuffers.
+        // However, it will return seg fault when using reverse-mode AD
+        // with medipack. So we have to change the communication to use
+        // UIPstream::read and UOPstream::write
+        // NOTE: this function will be used when calling mesh.movePoints()
 
-        forAll(*this, patchi)
+        // this hack refers to the communication used in the evaluate function from
+        // src/OpenFOAM/fields/GeometricFields/GeometricField/GeometricBoundaryField.C
+
+        label nProcs = Pstream::nProcs();
+        label myProc = Pstream::myProcNo();
+        // calculate neighbProcList
+        List<DynamicList<label> > neighbProcList(nProcs);
+        DynamicList<label> myList;
+        forAll(mesh_.boundaryMesh(),patchI)
         {
-            operator[](patchi).initMovePoints(pBufs, p);
+            if (mesh_.boundaryMesh()[patchI].coupled() && mesh_.boundaryMesh()[patchI].size() > 0)
+            {
+                const processorPolyPatch& pp = refCast<const processorPolyPatch>(mesh_.boundaryMesh()[patchI]);
+                myList.append(pp.neighbProcNo());
+            }
         }
+        // now gather all the info
+        // assign values for the listlists
+        neighbProcList[myProc] = myList;
+        // gather all info to the master proc
+        Pstream::gatherList(neighbProcList);
+        // scatter all info to every procs
+        Pstream::scatterList(neighbProcList);
 
-        //pBufs.finishedSends();
-        // Block for any outstanding requests
-        if (Pstream::parRun())
+        // now calculate oneToOneList
+        List<List<label>> oneToOneList={};
+        pBufs.calcOneToOneCommList(neighbProcList, oneToOneList);
+
+
+        forAll(oneToOneList, idxI)
         {
-            Pstream::waitRequests(nReq);
+            label nReq = Pstream::nRequests();
+            const List<label>& mySubList=oneToOneList[idxI];
+            pBufs.setOneToOneList(mySubList);
+
+            if(idxI == oneToOneList.size()-1)
+            {
+                forAll(*this, patchi)
+                {
+                    operator[](patchi).initMovePoints(pBufs, p);
+                }
+            }
+            else
+            {
+                forAll(*this, patchi)
+                {
+                    operator[](patchi).initGeometry(pBufs);
+                }
+            }
+    
+            // Block for any outstanding requests
+            if (Pstream::parRun())
+            {
+                Pstream::waitRequests(nReq);
+            }
         }
 
         forAll(*this, patchi)

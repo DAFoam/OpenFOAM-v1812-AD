@@ -117,6 +117,8 @@ class PstreamBuffers
 
         bool finishedSendsCalled_;
 
+        List<label> oneToOneList_;
+
 public:
 
     // Static data
@@ -178,6 +180,26 @@ public:
         //- Clear storage and reset
         void clear();
 
+        void setOneToOneList(const List<label>& oneToOneList)
+        {
+            oneToOneList_.clear();
+            oneToOneList_.setSize(oneToOneList.size());
+            forAll(oneToOneList_, idxI)
+            {
+                oneToOneList_[idxI] = oneToOneList[idxI];
+            }
+        }
+
+        const List<label>& getOneToOneList()
+        {
+            return oneToOneList_;
+        }
+
+        void calcOneToOneCommList
+        (
+            List<DynamicList<label>> neighbProcList,
+            List<List<label>>& commList
+        );
 };
 
 

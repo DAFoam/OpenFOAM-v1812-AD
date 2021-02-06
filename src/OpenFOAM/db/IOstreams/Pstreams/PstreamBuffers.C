@@ -148,4 +148,103 @@ void Foam::PstreamBuffers::clear()
 }
 
 
+void Foam::PstreamBuffers::calcOneToOneCommList
+(
+    List<DynamicList<label>> neighbProcList,
+    List<List<label>>& commList
+)
+{
+    /*
+    Description:
+        This function computes the one-to-one communication list. Essentially,
+        if we get a listList of neighbour processor indices, we want to compute
+        the commList such that, for each subList, the commList will have one
+        processor communicating with only one other processor. This function is
+        needed when exchanging information between processors. This is 
+        because, for some reason, when we do nonBlocking comm, each processor can not 
+        read/write data from/to more than one neighbour processor at a time.
+        The message communication somehow mess up and we will get mixed (error) data.
+        To fix this, we have to determine a so-called one-to-one communication
+        list, such that, in this list, each subList contain the one-to-one
+        processor communication index. Then we have to do commList.size() communication
+        between processors, each time, we allow one processor to read/write data
+        from only one neighbour and repeat this for all coupled patches.
+
+    Example:
+        If the neighbour processor list is like this:
+        neighbProcList={
+            {1,2,4},  // processor0's neighbour is 1, 2, and 4
+            {0,3},    // processor1's neighbour is 0, and 3
+            {0,3},
+            {1,2,4},
+            {0,3}
+        };
+
+        Then, the computed commList is (commList can't have repeated indices for each row)
+        commList={
+            {0,1,2,3}, // 1st round, we exchange data between procs 0<->1 and procs 2<->3
+            {0,2,1,3}, // 2nd round, we exchange data between procs 0<->2 and procs 1<->3
+            {0,4},
+            {3,4}
+        }
+    */
+
+    label maxIters = 1000;
+    for(label iter=0;iter<maxIters;iter++)
+    {
+        if (iter==maxIters-1)
+        {
+            FatalErrorIn("calcOneToOneCommList")<<"maxIters reach! "<< exit(FatalError);
+        }
+
+        label finished = 1;
+        List<label> empty;
+        commList.append(empty);
+        //Info<<" commList "<<commList<<endl;
+        for(label procI=0; procI<Pstream::nProcs(); procI++)
+        {
+            if (commList[iter].found(procI))
+            {
+                forAll(neighbProcList[procI], idxI)
+                {
+                    const label& neighbProcI = neighbProcList[procI][idxI];
+                    if(commList[iter].found(neighbProcI))
+                    {
+                        neighbProcList[procI].remove(idxI);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+ 
+                forAll(neighbProcList[procI], idxI)
+                {
+                    const label& neighbProcI = neighbProcList[procI][idxI];
+                    if(!commList[iter].found(neighbProcI))
+                    {
+                        commList[iter].append(procI);
+                        commList[iter].append(neighbProcI);
+                        neighbProcList[procI].remove(idxI);
+                        //Info<<" neighbProcList "<<neighbProcList<<endl;
+                        //Info<<" commList "<<commList<<endl;
+                        break;
+                    }
+                }
+
+            }
+            if (neighbProcList[procI].size()!=0)
+            {
+                finished=0;
+            }
+        }
+        if(finished)
+        {
+            break;
+        }
+    }
+
+}
+
+
 // ************************************************************************* //

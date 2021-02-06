@@ -223,96 +223,65 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
          && !Pstream::floatTransfer
         )
         {
-
-            vectorField faceCentresField = faceCentres();
-            vectorField faceAreasField = faceAreas();
-            vectorField faceCellCentresField = faceCellCentres();
-    
-            neighbFaceCentres_.setSize(faceCentresField.size());
-            neighbFaceAreas_.setSize(faceAreasField.size());
-            neighbFaceCellCentres_.setSize(faceCellCentresField.size());
-    
-            scalar dummyActiveType = 1.0;
-    
-            // exchange faceCentresField
-            // NOTE: before doing read and write, we need to record the
-            // nRequest before the read and write calls such that we 
-            // know how many request to wait by calling Pstream::waitRequest
-            // we follow the one used in processorFvPatchField.C
-            outstandingRecvRequest_ = UPstream::nRequests();
-            UIPstream::read
-            (
-                Pstream::commsTypes::nonBlocking,
-                this->neighbProcNo(),
-                reinterpret_cast<char*>(neighbFaceCentres_.begin()),
-                this->size()*sizeof(vector),
-                "Foam::processorPolyPatch::initGeometry",
-                typeid(&dummyActiveType),
-                this->tag(),
-                this->comm()
-            );
-    
-            UOPstream::write
-            (
-                Pstream::commsTypes::nonBlocking,
-                this->neighbProcNo(),
-                reinterpret_cast<const char*>(faceCentresField.begin()),
-                this->size()*sizeof(vector),
-                "Foam::processorPolyPatch::initGeometry",
-                typeid(&dummyActiveType),
-                this->tag(),
-                this->comm()
-            );
-    
-            // exchange faceAreasField
-            UIPstream::read
-            (
-                Pstream::commsTypes::nonBlocking,
-                this->neighbProcNo(),
-                reinterpret_cast<char*>(neighbFaceAreas_.begin()),
-                this->size()*sizeof(vector),
-                "Foam::processorPolyPatch::initGeometry",
-                typeid(&dummyActiveType),
-                this->tag(),
-                this->comm()
-            );
-            
-            UOPstream::write
-            (
-                Pstream::commsTypes::nonBlocking,
-                this->neighbProcNo(),
-                reinterpret_cast<const char*>(faceAreasField.begin()),
-                this->size()*sizeof(vector),
-                "Foam::processorPolyPatch::initGeometry",
-                typeid(&dummyActiveType),
-                this->tag(),
-                this->comm()
-            );
-    
-            // exchange faceCellCentresField
-            UIPstream::read
-            (
-                Pstream::commsTypes::nonBlocking,
-                this->neighbProcNo(),
-                reinterpret_cast<char*>(neighbFaceCellCentres_.begin()),
-                this->size()*sizeof(vector),
-                "Foam::processorPolyPatch::initGeometry",
-                typeid(&dummyActiveType),
-                this->tag(),
-                this->comm()
-            );
-
-            UOPstream::write
-            (
-                Pstream::commsTypes::nonBlocking,
-                this->neighbProcNo(),
-                reinterpret_cast<const char*>(faceCellCentresField.begin()),
-                this->size()*sizeof(vector),
-                "Foam::processorPolyPatch::initGeometry",
-                typeid(&dummyActiveType),
-                this->tag(),
-                this->comm()
-            );
+            const List<label>& oneToOneList = pBufs.getOneToOneList();
+            for(label idxI=0; idxI<oneToOneList.size(); idxI+=2)
+            {
+                label procA = oneToOneList[idxI];
+                label procB = oneToOneList[idxI+1];
+                if
+                ( 
+                    (myProcNo_ == procA && neighbProcNo_ == procB) 
+                 || (myProcNo_ == procB && neighbProcNo_ == procA)
+                )
+                {
+                    scalar dummyActiveType = 1.0;
+        
+                    vectorField faceCentresField = faceCentres();
+                    vectorField faceAreasField = faceAreas();
+                    vectorField faceCellCentresField = faceCellCentres();
+                    vectorField myFields(this->size()*3);
+                    label counterI = 0;
+                    forAll(faceCentresField, idxI)
+                    {
+                        myFields[counterI] = faceCentresField[idxI];
+                        counterI++;
+                        myFields[counterI] = faceAreasField[idxI];
+                        counterI++;
+                        myFields[counterI] = faceCellCentresField[idxI];
+                        counterI++;
+                    }
+                    UOPstream::write
+                    (
+                        Pstream::commsTypes::nonBlocking,
+                        this->neighbProcNo(),
+                        reinterpret_cast<const char*>(myFields.begin()),
+                        3*this->size()*sizeof(vector),
+                        "Foam::processorPolyPatch::initGeometry",
+                        typeid(&dummyActiveType),
+                        this->tag(),
+                        this->comm()
+                    );
+        
+                    neighbFields_.clear();
+                    neighbFields_.setSize(this->size()*3);
+                    // exchange faceCentresField
+                    // NOTE: before doing read and write, we need to record the
+                    // nRequest before the read and write calls such that we 
+                    // know how many request to wait by calling Pstream::waitRequest
+                    // we follow the one used in processorFvPatchField.C
+                    UIPstream::read
+                    (
+                        Pstream::commsTypes::nonBlocking,
+                        this->neighbProcNo(),
+                        reinterpret_cast<char*>(neighbFields_.begin()),
+                        3*this->size()*sizeof(vector),
+                        "Foam::processorPolyPatch::initGeometry",
+                        typeid(&dummyActiveType),
+                        this->tag(),
+                        this->comm()
+                    );
+                }
+            }
 
         }
         else
@@ -347,16 +316,25 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
          && !Pstream::floatTransfer
         )
         {
-            if
-            (
-                outstandingRecvRequest_ >= 0
-             && outstandingRecvRequest_ < Pstream::nRequests()
-            )
-            {  
-                UPstream::waitRequest(outstandingRecvRequest_);
+
+            neighbFaceCentres_.clear();
+            neighbFaceAreas_.clear();
+            neighbFaceCellCentres_.clear();
+            neighbFaceCentres_.setSize(this->size());
+            neighbFaceAreas_.setSize(this->size());
+            neighbFaceCellCentres_.setSize(this->size());
+
+            label counterI = 0;
+            forAll(neighbFaceCentres_, idxI)
+            {
+                neighbFaceCentres_[idxI] = neighbFields_[counterI];
+                counterI++;
+                neighbFaceAreas_[idxI] = neighbFields_[counterI];
+                counterI++;
+                neighbFaceCellCentres_[idxI] = neighbFields_[counterI];
+                counterI++;
             }
 
-            outstandingRecvRequest_ = -1;
         }
 
         // My normals

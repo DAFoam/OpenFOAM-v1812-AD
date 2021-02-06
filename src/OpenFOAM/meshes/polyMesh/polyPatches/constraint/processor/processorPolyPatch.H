@@ -82,6 +82,9 @@ class processorPolyPatch
         //- Outstanding send request for faceCenter
         mutable label outstandingRecvRequest_;
 
+        //- A combined neighbour field variables for faceCenters faceAreas and faceCellCenters
+        vectorField neighbFields_;
+
 protected:
 
     // Protected constructors
