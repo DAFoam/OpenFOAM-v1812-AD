@@ -102,7 +102,7 @@ Foam::uniformInterpolationTable<Type>::uniformInterpolationTable
     if (initialiseOnly)
     {
         const scalar xMax = dict.get<scalar>("xMax");
-        const label nIntervals = static_cast<label>(xMax - x0_)/dx_ + 1;
+        const label nIntervals = static_cast<label>((xMax - x0_).getValue())/dx_ + 1;
         this->setSize(nIntervals);
     }
     else
