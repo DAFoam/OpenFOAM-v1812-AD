@@ -316,7 +316,12 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
          && !Pstream::floatTransfer
         )
         {
-
+            if (neighbFields_.size() == 0)
+            {
+                FatalErrorInFunction
+                    << "neighbFields_ is not initialized in initGeometry!" 
+                    << abort(FatalError);
+            }
             neighbFaceCentres_.clear();
             neighbFaceAreas_.clear();
             neighbFaceCellCentres_.clear();

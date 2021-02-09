@@ -190,6 +190,7 @@ void Foam::PstreamBuffers::calcOneToOneCommList
     */
 
     label maxIters = 1000;
+    // main iteration
     for(label iter=0;iter<maxIters;iter++)
     {
         if (iter==maxIters-1)
@@ -199,16 +200,40 @@ void Foam::PstreamBuffers::calcOneToOneCommList
 
         label finished = 1;
         List<label> empty;
+        // append an empty list to commList for this iter
         commList.append(empty);
         //Info<<" commList "<<commList<<endl;
+        // now loop over all processors to see if the procI is already in commList
         for(label procI=0; procI<Pstream::nProcs(); procI++)
         {
             if (commList[iter].found(procI))
             {
+                // procI is already in commList, we need to check which neighbour procI is attached to this procI,
+                // and we need to remove the neighbour procI from neighbProcList (it has been added in commList)
+                // There are two possibilities:
+                // 1. procI is an even number, which means it appears as neibProcI<->procI in commList
+                // 2. procI is an odd number, which means it appears as procI<->neibProcI in commList
+                // For case 1, we need to remove the index before procI, for case 2, we need to remove
+                // the index after procI. This is because neibProcI<->procI always appear as a pair
+                // See the following line in "else"
+                //     commList[iter].append(procI);
+                //     commList[iter].append(neighbProcI);
+                label foundIndx = commList[iter].find(procI);
+                label foundIndxRemainder = foundIndx % 2;
+                label indxToRemove = -9999;
+                if (foundIndxRemainder == 0)
+                {
+                    indxToRemove = foundIndx + 1;
+                }
+                else
+                {
+                    indxToRemove = foundIndx - 1;
+                }
+                label valToRemove = commList[iter][indxToRemove];
                 forAll(neighbProcList[procI], idxI)
                 {
-                    const label& neighbProcI = neighbProcList[procI][idxI];
-                    if(commList[iter].found(neighbProcI))
+                    const label& neiVal = neighbProcList[procI][idxI];
+                    if (neiVal == valToRemove)
                     {
                         neighbProcList[procI].remove(idxI);
                         break;
@@ -217,7 +242,12 @@ void Foam::PstreamBuffers::calcOneToOneCommList
             }
             else
             {
- 
+                // procI is NOT in commList, we need to add procI into commList
+                // we also need to add the neighbour procI that is associated with procI
+                // into commList, if neighbour procI is not there yet.
+                // Therefore, procI and neighbourProcI are always a pair in commList
+                // After we add neighbour procI into commList, we need to remove 
+                // it from  neighbProcList[procI]
                 forAll(neighbProcList[procI], idxI)
                 {
                     const label& neighbProcI = neighbProcList[procI][idxI];
