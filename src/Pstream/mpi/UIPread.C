@@ -323,7 +323,7 @@ Foam::label Foam::UIPstream::read
         {
             Err = AMPI_Recv
             (
-                buf,
+                reinterpret_cast<unsigned char*>(buf),
                 bufSize,
                 AMPI_BYTE,
                 fromProcNo,
@@ -387,7 +387,7 @@ Foam::label Foam::UIPstream::read
         {
             Err = AMPI_Irecv
             (
-                buf,
+                reinterpret_cast<unsigned char*>(buf),
                 bufSize,
                 AMPI_BYTE,
                 fromProcNo,

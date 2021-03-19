@@ -619,11 +619,11 @@ void Foam::UPstream::allToAll
         {
             Err = AMPI_Alltoallv
             (
-                const_cast<char*>(sendData),
+                reinterpret_cast<unsigned char*>(const_cast<char*>(sendData)),
                 const_cast<int*>(sendSizes.begin()),
                 const_cast<int*>(sendOffsets.begin()),
                 AMPI_BYTE,
-                recvData,
+                reinterpret_cast<unsigned char*>(recvData),
                 const_cast<int*>(recvSizes.begin()),
                 const_cast<int*>(recvOffsets.begin()),
                 AMPI_BYTE,
@@ -710,10 +710,10 @@ void Foam::UPstream::gather
         {
             Err = AMPI_Gatherv
             (
-                const_cast<char*>(sendData),
+                reinterpret_cast<unsigned char*>(const_cast<char*>(sendData)),
                 sendSize,
                 AMPI_BYTE,
-                recvData,
+                reinterpret_cast<unsigned char*>(recvData),
                 const_cast<int*>(recvSizes.begin()),
                 const_cast<int*>(recvOffsets.begin()),
                 AMPI_BYTE,
@@ -799,11 +799,11 @@ void Foam::UPstream::scatter
         {
             Err = AMPI_Scatterv
             (
-                const_cast<char*>(sendData),
+                reinterpret_cast<unsigned char*>(const_cast<char*>(sendData)),
                 const_cast<int*>(sendSizes.begin()),
                 const_cast<int*>(sendOffsets.begin()),
                 AMPI_BYTE,
-                recvData,
+                reinterpret_cast<unsigned char*>(recvData),
                 recvSize,
                 AMPI_BYTE,
                 0,

@@ -99,7 +99,7 @@ bool Foam::UOPstream::write
         {
             transferFailed = AMPI_Bsend
             (
-                const_cast<char*>(buf),
+                reinterpret_cast<unsigned char*>(const_cast<char*>(buf)),
                 bufSize,
                 AMPI_BYTE,
                 toProcNo,   //procID(toProcNo),
@@ -134,7 +134,7 @@ bool Foam::UOPstream::write
         {
             transferFailed = AMPI_Send
             (
-                const_cast<char*>(buf),
+                reinterpret_cast<unsigned char*>(const_cast<char*>(buf)),
                 bufSize,
                 AMPI_BYTE, // AMPI_Type_No_Check, // MPI_BYTE,
                 toProcNo,   //procID(toProcNo),
@@ -171,7 +171,7 @@ bool Foam::UOPstream::write
         {
             transferFailed = AMPI_Isend
             (
-                const_cast<char*>(buf),
+                reinterpret_cast<unsigned char*>(const_cast<char*>(buf)),
                 bufSize,
                 AMPI_BYTE,
                 toProcNo,   //procID(toProcNo),
