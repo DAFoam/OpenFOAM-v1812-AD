@@ -1,7 +1,7 @@
 OpenFOAM-v1812-AD
 =================
 
-![Build Status](https://github.com/DAFoam/OpenFOAM-v1812-AD/workflows/OF1812-AD/badge.svg)
+[![Regression Test](https://github.com/DAFoam/OpenFOAM-v1812-AD/actions/workflows/reg_tests.yml/badge.svg)](https://github.com/DAFoam/OpenFOAM-v1812-AD/actions/workflows/reg_tests.yml)
 
 This repository contains the OpenFOAM-v1812 source codes differentiated by automatic differentiation (AD) in forward and reverse modes.
 
