@@ -1117,7 +1117,7 @@ bool Foam::polyBoundaryMesh::checkDefinition(const bool report) const
 
 void Foam::polyBoundaryMesh::movePoints(const pointField& p)
 {
-    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::movePoints", false);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::movePoints", true);
 
     if
     (
@@ -1167,7 +1167,7 @@ void Foam::polyBoundaryMesh::movePoints(const pointField& p)
             const List<label>& mySubList=oneToOneList[idxI];
             pBufs.setOneToOneList(mySubList);
 
-            if(idxI == oneToOneList.size()-1)
+            if(idxI == 0)
             {
                 forAll(*this, patchi)
                 {

@@ -234,52 +234,96 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
                  || (myProcNo_ == procB && neighbProcNo_ == procA)
                 )
                 {
+
+                    bool isActive = pBufs.getTypeActive();
                     scalar dummyActiveType = 1.0;
+                    label dummyPassiveType = 0;
         
                     vectorField faceCentresField = faceCentres();
                     vectorField faceAreasField = faceAreas();
                     vectorField faceCellCentresField = faceCellCentres();
-                    vectorField myFields(this->size()*3);
+                    scalarField myScalarFields(this->size()*9);
                     label counterI = 0;
                     forAll(faceCentresField, idxI)
                     {
-                        myFields[counterI] = faceCentresField[idxI];
-                        counterI++;
-                        myFields[counterI] = faceAreasField[idxI];
-                        counterI++;
-                        myFields[counterI] = faceCellCentresField[idxI];
-                        counterI++;
+                        for (label i=0;i<3;i++)
+                        {
+                            myScalarFields[counterI] = faceCentresField[idxI][i];
+                            counterI++;
+                            myScalarFields[counterI] = faceAreasField[idxI][i];
+                            counterI++;
+                            myScalarFields[counterI] = faceCellCentresField[idxI][i];
+                            counterI++;
+                        }
                     }
-                    UOPstream::write
-                    (
-                        Pstream::commsTypes::nonBlocking,
-                        this->neighbProcNo(),
-                        reinterpret_cast<const char*>(myFields.begin()),
-                        3*this->size()*sizeof(vector),
-                        "Foam::processorPolyPatch::initGeometry",
-                        typeid(&dummyActiveType),
-                        this->tag(),
-                        this->comm()
-                    );
+
+                    if(isActive)
+                    {
+                        UOPstream::write
+                        (
+                            Pstream::commsTypes::nonBlocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<const char*>(myScalarFields.begin()),
+                            9*this->size()*sizeof(scalar),
+                            "Foam::processorPolyPatch::initGeometry",
+                            typeid(&dummyActiveType),
+                            this->tag(),
+                            this->comm()
+                        );
+    
+                        neighbScalarFields_.clear();
+                        neighbScalarFields_.setSize(this->size()*9);
+                        // exchange faceCentresField
+                        // NOTE: before doing read and write, we need to record the
+                        // nRequest before the read and write calls such that we 
+                        // know how many request to wait by calling Pstream::waitRequest
+                        // we follow the one used in processorFvPatchField.C
+                        UIPstream::read
+                        (
+                            Pstream::commsTypes::nonBlocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<char*>(neighbScalarFields_.begin()),
+                            9*this->size()*sizeof(scalar),
+                            "Foam::processorPolyPatch::initGeometry",
+                            typeid(&dummyActiveType),
+                            this->tag(),
+                            this->comm()
+                        );
+                    }
+                    else
+                    {
+                        UOPstream::write
+                        (
+                            Pstream::commsTypes::nonBlocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<const char*>(myScalarFields.begin()),
+                            9*this->size()*sizeof(scalar),
+                            "Foam::processorPolyPatch::initGeometry",
+                            typeid(&dummyPassiveType),
+                            this->tag(),
+                            this->comm()
+                        );
+    
+                        neighbScalarFields_.clear();
+                        neighbScalarFields_.setSize(this->size()*9);
+                        // exchange faceCentresField
+                        // NOTE: before doing read and write, we need to record the
+                        // nRequest before the read and write calls such that we 
+                        // know how many request to wait by calling Pstream::waitRequest
+                        // we follow the one used in processorFvPatchField.C
+                        UIPstream::read
+                        (
+                            Pstream::commsTypes::nonBlocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<char*>(neighbScalarFields_.begin()),
+                            9*this->size()*sizeof(scalar),
+                            "Foam::processorPolyPatch::initGeometry",
+                            typeid(&dummyPassiveType),
+                            this->tag(),
+                            this->comm()
+                        );
+                    }
         
-                    neighbFields_.clear();
-                    neighbFields_.setSize(this->size()*3);
-                    // exchange faceCentresField
-                    // NOTE: before doing read and write, we need to record the
-                    // nRequest before the read and write calls such that we 
-                    // know how many request to wait by calling Pstream::waitRequest
-                    // we follow the one used in processorFvPatchField.C
-                    UIPstream::read
-                    (
-                        Pstream::commsTypes::nonBlocking,
-                        this->neighbProcNo(),
-                        reinterpret_cast<char*>(neighbFields_.begin()),
-                        3*this->size()*sizeof(vector),
-                        "Foam::processorPolyPatch::initGeometry",
-                        typeid(&dummyActiveType),
-                        this->tag(),
-                        this->comm()
-                    );
                 }
             }
 
@@ -316,12 +360,14 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
          && !Pstream::floatTransfer
         )
         {
-            if (neighbFields_.size() == 0)
+
+            if (neighbScalarFields_.size() == 0)
             {
                 FatalErrorInFunction
-                    << "neighbFields_ is not initialized in initGeometry!" 
+                    << "neighbScalarFields_ is not initialized in initGeometry!" 
                     << abort(FatalError);
             }
+
             neighbFaceCentres_.clear();
             neighbFaceAreas_.clear();
             neighbFaceCellCentres_.clear();
@@ -332,12 +378,15 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
             label counterI = 0;
             forAll(neighbFaceCentres_, idxI)
             {
-                neighbFaceCentres_[idxI] = neighbFields_[counterI];
-                counterI++;
-                neighbFaceAreas_[idxI] = neighbFields_[counterI];
-                counterI++;
-                neighbFaceCellCentres_[idxI] = neighbFields_[counterI];
-                counterI++;
+                for (label i=0;i<3;i++)
+                {
+                    neighbFaceCentres_[idxI][i] = neighbScalarFields_[counterI];
+                    counterI++;
+                    neighbFaceAreas_[idxI][i] = neighbScalarFields_[counterI];
+                    counterI++;
+                    neighbFaceCellCentres_[idxI][i] = neighbScalarFields_[counterI];
+                    counterI++;
+                }
             }
 
         }
@@ -370,6 +419,7 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
             }
             else if (mag(magSf - nbrMagSf) > matchTolerance()*sqr(tols[facei]))
             {
+                /*
                 fileName nm
                 (
                     boundaryMesh().mesh().time().path()
@@ -422,13 +472,61 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
                     << " in the patch dictionary in the boundary file."
                     << endl
                     << "Rerun with processor debug flag set for"
-                    << " more information." << exit(FatalError);
+                    << " more information."  << exit(FatalError);
+                */
+
+                Pout<<"*****WARNING processorPolyPatch::calcGeometry*****: faceAreas not match!" << endl
+                    << "myFaceArea: "<<faceAreas()[facei]<<endl
+                    << "nbFaceArea: "<<neighbFaceAreas_[facei]<<endl;
+
+                // despite this neighbFaceAreas_ is problematic,
+                // we still proceed by just assigning faceAreas to neighbFaceAreas_
+                neighbFaceAreas_[facei] = faceAreas()[facei];
+                faceNormals[facei] = faceAreas()[facei]/magSf;
+                nbrFaceNormals[facei] = neighbFaceAreas_[facei]/nbrMagSf;
             }
             else
             {
                 faceNormals[facei] = faceAreas()[facei]/magSf;
                 nbrFaceNormals[facei] = neighbFaceAreas_[facei]/nbrMagSf;
             }
+
+
+            scalar faceCMag = mag(faceCentres()[facei]);
+            scalar nbFaceCMag = mag(neighbFaceCentres_[facei]);
+            if (mag(faceCMag - nbFaceCMag) > matchTolerance())
+            {
+                Pout<<"*****WARNING processorPolyPatch::calcGeometry*****: FaceCenters not match!" << endl
+                    << "myFaceCenter: "<<faceCentres()[facei]<<endl
+                    << "nbFaceCenter: "<<neighbFaceCentres_[facei]<<endl;
+
+                // despite this neighbFaceCentres_ is problematic,
+                // we still proceed by just assigning faceCentres to neighbFaceCentres_
+                neighbFaceCentres_[facei] = faceCentres()[facei];
+            }
+    
+
+            for (label comp=0; comp<3; comp++)
+            {
+                scalar cc = mag(neighbFaceCellCentres_[facei][comp]);
+                label printed = 0;
+                if ( cc < SMALL)
+                {
+                    if (printed == 0)
+                    {
+                        Pout<<"*****WARNING processorPolyPatch::calcGeometry*****: neighbFaceCellCentres not match!" << endl
+                            << "faceCellCentres: "<<faceCellCentres()()[facei]<<endl
+                            << "neighbFaceCellCentres: "<<neighbFaceCellCentres_[facei]<<endl;
+                        printed = 1;
+                    }
+    
+                    // despite this neighbFaceCellCentres_ is problematic,
+                    // we still proceed by just assigning perturbed faceCellCentres to neighbFaceCellCentres_
+                    scalar perturb = sqrt(magSf);
+                    neighbFaceCellCentres_[facei][comp] = faceCellCentres()()[facei][comp] * perturb;
+                }
+            }
+            
         }
 
         calcTransformTensors
