@@ -318,7 +318,7 @@ void Foam::polyBoundaryMesh::calcGeometry()
         // loop over all oneToOneList
         forAll(oneToOneList, idxI)
         {
-            label nReq = Pstream::nRequests();
+
             const List<label>& mySubList=oneToOneList[idxI];
             pBufs.setOneToOneList(mySubList);
 
@@ -327,11 +327,6 @@ void Foam::polyBoundaryMesh::calcGeometry()
                 operator[](patchi).initGeometry(pBufs);
             }
 
-            // Block for any outstanding requests
-            if (Pstream::parRun())
-            {
-                Pstream::waitRequests(nReq);
-            }
         }
 
         forAll(*this, patchi)
@@ -1117,7 +1112,7 @@ bool Foam::polyBoundaryMesh::checkDefinition(const bool report) const
 
 void Foam::polyBoundaryMesh::movePoints(const pointField& p)
 {
-    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::movePoints", true);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::movePoints", false);
 
     if
     (
@@ -1163,7 +1158,7 @@ void Foam::polyBoundaryMesh::movePoints(const pointField& p)
 
         forAll(oneToOneList, idxI)
         {
-            label nReq = Pstream::nRequests();
+
             const List<label>& mySubList=oneToOneList[idxI];
             pBufs.setOneToOneList(mySubList);
 
@@ -1181,12 +1176,7 @@ void Foam::polyBoundaryMesh::movePoints(const pointField& p)
                     operator[](patchi).initGeometry(pBufs);
                 }
             }
-    
-            // Block for any outstanding requests
-            if (Pstream::parRun())
-            {
-                Pstream::waitRequests(nReq);
-            }
+
         }
 
         forAll(*this, patchi)

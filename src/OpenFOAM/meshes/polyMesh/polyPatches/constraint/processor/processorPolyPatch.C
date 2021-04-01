@@ -235,9 +235,7 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
                 )
                 {
 
-                    bool isActive = pBufs.getTypeActive();
                     scalar dummyActiveType = 1.0;
-                    label dummyPassiveType = 0;
         
                     vectorField faceCentresField = faceCentres();
                     vectorField faceAreasField = faceAreas();
@@ -257,11 +255,11 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
                         }
                     }
 
-                    if(isActive)
+                    if(myProcNo_ == procA)
                     {
                         UOPstream::write
                         (
-                            Pstream::commsTypes::nonBlocking,
+                            Pstream::commsTypes::blocking,
                             this->neighbProcNo(),
                             reinterpret_cast<const char*>(myScalarFields.begin()),
                             9*this->size()*sizeof(scalar),
@@ -280,7 +278,7 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
                         // we follow the one used in processorFvPatchField.C
                         UIPstream::read
                         (
-                            Pstream::commsTypes::nonBlocking,
+                            Pstream::commsTypes::blocking,
                             this->neighbProcNo(),
                             reinterpret_cast<char*>(neighbScalarFields_.begin()),
                             9*this->size()*sizeof(scalar),
@@ -292,18 +290,7 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
                     }
                     else
                     {
-                        UOPstream::write
-                        (
-                            Pstream::commsTypes::nonBlocking,
-                            this->neighbProcNo(),
-                            reinterpret_cast<const char*>(myScalarFields.begin()),
-                            9*this->size()*sizeof(scalar),
-                            "Foam::processorPolyPatch::initGeometry",
-                            typeid(&dummyPassiveType),
-                            this->tag(),
-                            this->comm()
-                        );
-    
+                        
                         neighbScalarFields_.clear();
                         neighbScalarFields_.setSize(this->size()*9);
                         // exchange faceCentresField
@@ -313,12 +300,24 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
                         // we follow the one used in processorFvPatchField.C
                         UIPstream::read
                         (
-                            Pstream::commsTypes::nonBlocking,
+                            Pstream::commsTypes::blocking,
                             this->neighbProcNo(),
                             reinterpret_cast<char*>(neighbScalarFields_.begin()),
                             9*this->size()*sizeof(scalar),
                             "Foam::processorPolyPatch::initGeometry",
-                            typeid(&dummyPassiveType),
+                            typeid(&dummyActiveType),
+                            this->tag(),
+                            this->comm()
+                        );
+
+                        UOPstream::write
+                        (
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<const char*>(myScalarFields.begin()),
+                            9*this->size()*sizeof(scalar),
+                            "Foam::processorPolyPatch::initGeometry",
+                            typeid(&dummyActiveType),
                             this->tag(),
                             this->comm()
                         );
