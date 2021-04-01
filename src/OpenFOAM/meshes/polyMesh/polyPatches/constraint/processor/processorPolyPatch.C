@@ -418,7 +418,7 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
             }
             else if (mag(magSf - nbrMagSf) > matchTolerance()*sqr(tols[facei]))
             {
-                /*
+
                 fileName nm
                 (
                     boundaryMesh().mesh().time().path()
@@ -472,17 +472,7 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
                     << endl
                     << "Rerun with processor debug flag set for"
                     << " more information."  << exit(FatalError);
-                */
 
-                Pout<<"*****WARNING processorPolyPatch::calcGeometry*****: faceAreas not match!" << endl
-                    << "myFaceArea: "<<faceAreas()[facei]<<endl
-                    << "nbFaceArea: "<<neighbFaceAreas_[facei]<<endl;
-
-                // despite this neighbFaceAreas_ is problematic,
-                // we still proceed by just assigning faceAreas to neighbFaceAreas_
-                neighbFaceAreas_[facei] = faceAreas()[facei];
-                faceNormals[facei] = faceAreas()[facei]/magSf;
-                nbrFaceNormals[facei] = neighbFaceAreas_[facei]/nbrMagSf;
             }
             else
             {
@@ -490,42 +480,6 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
                 nbrFaceNormals[facei] = neighbFaceAreas_[facei]/nbrMagSf;
             }
 
-
-            scalar faceCMag = mag(faceCentres()[facei]);
-            scalar nbFaceCMag = mag(neighbFaceCentres_[facei]);
-            if (mag(faceCMag - nbFaceCMag) > matchTolerance())
-            {
-                Pout<<"*****WARNING processorPolyPatch::calcGeometry*****: FaceCenters not match!" << endl
-                    << "myFaceCenter: "<<faceCentres()[facei]<<endl
-                    << "nbFaceCenter: "<<neighbFaceCentres_[facei]<<endl;
-
-                // despite this neighbFaceCentres_ is problematic,
-                // we still proceed by just assigning faceCentres to neighbFaceCentres_
-                neighbFaceCentres_[facei] = faceCentres()[facei];
-            }
-    
-
-            for (label comp=0; comp<3; comp++)
-            {
-                scalar cc = mag(neighbFaceCellCentres_[facei][comp]);
-                label printed = 0;
-                if ( cc < SMALL)
-                {
-                    if (printed == 0)
-                    {
-                        Pout<<"*****WARNING processorPolyPatch::calcGeometry*****: neighbFaceCellCentres not match!" << endl
-                            << "faceCellCentres: "<<faceCellCentres()()[facei]<<endl
-                            << "neighbFaceCellCentres: "<<neighbFaceCellCentres_[facei]<<endl;
-                        printed = 1;
-                    }
-    
-                    // despite this neighbFaceCellCentres_ is problematic,
-                    // we still proceed by just assigning perturbed faceCellCentres to neighbFaceCellCentres_
-                    scalar perturb = sqrt(magSf);
-                    neighbFaceCellCentres_[facei][comp] = faceCellCentres()()[facei][comp] * perturb;
-                }
-            }
-            
         }
 
         calcTransformTensors
