@@ -297,7 +297,7 @@ void Foam::polyBoundaryMesh::calcGeometry()
         DynamicList<label> myList;
         forAll(mesh_.boundaryMesh(),patchI)
         {
-            if (mesh_.boundaryMesh()[patchI].coupled() && mesh_.boundaryMesh()[patchI].size() > 0)
+            if (isType<processorPolyPatch>(mesh_.boundaryMesh()[patchI]) && mesh_.boundaryMesh()[patchI].size() > 0)
             {
                 const processorPolyPatch& pp = refCast<const processorPolyPatch>(mesh_.boundaryMesh()[patchI]);
                 myList.append(pp.neighbProcNo());
@@ -1137,7 +1137,7 @@ void Foam::polyBoundaryMesh::movePoints(const pointField& p)
         DynamicList<label> myList;
         forAll(mesh_.boundaryMesh(),patchI)
         {
-            if (mesh_.boundaryMesh()[patchI].coupled() && mesh_.boundaryMesh()[patchI].size() > 0)
+	    if (isType<processorPolyPatch>(mesh_.boundaryMesh()[patchI]) && mesh_.boundaryMesh()[patchI].size() > 0)
             {
                 const processorPolyPatch& pp = refCast<const processorPolyPatch>(mesh_.boundaryMesh()[patchI]);
                 myList.append(pp.neighbProcNo());
