@@ -9,12 +9,12 @@ EXE_INC = \
     -I$(LIB_SRC)/regionModels/regionModel/lnInclude
 
 EXE_LIBS = \
-    -ldynamicMeshAD \
-    -ldecomposeAD \
-    -lgenericPatchFieldsAD \
-    -ldecompositionMethodsAD \
+    -ldynamicMesh \
+    -ldecompose \
+    -lgenericPatchFields \
+    -ldecompositionMethods \
     -L$(FOAM_LIBBIN)/dummy \
-    -lkahipDecompAD -lmetisDecompAD -lscotchDecompAD \
-    -llagrangianAD \
-    -ldynamicMeshAD \
-    -lregionModelsAD
+    -lkahipDecomp -lmetisDecomp -lscotchDecomp \
+    -llagrangian \
+    -ldynamicMesh \
+    -lregionModels

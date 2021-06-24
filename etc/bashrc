@@ -155,6 +155,15 @@ else
     echo "No directory: $WM_PROJECT_DIR" 1>&2
 fi
 
+# Set the AD postfix for libraries
+if [ "$WM_CODI_AD_MODE" = "CODI_AD_REVERSE" ]; then
+    export WM_CODI_AD_LIB_POSTFIX="ADR"
+elif [ "$WM_CODI_AD_MODE" = "CODI_AD_FORWARD" ]; then
+    export WM_CODI_AD_LIB_POSTFIX="ADF"
+else
+    echo "WM_CODI_AD_MODE not valid!!!! Options are: CODI_AD_FORWARD or CODI_AD_REVERSE"
+fi
+
 # Cleanup variables (done as final statement for a clean exit code)
 unset foamOldDirs projectDir
 

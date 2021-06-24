@@ -52,13 +52,6 @@ echo
 #applications/Allwmake $targetType $*
 
 # Compile common applications
-wmake applications/utilities/parallelProcessing/decomposePar
-wmake applications/utilities/parallelProcessing/reconstructPar
-wmake applications/utilities/mesh/generation/blockMesh
-wmake applications/utilities/mesh/manipulation/checkMesh
-wmake applications/solvers/incompressible/simpleFoam
-wmake applications/solvers/compressible/rhoSimpleFoam
-wmake applications/utilities/postProcessing/postProcess
 if [ "$WM_CODI_AD_MODE" = "CODI_AD_REVERSE" ]; then
  wmake applications/solvers/incompressible/DASimpleFoamReverseAD
 fi

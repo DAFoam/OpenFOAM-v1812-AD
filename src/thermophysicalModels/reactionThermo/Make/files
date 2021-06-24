@@ -21,4 +21,4 @@ derivedFvPatchFields/mixedUnburntEnthalpy/mixedUnburntEnthalpyFvPatchScalarField
 
 functionObjects/moleFractions/moleFractionsFunctionObjects.C
 
-LIB = $(FOAM_LIBBIN)/libreactionThermophysicalModelsAD
+LIB = $(FOAM_LIBBIN)/libreactionThermophysicalModels$(WM_CODI_AD_LIB_POSTFIX)

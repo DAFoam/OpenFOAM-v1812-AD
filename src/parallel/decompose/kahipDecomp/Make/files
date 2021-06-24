@@ -1,3 +1,3 @@
 kahipDecomp.C
 
-LIB = $(FOAM_LIBBIN)/libkahipDecompAD
+LIB = $(FOAM_LIBBIN)/libkahipDecomp$(WM_CODI_AD_LIB_POSTFIX)

@@ -54,4 +54,4 @@ $(setWriters)/xmgrace/xmgraceSetWriterRunTime.C
 $(setWriters)/csv/csvSetWriterRunTime.C
 $(setWriters)/nastran/nastranSetWriterRunTime.C
 
-LIB = $(FOAM_LIBBIN)/libfileFormatsAD
+LIB = $(FOAM_LIBBIN)/libfileFormats$(WM_CODI_AD_LIB_POSTFIX)

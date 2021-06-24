@@ -2,4 +2,4 @@ genericFaPatchField/genericFaPatchFields.C
 genericFvPatchField/genericFvPatchFields.C
 genericPointPatchField/genericPointPatchFields.C
 
-LIB = $(FOAM_LIBBIN)/libgenericPatchFieldsAD
+LIB = $(FOAM_LIBBIN)/libgenericPatchFields$(WM_CODI_AD_LIB_POSTFIX)

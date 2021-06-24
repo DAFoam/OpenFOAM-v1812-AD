@@ -9,10 +9,10 @@ EXE_INC = \
 
 
 EXE_LIBS = \
-    -lturbulenceModelsAD \
-    -lincompressibleTurbulenceModelsAD \
-    -lincompressibleTransportModelsAD \
-    -lfiniteVolumeAD \
-    -lmeshToolsAD \
-    -lfvOptionsAD \
-    -lsamplingAD 
+    -lturbulenceModels \
+    -lincompressibleTurbulenceModels \
+    -lincompressibleTransportModels \
+    -lfiniteVolume \
+    -lmeshTools \
+    -lfvOptions \
+    -lsampling 

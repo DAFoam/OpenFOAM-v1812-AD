@@ -8,4 +8,4 @@ chemistrySolver/chemistrySolver/makeChemistrySolvers.C
 
 functionObjects/specieReactionRates/specieReactionRates.C
 
-LIB = $(FOAM_LIBBIN)/libchemistryModelAD
+LIB = $(FOAM_LIBBIN)/libchemistryModel$(WM_CODI_AD_LIB_POSTFIX)

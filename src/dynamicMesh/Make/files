@@ -138,4 +138,4 @@ polyMeshFilter/polyMeshFilter.C
 pointPatchDist/externalPointEdgePoint.C
 pointPatchDist/pointPatchDist.C
 
-LIB = $(FOAM_LIBBIN)/libdynamicMeshAD
+LIB = $(FOAM_LIBBIN)/libdynamicMesh$(WM_CODI_AD_LIB_POSTFIX)

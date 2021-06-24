@@ -39,4 +39,4 @@ blockMesh/blockMeshMergeFast.C
 
 blockMeshTools/blockMeshTools.C
 
-LIB = $(FOAM_LIBBIN)/libblockMeshAD
+LIB = $(FOAM_LIBBIN)/libblockMesh$(WM_CODI_AD_LIB_POSTFIX)

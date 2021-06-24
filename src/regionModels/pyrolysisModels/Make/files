@@ -6,4 +6,4 @@ noPyrolysis/noPyrolysis.C
 thermo/thermo.C
 pyrolysisModel/pyrolysisModelCollection.C
 
-LIB = $(FOAM_LIBBIN)/libpyrolysisModelsAD
+LIB = $(FOAM_LIBBIN)/libpyrolysisModels$(WM_CODI_AD_LIB_POSTFIX)

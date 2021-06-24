@@ -3,4 +3,4 @@ UIPread.C
 UPstream.C
 PstreamGlobals.C
 
-LIB = $(FOAM_LIBBIN)/$(FOAM_MPI)/libPstreamAD
+LIB = $(FOAM_LIBBIN)/$(FOAM_MPI)/libPstream$(WM_CODI_AD_LIB_POSTFIX)

@@ -5,4 +5,4 @@ alphaContactAngle/dynamicAlphaContactAngle/dynamicAlphaContactAngleFvPatchScalar
 alphaContactAngle/timeVaryingAlphaContactAngle/timeVaryingAlphaContactAngleFvPatchScalarField.C
 alphaFixedPressure/alphaFixedPressureFvPatchScalarField.C
 
-LIB = $(FOAM_LIBBIN)/libtwoPhasePropertiesAD
+LIB = $(FOAM_LIBBIN)/libtwoPhaseProperties$(WM_CODI_AD_LIB_POSTFIX)

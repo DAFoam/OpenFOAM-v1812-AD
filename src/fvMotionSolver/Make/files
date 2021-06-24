@@ -44,4 +44,4 @@ $(derivedPoint)/uniformInterpolatedDisplacement/uniformInterpolatedDisplacementP
 
 
 
-LIB = $(FOAM_LIBBIN)/libfvMotionSolversAD
+LIB = $(FOAM_LIBBIN)/libfvMotionSolvers$(WM_CODI_AD_LIB_POSTFIX)

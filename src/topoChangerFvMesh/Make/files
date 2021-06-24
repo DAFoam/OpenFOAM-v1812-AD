@@ -11,4 +11,4 @@ movingConeTopoFvMesh/movingConeTopoFvMesh.C
 mixerFvMesh/mixerFvMesh.C
 */
 
-LIB = $(FOAM_LIBBIN)/libtopoChangerFvMeshAD
+LIB = $(FOAM_LIBBIN)/libtopoChangerFvMesh$(WM_CODI_AD_LIB_POSTFIX)

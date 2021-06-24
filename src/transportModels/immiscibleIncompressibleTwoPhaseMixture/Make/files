@@ -1,3 +1,3 @@
 immiscibleIncompressibleTwoPhaseMixture.C
 
-LIB = $(FOAM_LIBBIN)/libimmiscibleIncompressibleTwoPhaseMixtureAD
+LIB = $(FOAM_LIBBIN)/libimmiscibleIncompressibleTwoPhaseMixture$(WM_CODI_AD_LIB_POSTFIX)

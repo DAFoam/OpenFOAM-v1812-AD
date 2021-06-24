@@ -28,4 +28,4 @@ $(windowModels)/Hanning/Hanning.C
 $(windowModels)/uniform/uniform.C
 
 
-LIB = $(FOAM_LIBBIN)/librandomProcessesAD
+LIB = $(FOAM_LIBBIN)/librandomProcesses$(WM_CODI_AD_LIB_POSTFIX)

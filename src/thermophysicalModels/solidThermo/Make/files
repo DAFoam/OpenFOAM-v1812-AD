@@ -4,4 +4,4 @@ solidThermo/solidThermos.C
 solidReactionThermo/solidReactionThermo.C
 solidReactionThermo/solidReactionThermos.C
 
-LIB = $(FOAM_LIBBIN)/libsolidThermoAD
+LIB = $(FOAM_LIBBIN)/libsolidThermo$(WM_CODI_AD_LIB_POSTFIX)

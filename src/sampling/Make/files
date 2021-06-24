@@ -97,4 +97,4 @@ meshToMesh0/calculateMeshToMesh0Addressing.C
 meshToMesh0/calculateMeshToMesh0Weights.C
 
 
-LIB = $(FOAM_LIBBIN)/libsamplingAD
+LIB = $(FOAM_LIBBIN)/libsampling$(WM_CODI_AD_LIB_POSTFIX)

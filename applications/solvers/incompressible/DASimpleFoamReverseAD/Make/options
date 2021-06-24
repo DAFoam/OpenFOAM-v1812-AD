@@ -9,10 +9,10 @@ EXE_INC = \
 
 
 EXE_LIBS = \
-    -lturbulenceModelsAD \
-    -lincompressibleTurbulenceModelsAD \
-    -lincompressibleTransportModelsAD \
-    -lfiniteVolumeAD \
-    -lmeshToolsAD \
-    -lfvOptionsAD \
-    -lsamplingAD 
+    -lturbulenceModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lincompressibleTurbulenceModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lincompressibleTransportModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfvOptions$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsampling$(WM_CODI_AD_LIB_POSTFIX) 

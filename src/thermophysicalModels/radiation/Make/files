@@ -57,4 +57,4 @@ derivedFvPatchFields/greyDiffusiveViewFactor/greyDiffusiveViewFactorFixedValueFv
 /* fvOptions */
 fvOptions/radiation/radiation.C
 
-LIB = $(FOAM_LIBBIN)/libradiationModelsAD
+LIB = $(FOAM_LIBBIN)/libradiationModels$(WM_CODI_AD_LIB_POSTFIX)

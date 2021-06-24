@@ -9,4 +9,4 @@ injectedParticle/injectedParticleCloud.C
 
 InteractionLists/referredWallFace/referredWallFace.C
 
-LIB = $(FOAM_LIBBIN)/liblagrangianAD
+LIB = $(FOAM_LIBBIN)/liblagrangian$(WM_CODI_AD_LIB_POSTFIX)

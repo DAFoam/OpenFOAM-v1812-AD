@@ -26,4 +26,4 @@ dummyPrintStack.C
 printStack.C
 #endif
 
-LIB = $(FOAM_LIBBIN)/libOSspecificAD
+LIB = $(FOAM_LIBBIN)/libOSspecific$(WM_CODI_AD_LIB_POSTFIX)

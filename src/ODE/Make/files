@@ -18,4 +18,4 @@ ODESolvers/SIBS/SIMPR.C
 ODESolvers/SIBS/polyExtrapolate.C
 ODESolvers/seulex/seulex.C
 
-LIB = $(FOAM_LIBBIN)/libODEAD
+LIB = $(FOAM_LIBBIN)/libODE$(WM_CODI_AD_LIB_POSTFIX)

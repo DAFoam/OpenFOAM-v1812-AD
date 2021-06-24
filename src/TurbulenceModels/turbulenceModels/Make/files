@@ -67,4 +67,4 @@ $(RASBCs)/turbulentMixingLengthDissipationRateInlet/turbulentMixingLengthDissipa
 $(RASBCs)/turbulentMixingLengthFrequencyInlet/turbulentMixingLengthFrequencyInletFvPatchScalarField.C
 
 
-LIB = $(FOAM_LIBBIN)/libturbulenceModelsAD
+LIB = $(FOAM_LIBBIN)/libturbulenceModels$(WM_CODI_AD_LIB_POSTFIX)

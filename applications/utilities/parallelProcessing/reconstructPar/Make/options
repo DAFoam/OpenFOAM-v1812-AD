@@ -8,10 +8,10 @@ EXE_INC = \
     -I$(LIB_SRC)/regionModels/regionModel/lnInclude
 
 EXE_LIBS = \
-    -lfiniteVolumeAD \
-    -lgenericPatchFieldsAD \
-    -llagrangianAD \
-    -ldynamicMeshAD \
-    -lmeshToolsAD \
-    -lreconstructAD \
-    -lregionModelsAD
+    -lfiniteVolume \
+    -lgenericPatchFields \
+    -llagrangian \
+    -ldynamicMesh \
+    -lmeshTools \
+    -lreconstruct \
+    -lregionModels

@@ -1,4 +1,4 @@
 alphatFilmWallFunction/alphatFilmWallFunctionFvPatchScalarField.C
 nutkFilmWallFunction/nutkFilmWallFunctionFvPatchScalarField.C
 
-LIB = $(FOAM_LIBBIN)/libsurfaceFilmDerivedFvPatchFieldsAD
+LIB = $(FOAM_LIBBIN)/libsurfaceFilmDerivedFvPatchFields$(WM_CODI_AD_LIB_POSTFIX)

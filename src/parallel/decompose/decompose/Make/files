@@ -2,4 +2,4 @@ decompositionInformation.C
 decompositionModel.C
 fvFieldDecomposer.C
 
-LIB = $(FOAM_LIBBIN)/libdecomposeAD
+LIB = $(FOAM_LIBBIN)/libdecompose$(WM_CODI_AD_LIB_POSTFIX)

@@ -11,4 +11,4 @@ turbulentTransportModels/RAS/LienCubicKE/LienCubicKE.C
 BCs = turbulentTransportModels/RAS/derivedFvPatchFields
 turbulentTransportModels/derivedFvPatchFields/wallFunctions/alphatWallFunctions/alphatJayatillekeWallFunction/alphatJayatillekeWallFunctionFvPatchScalarField.C
 
-LIB = $(FOAM_LIBBIN)/libincompressibleTurbulenceModelsAD
+LIB = $(FOAM_LIBBIN)/libincompressibleTurbulenceModels$(WM_CODI_AD_LIB_POSTFIX)

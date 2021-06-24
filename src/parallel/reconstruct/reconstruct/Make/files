@@ -3,4 +3,4 @@ fvFieldReconstructor.C
 pointFieldReconstructor.C
 lagrangianReconstructor.C
 
-LIB = $(FOAM_LIBBIN)/libreconstructAD
+LIB = $(FOAM_LIBBIN)/libreconstruct$(WM_CODI_AD_LIB_POSTFIX)

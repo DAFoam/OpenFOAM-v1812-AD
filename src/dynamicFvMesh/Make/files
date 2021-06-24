@@ -10,4 +10,4 @@ dynamicMotionSolverListFvMesh/dynamicMotionSolverListFvMesh.C
 simplifiedDynamicFvMesh/simplifiedDynamicFvMeshes.C
 simplifiedDynamicFvMesh/simplifiedDynamicFvMesh.C
 
-LIB = $(FOAM_LIBBIN)/libdynamicFvMeshAD
+LIB = $(FOAM_LIBBIN)/libdynamicFvMesh$(WM_CODI_AD_LIB_POSTFIX)

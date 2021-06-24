@@ -6,4 +6,4 @@ surfaceTensionModels/surfaceTensionModel/surfaceTensionModelNew.C
 surfaceTensionModels/constant/constantSurfaceTension.C
 surfaceTensionModels/temperatureDependent/temperatureDependentSurfaceTension.C
 
-LIB = $(FOAM_LIBBIN)/libinterfacePropertiesAD
+LIB = $(FOAM_LIBBIN)/libinterfaceProperties$(WM_CODI_AD_LIB_POSTFIX)

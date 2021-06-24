@@ -32,4 +32,4 @@ regionsToCell/regionsToCell.C
 lduPrimitiveProcessorInterface/lduPrimitiveProcessorInterface.C
 
 
-LIB = $(FOAM_LIBBIN)/liboversetAD
+LIB = $(FOAM_LIBBIN)/liboverset$(WM_CODI_AD_LIB_POSTFIX)

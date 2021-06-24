@@ -472,4 +472,4 @@ $(fvOptions)/fvOptionIO.C
 $(fvOptions)/fvOptionList.C
 $(fvOptions)/fvOptions.C
 
-LIB = $(FOAM_LIBBIN)/libfiniteVolumeAD
+LIB = $(FOAM_LIBBIN)/libfiniteVolume$(WM_CODI_AD_LIB_POSTFIX)
