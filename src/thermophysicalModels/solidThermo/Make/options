@@ -8,10 +8,10 @@ EXE_INC = \
     -I$(LIB_SRC)/transportModels/compressible/lnInclude
 
 LIB_LIBS = \
-    -lmeshToolsAD \
-    -lfiniteVolumeAD \
-    -lspecieAD \
-    -lsolidSpecieAD \
-    -lfluidThermophysicalModelsAD \
-    -lreactionThermophysicalModelsAD \
-    -lcompressibleTransportModelsAD
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lspecie$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsolidSpecie$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfluidThermophysicalModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lreactionThermophysicalModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lcompressibleTransportModels$(WM_CODI_AD_LIB_POSTFIX)

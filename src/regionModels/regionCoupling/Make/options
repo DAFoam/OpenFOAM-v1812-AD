@@ -20,13 +20,13 @@ EXE_INC = \
     -I$(LIB_SRC)/meshTools/lnInclude
 
 LIB_LIBS = \
-    -lregionModelsAD \
-    -lpyrolysisModelsAD \
-    -lsurfaceFilmModelsAD \
-    -lsolidChemistryModelAD \
-    -lreactionThermophysicalModelsAD \
-    -lSLGThermoAD \
-    -lturbulenceModelsAD \
-    -lcompressibleTurbulenceModelsAD \
-    -lfiniteVolumeAD \
-    -lmeshToolsAD
+    -lregionModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lpyrolysisModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsurfaceFilmModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsolidChemistryModel$(WM_CODI_AD_LIB_POSTFIX) \
+    -lreactionThermophysicalModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lSLGThermo$(WM_CODI_AD_LIB_POSTFIX) \
+    -lturbulenceModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lcompressibleTurbulenceModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX)

@@ -14,15 +14,15 @@ EXE_INC = \
     -I$(LIB_SRC)/transportModels/compressible/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolumeAD \
-    -lmeshToolsAD \
-    -lchemistryModelAD \
-    -lspecieAD \
-    -lfluidThermophysicalModelsAD \
-    -lsolidChemistryModelAD \
-    -lsolidThermoAD \
-    -lturbulenceModelsAD \
-    -lcompressibleTurbulenceModelsAD \
-    -lregionModelsAD \
-    -lradiationModelsAD \
-    -lreactionThermophysicalModelsAD
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -lchemistryModel$(WM_CODI_AD_LIB_POSTFIX) \
+    -lspecie$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfluidThermophysicalModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsolidChemistryModel$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsolidThermo$(WM_CODI_AD_LIB_POSTFIX) \
+    -lturbulenceModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lcompressibleTurbulenceModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lregionModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lradiationModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lreactionThermophysicalModels$(WM_CODI_AD_LIB_POSTFIX)

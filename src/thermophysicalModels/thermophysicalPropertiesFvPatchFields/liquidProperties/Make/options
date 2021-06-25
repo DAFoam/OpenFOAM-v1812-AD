@@ -6,6 +6,6 @@ EXE_INC = \
     -I$(LIB_SRC)/thermophysicalModels/thermophysicalProperties/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolumeAD \
-    -lcompressibleTurbulenceModelsAD \
-    -lthermophysicalPropertiesAD
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lcompressibleTurbulenceModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lthermophysicalProperties$(WM_CODI_AD_LIB_POSTFIX)

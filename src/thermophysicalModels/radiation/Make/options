@@ -12,12 +12,12 @@ EXE_INC = \
     -I$(LIB_SRC)/parallel/distributed/lnInclude
 
 LIB_LIBS = \
-    -lcompressibleTransportModelsAD \
-    -lfluidThermophysicalModelsAD \
-    -lspecieAD \
-    -lsolidThermoAD \
-    -lSLGThermoAD \
-    -lthermophysicalPropertiesAD \
-    -lfiniteVolumeAD \
-    -lmeshToolsAD \
-    -ldistributedAD
+    -lcompressibleTransportModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfluidThermophysicalModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lspecie$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsolidThermo$(WM_CODI_AD_LIB_POSTFIX) \
+    -lSLGThermo$(WM_CODI_AD_LIB_POSTFIX) \
+    -lthermophysicalProperties$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -ldistributed$(WM_CODI_AD_LIB_POSTFIX)

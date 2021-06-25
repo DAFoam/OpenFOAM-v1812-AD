@@ -13,9 +13,9 @@ EXE_INC = \
     -I$(LIB_SRC)/TurbulenceModels/incompressible/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolumeAD \
-    -lsamplingAD \
-    -lmeshToolsAD \
-    -lturbulenceModelsAD \
-    -lincompressibleTurbulenceModelsAD \
-    -lcompressibleTurbulenceModelsAD
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsampling$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -lturbulenceModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lincompressibleTurbulenceModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lcompressibleTurbulenceModels$(WM_CODI_AD_LIB_POSTFIX)

@@ -13,6 +13,6 @@ EXE_INC = \
     -I$(LIB_SRC)/parallel/decompose/decompositionMethods/lnInclude
 
 LIB_LIBS = \
-    -ldynamicFvMeshAD \
-    -lsamplingAD \
-    -ldecompositionMethodsAD
+    -ldynamicFvMesh$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsampling$(WM_CODI_AD_LIB_POSTFIX) \
+    -ldecompositionMethods$(WM_CODI_AD_LIB_POSTFIX)

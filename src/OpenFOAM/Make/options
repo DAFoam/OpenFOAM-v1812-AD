@@ -2,6 +2,6 @@ EXE_INC = \
     -I$(OBJECTS_DIR)
 
 LIB_LIBS = \
-    $(FOAM_LIBBIN)/libOSspecificAD.o \
-    -L$(FOAM_LIBBIN)/dummy -lPstreamAD \
+    $(FOAM_LIBBIN)/libOSspecific$(WM_CODI_AD_LIB_POSTFIX).o \
+    -L$(FOAM_LIBBIN)/dummy -lPstream$(WM_CODI_AD_LIB_POSTFIX) \
     -lz

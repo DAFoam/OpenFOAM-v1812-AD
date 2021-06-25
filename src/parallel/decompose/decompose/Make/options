@@ -5,7 +5,7 @@ EXE_INC = \
     -I$(LIB_SRC)/lagrangian/basic/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolumeAD \
-    -lmeshToolsAD \
-    -ldecompositionMethodsAD \
-    -llagrangianAD
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -ldecompositionMethods$(WM_CODI_AD_LIB_POSTFIX) \
+    -llagrangian$(WM_CODI_AD_LIB_POSTFIX)

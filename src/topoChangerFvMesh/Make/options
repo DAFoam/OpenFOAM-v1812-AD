@@ -6,8 +6,8 @@ EXE_INC = \
     -I$(LIB_SRC)/surfMesh/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolumeAD \
-    -ldynamicFvMeshAD \
-    -ldynamicMeshAD \
-    -lmeshToolsAD \
-    -lsurfMeshAD
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -ldynamicFvMesh$(WM_CODI_AD_LIB_POSTFIX) \
+    -ldynamicMesh$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsurfMesh$(WM_CODI_AD_LIB_POSTFIX)

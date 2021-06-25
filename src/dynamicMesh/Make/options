@@ -5,6 +5,6 @@ EXE_INC = \
     -I$(LIB_SRC)/mesh/extrudeModel/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolumeAD \
-    -lsurfMeshAD \
-    -lextrudeModelAD
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsurfMesh$(WM_CODI_AD_LIB_POSTFIX) \
+    -lextrudeModel$(WM_CODI_AD_LIB_POSTFIX)

@@ -9,9 +9,9 @@ EXE_INC = \
     -I$(LIB_SRC)/meshTools/lnInclude
 
 LIB_LIBS = \
-    -ldynamicMeshAD \
-    -lfiniteVolumeAD \
-    -llagrangianAD \
-    -lmeshToolsAD \
-    -lfvMotionSolversAD \
-    -ldistributedAD
+    -ldynamicMesh$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -llagrangian$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfvMotionSolvers$(WM_CODI_AD_LIB_POSTFIX) \
+    -ldistributed$(WM_CODI_AD_LIB_POSTFIX)
