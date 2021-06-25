@@ -1,7 +1,7 @@
 CPP        = cpp -traditional-cpp $(GFLAGS)
 LD         = ld -m elf64ppc
 
-PROJECT_LIBS = -l$(WM_PROJECT)AD -ldl
+PROJECT_LIBS = -l$(WM_PROJECT)$(WM_CODI_AD_LIB_POSTFIX) -ldl
 
 include $(GENERAL_RULES)/standard
 include $(GENERAL_RULES)/Gcc/openmp

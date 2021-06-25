@@ -1,6 +1,6 @@
 CPP        = cpp -traditional-cpp $(GFLAGS)
 
-PROJECT_LIBS = -l$(WM_PROJECT)AD -ldl
+PROJECT_LIBS = -l$(WM_PROJECT)$(WM_CODI_AD_LIB_POSTFIX) -ldl
 
 include $(GENERAL_RULES)/standard
 include $(GENERAL_RULES)/Clang/openmp
