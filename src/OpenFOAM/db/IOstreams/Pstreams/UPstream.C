@@ -418,6 +418,11 @@ Foam::UPstream::commsTypes Foam::UPstream::defaultCommsType
     )
 );
 
+// CoDiPack4OpenFOAM. The following variables are created to enable parallel AD
+int Foam::UPstream::procOneToOneCommListIndex = -9999;
+
+Foam::List< Foam::List<int> > Foam::UPstream::procOneToOneCommList;
+
 namespace Foam
 {
     // Register re-reader

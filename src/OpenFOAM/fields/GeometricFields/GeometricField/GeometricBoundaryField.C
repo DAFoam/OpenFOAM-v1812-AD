@@ -27,6 +27,7 @@ License
 #include "commSchedule.H"
 #include "globalMeshData.H"
 #include "cyclicPolyPatch.H"
+#include "processorPolyPatch.H"
 
 template<class Type, template<class> class PatchField, class GeoMesh>
 void Foam::GeometricField<Type, PatchField, GeoMesh>::Boundary::
@@ -385,45 +386,25 @@ evaluate()
      || Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
     )
     {
-        label nReq = Pstream::nRequests();
+ 
+        // CoDiPack4OpenFOAM. We have hacked this function 
+        // The original communication was done through nonBlocking comm.
+        // NOTE: this function will be used when calling mesh.movePoints()
+        // we have to use the blocking comm
 
-        forAll(*this, patchi)
+        // loop over all oneToOneList
+        forAll(Pstream::procOneToOneCommList, idxI)
         {
-            this->operator[](patchi).initEvaluate(Pstream::defaultCommsType);
-        }
-
-        // Block for any outstanding requests
-        if
-        (
-            Pstream::parRun()
-         && Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
-        )
-        {
-            Pstream::waitRequests(nReq);
+            Pstream::procOneToOneCommListIndex = idxI;
+            forAll(*this, patchi)
+            {
+                this->operator[](patchi).initEvaluate(Pstream::defaultCommsType);
+            }
         }
 
         forAll(*this, patchi)
         {
             this->operator[](patchi).evaluate(Pstream::defaultCommsType);
-        }
-    }
-    else if (Pstream::defaultCommsType == Pstream::commsTypes::scheduled)
-    {
-        const lduSchedule& patchSchedule =
-            bmesh_.mesh().globalData().patchSchedule();
-
-        forAll(patchSchedule, patchEvali)
-        {
-            if (patchSchedule[patchEvali].init)
-            {
-                this->operator[](patchSchedule[patchEvali].patch)
-                    .initEvaluate(Pstream::commsTypes::scheduled);
-            }
-            else
-            {
-                this->operator[](patchSchedule[patchEvali].patch)
-                    .evaluate(Pstream::commsTypes::scheduled);
-            }
         }
     }
     else

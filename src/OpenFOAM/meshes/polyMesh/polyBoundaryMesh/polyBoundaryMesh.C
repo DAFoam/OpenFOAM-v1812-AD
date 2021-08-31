@@ -312,14 +312,13 @@ void Foam::polyBoundaryMesh::calcGeometry()
         Pstream::scatterList(neighbProcList);
 
         // now calculate oneToOneList
-        List<List<label>> oneToOneList={};
-        pBufs.calcOneToOneCommList(neighbProcList, oneToOneList);
+        pBufs.calcOneToOneCommList(neighbProcList, Pstream::procOneToOneCommList);
 
         // loop over all oneToOneList
-        forAll(oneToOneList, idxI)
+        forAll(Pstream::procOneToOneCommList, idxI)
         {
 
-            const List<label>& mySubList=oneToOneList[idxI];
+            const List<label>& mySubList=Pstream::procOneToOneCommList[idxI];
             pBufs.setOneToOneList(mySubList);
 
             forAll(*this, patchi)
@@ -1130,6 +1129,8 @@ void Foam::polyBoundaryMesh::movePoints(const pointField& p)
         // this hack refers to the communication used in the evaluate function from
         // src/OpenFOAM/fields/GeometricFields/GeometricField/GeometricBoundaryField.C
 
+if (Pstream::procOneToOneCommList.size() == 0)
+{
         label nProcs = Pstream::nProcs();
         label myProc = Pstream::myProcNo();
         // calculate neighbProcList
@@ -1152,14 +1153,12 @@ void Foam::polyBoundaryMesh::movePoints(const pointField& p)
         Pstream::scatterList(neighbProcList);
 
         // now calculate oneToOneList
-        List<List<label>> oneToOneList={};
-        pBufs.calcOneToOneCommList(neighbProcList, oneToOneList);
-
-
-        forAll(oneToOneList, idxI)
+        pBufs.calcOneToOneCommList(neighbProcList, Pstream::procOneToOneCommList);
+}
+        forAll(Pstream::procOneToOneCommList, idxI)
         {
 
-            const List<label>& mySubList=oneToOneList[idxI];
+            const List<label>& mySubList=Pstream::procOneToOneCommList[idxI];
             pBufs.setOneToOneList(mySubList);
 
             if(idxI == 0)
