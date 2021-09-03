@@ -424,7 +424,7 @@ int Foam::UPstream::procOneToOneCommListIndex = -9999;
 Foam::List< Foam::List<int> > Foam::UPstream::procOneToOneCommList;
 
 
-void Foam::UPstream::calcOneToOneCommList
+void Foam::UPstream::calcProcOneToOneCommList
 (
     List<DynamicList<label>> neighbProcList,
     List<List<label>>& commList
@@ -471,7 +471,7 @@ void Foam::UPstream::calcOneToOneCommList
     {
         if (iter==maxIters-1)
         {
-            FatalErrorIn("calcOneToOneCommList")<<"maxIters reach! "<< exit(FatalError);
+            FatalErrorIn("calcOneToOneCommList")<<"maxIters reach! "<< Foam::exit(FatalError);
         }
 
         label finished = 1;
