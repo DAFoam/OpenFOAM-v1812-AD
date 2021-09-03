@@ -27,6 +27,7 @@ License
 #include "commSchedule.H"
 #include "globalMeshData.H"
 #include "cyclicPolyPatch.H"
+#include "processorPolyPatch.H"
 
 template<class Type, template<class> class PatchField, class GeoMesh>
 void Foam::GeometricField<Type, PatchField, GeoMesh>::Boundary::
@@ -385,21 +386,37 @@ evaluate()
      || Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
     )
     {
-        label nReq = Pstream::nRequests();
+ 
+        // CoDiPack4OpenFOAM. We have hacked this function to use blocking comm
+        // The original communication was done through nonBlocking comm.
+        // NOTE: the nonBlocking mode will NOT work because it will miss data
+        // transfer between procs. The exact reason is unknown.. but likely related
+        // to MeDiPack
 
-        forAll(*this, patchi)
+        // This function will be called to extract field data between procs
+        // i.e., when calling U.correctBoundaryConditions
+
+        if (Pstream::procOneToOneCommList.size() == 0)
         {
-            this->operator[](patchi).initEvaluate(Pstream::defaultCommsType);
+            // procOneToOneCommList should have been initialized in polyBoundaryMesh::calcGeometry.
+            // If not, return an error
+            FatalErrorInFunction
+                << "movePoints"
+                << "procOneToOneCommList not initialized!"
+                << exit(FatalError);
         }
 
-        // Block for any outstanding requests
-        if
-        (
-            Pstream::parRun()
-         && Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
-        )
+        // loop over all oneToOneList
+        forAll(Pstream::procOneToOneCommList, idxI)
         {
-            Pstream::waitRequests(nReq);
+            // set the index for procOneToOneCommListIndex such that the 
+            // initEvaluate function knows which oneToOneList to use
+            Pstream::procOneToOneCommListIndex = idxI;
+
+            forAll(*this, patchi)
+            {
+                this->operator[](patchi).initEvaluate(Pstream::defaultCommsType);
+            }
         }
 
         forAll(*this, patchi)
@@ -407,29 +424,10 @@ evaluate()
             this->operator[](patchi).evaluate(Pstream::defaultCommsType);
         }
     }
-    else if (Pstream::defaultCommsType == Pstream::commsTypes::scheduled)
-    {
-        const lduSchedule& patchSchedule =
-            bmesh_.mesh().globalData().patchSchedule();
-
-        forAll(patchSchedule, patchEvali)
-        {
-            if (patchSchedule[patchEvali].init)
-            {
-                this->operator[](patchSchedule[patchEvali].patch)
-                    .initEvaluate(Pstream::commsTypes::scheduled);
-            }
-            else
-            {
-                this->operator[](patchSchedule[patchEvali].patch)
-                    .evaluate(Pstream::commsTypes::scheduled);
-            }
-        }
-    }
     else
     {
         FatalErrorInFunction
-            << "Unsuported communications type "
+            << "Unsupported communications type "
             << Pstream::commsTypeNames[Pstream::defaultCommsType]
             << exit(FatalError);
     }

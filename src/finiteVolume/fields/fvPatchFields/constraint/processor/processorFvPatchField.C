@@ -214,45 +214,101 @@ void Foam::processorFvPatchField<Type>::initEvaluate
 {
     if (Pstream::parRun())
     {
-        this->patchInternalField(sendBuf_);
 
+        // CoDiPack4OpenFOAM. We have hacked this function to use blocking comm
+        // The original communication was done through nonBlocking comm.
+        // NOTE: the nonBlocking mode will NOT work because it will miss data
+        // transfer between procs. The exact reason is unknown.. but likely related
+        // to MeDiPack
+
+        // This function will be called to extract field data between procs
+        // i.e., when calling U.correctBoundaryConditions
+
+        label neighbProcNo = this->neighbProcNo();
+        label myProcNo = this->myProcNo();
         if
         (
             commsType == Pstream::commsTypes::nonBlocking
          && !Pstream::floatTransfer
         )
         {
-            // Fast path. Receive into *this
-            this->setSize(sendBuf_.size());
-            outstandingRecvRequest_ = UPstream::nRequests();
-            UIPstream::read
-            (
-                Pstream::commsTypes::nonBlocking,
-                procPatch_.neighbProcNo(),
-                reinterpret_cast<char*>(this->begin()),
-                this->byteSize(),
-                "Foam::processorFvPatchField<Type>::initEvaluate",
-                typeid(this->begin()),
-                procPatch_.tag(),
-                procPatch_.comm()
-            );
+            const List<label>& oneToOneList = Pstream::procOneToOneCommList[Pstream::procOneToOneCommListIndex];
 
-            outstandingSendRequest_ = UPstream::nRequests();
-            UOPstream::write
-            (
-                Pstream::commsTypes::nonBlocking,
-                procPatch_.neighbProcNo(),
-                reinterpret_cast<const char*>(sendBuf_.begin()),
-                this->byteSize(),
-                "Foam::processorFvPatchField<Type>::initEvaluate",
-                typeid(sendBuf_.begin()),
-                procPatch_.tag(),
-                procPatch_.comm()
-            );
+            for(label idxI=0; idxI<oneToOneList.size(); idxI+=2)
+            {
+                label procA = oneToOneList[idxI];
+                label procB = oneToOneList[idxI+1];
+                if
+                ( 
+                    (myProcNo == procA && neighbProcNo == procB) 
+                 || (myProcNo == procB && neighbProcNo == procA)
+                )
+                {
+
+                    scalar dummyActiveType = 1.0;
+                    this->patchInternalField(sendBuf_);
+                    this->setSize(sendBuf_.size()); 
+                    if(myProcNo == procA)
+                    {
+                        UOPstream::write
+                        (
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<const char*>(sendBuf_.begin()),
+                            this->size()*sizeof(Type),
+                            "Foam::processorFvPatchField<Type>::initEvaluate",
+                            typeid(&dummyActiveType),
+                            procPatch_.tag(),
+                            procPatch_.comm()
+                        );
+    
+                        UIPstream::read
+                        (
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<char*>(this->begin()),
+                            this->size()*sizeof(Type),
+                            "Foam::processorFvPatchField<Type>::initEvaluate",
+                            typeid(&dummyActiveType),
+                            procPatch_.tag(),
+                            procPatch_.comm()
+                        );
+                    }
+                    else
+                    {
+                        UIPstream::read
+                        (   
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<char*>(this->begin()),
+                            this->size()*sizeof(Type),
+                            "Foam::processorFvPatchField<Type>::initEvaluate",
+                            typeid(&dummyActiveType),
+                            procPatch_.tag(),
+                            procPatch_.comm()
+                        );
+                        UOPstream::write
+                        (   
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<const char*>(sendBuf_.begin()),
+                            this->size()*sizeof(Type),
+                            "Foam::processorFvPatchField<Type>::initEvaluate",
+                            typeid(&dummyActiveType),
+                            procPatch_.tag(),
+                            procPatch_.comm()
+                        );                        
+                    }
+        
+                }
+            }
+
         }
         else
         {
-            procPatch_.compressedSend(commsType, sendBuf_);
+            FatalErrorInFunction
+            << "Only support nonBlocking! " 
+            << abort(FatalError);
         }
     }
 }
@@ -266,30 +322,6 @@ void Foam::processorFvPatchField<Type>::evaluate
 {
     if (Pstream::parRun())
     {
-        if
-        (
-            commsType == Pstream::commsTypes::nonBlocking
-         && !Pstream::floatTransfer
-        )
-        {
-            // Fast path. Received into *this
-
-            if
-            (
-                outstandingRecvRequest_ >= 0
-             && outstandingRecvRequest_ < Pstream::nRequests()
-            )
-            {
-                UPstream::waitRequest(outstandingRecvRequest_);
-            }
-            outstandingSendRequest_ = -1;
-            outstandingRecvRequest_ = -1;
-        }
-        else
-        {
-            procPatch_.compressedReceive<Type>(commsType, *this);
-        }
-
         if (doTransform())
         {
             transform(*this, procPatch_.forwardT(), *this);
