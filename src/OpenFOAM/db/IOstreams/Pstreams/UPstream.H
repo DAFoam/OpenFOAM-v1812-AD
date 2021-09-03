@@ -297,6 +297,13 @@ public:
         //- a list to store the one-to-one communication in parallel cases
         static List< List<int> > procOneToOneCommList;
 
+        //-  calculate the procOneToOneCommList
+        static void calcProcOneToOneCommList
+        (
+            List<DynamicList<label>> neighbProcList,
+            List<List<label>>& commList
+        );
+
     // Constructors
 
         //- Construct given optional buffer size

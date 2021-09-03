@@ -215,10 +215,14 @@ void Foam::processorFvPatchField<Type>::initEvaluate
     if (Pstream::parRun())
     {
 
-        // CoDiPack4OpenFOAM. We have hacked this function 
+        // CoDiPack4OpenFOAM. We have hacked this function to use blocking comm
         // The original communication was done through nonBlocking comm.
-        // NOTE: this function will be used when calling mesh.movePoints()
-        // we have to use the blocking comm
+        // NOTE: the nonBlocking mode will NOT work because it will miss data
+        // transfer between procs. The exact reason is unknown.. but likely related
+        // to MeDiPack
+
+        // This function will be called to extract field data between procs
+        // i.e., when calling U.correctBoundaryConditions
 
         label neighbProcNo = this->neighbProcNo();
         label myProcNo = this->myProcNo();
@@ -229,6 +233,7 @@ void Foam::processorFvPatchField<Type>::initEvaluate
         )
         {
             const List<label>& oneToOneList = Pstream::procOneToOneCommList[Pstream::procOneToOneCommListIndex];
+
             for(label idxI=0; idxI<oneToOneList.size(); idxI+=2)
             {
                 label procA = oneToOneList[idxI];

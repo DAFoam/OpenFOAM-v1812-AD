@@ -210,11 +210,13 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
         // CoDiPack4OpenFOAM. We have hacked this function 
         // The original communication was done through PstreamBuffers.
         // However, it will return seg fault when using reverse-mode AD
-        // with medipack. So we have to change the communication to use
-        // UIPstream::read and UOPstream::write
-        // NOTE: this function will be used when calling mesh.movePoints()
+        // with MeDiPack. So we have to change the communication to use
+        // UIPstream::read and UOPstream::write with blocking mode
+        // NOTE: the nonBlocking mode will NOT work because it will miss data
+        // transfer between procs. The exact reason is unknown.. but likely related
+        // to MeDiPack.
 
-        // this hack refers to the communication used in the initEvaluate function from
+        // Refers to the communication used in the initEvaluate function from
         // src/finiteVolume/fields/fvPatchFields/constraint/processor/processorFvPatchField.C
 
         if
@@ -223,7 +225,9 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
          && !Pstream::floatTransfer
         )
         {
-            const List<label>& oneToOneList = pBufs.getOneToOneList();
+
+            const List<label>& oneToOneList = Pstream::procOneToOneCommList[Pstream::procOneToOneCommListIndex];
+
             for(label idxI=0; idxI<oneToOneList.size(); idxI+=2)
             {
                 label procA = oneToOneList[idxI];
@@ -271,11 +275,7 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
     
                         neighbScalarFields_.clear();
                         neighbScalarFields_.setSize(this->size()*9);
-                        // exchange faceCentresField
-                        // NOTE: before doing read and write, we need to record the
-                        // nRequest before the read and write calls such that we 
-                        // know how many request to wait by calling Pstream::waitRequest
-                        // we follow the one used in processorFvPatchField.C
+
                         UIPstream::read
                         (
                             Pstream::commsTypes::blocking,
@@ -293,11 +293,7 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
                         
                         neighbScalarFields_.clear();
                         neighbScalarFields_.setSize(this->size()*9);
-                        // exchange faceCentresField
-                        // NOTE: before doing read and write, we need to record the
-                        // nRequest before the read and write calls such that we 
-                        // know how many request to wait by calling Pstream::waitRequest
-                        // we follow the one used in processorFvPatchField.C
+
                         UIPstream::read
                         (
                             Pstream::commsTypes::blocking,
@@ -345,14 +341,12 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
         // CoDiPack4OpenFOAM. We have hacked this function 
         // The original communication was done through PstreamBuffers.
         // However, it will return seg fault when using reverse-mode AD
-        // with medipack. So we have to change the communication to use
-        // UIPstream::read and UOPstream::write
-        // NOTE: this function will be used when calling mesh.movePoints()
-
-        // this hack refers to the communication used in the evaluate function from
-        // src/finiteVolume/fields/fvPatchFields/constraint/processor/processorFvPatchField.C
+        // with MeDiPack. So we have to change the communication to use
+        // UIPstream::read and UOPstream::write with blocking mode
+        // NOTE: the nonBlocking mode will NOT work because it will miss data
+        // transfer between procs. The exact reason is unknown.. but likely related
+        // to MeDiPack.
         
-        // we need to wait until all the transfer are done
         if
         (
             Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking

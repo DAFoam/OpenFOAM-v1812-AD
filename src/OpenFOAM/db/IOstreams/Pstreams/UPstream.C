@@ -423,6 +423,135 @@ int Foam::UPstream::procOneToOneCommListIndex = -9999;
 
 Foam::List< Foam::List<int> > Foam::UPstream::procOneToOneCommList;
 
+
+void Foam::UPstream::calcOneToOneCommList
+(
+    List<DynamicList<label>> neighbProcList,
+    List<List<label>>& commList
+)
+{
+    /*
+    Description:
+        This function computes the processor one-to-one communication list.
+        If we get a listList of neighbour processor indices, we want to compute
+        the commList such that, for each subList, the commList will have one
+        processor communicating with only one other processor. This function is
+        needed when exchanging information between processors. This is 
+        because, for some reason, when we do nonBlocking comm, each processor can not 
+        read/write data from/to more than one neighbour processor at a time.
+        The message communication somehow mess up and we will get mixed (error) data.
+        To fix this, we have to determine a so-called one-to-one communication
+        list, such that, in this list, each subList contain the one-to-one
+        processor communication index. Then we have to do commList.size() communication
+        between processors, each time, we allow one processor to read/write data
+        from only one neighbour and repeat this for all coupled patches.
+
+    Example:
+        If the neighbour processor list is like this:
+        neighbProcList={
+            {1,2,4},  // processor0's neighbour is 1, 2, and 4
+            {0,3},    // processor1's neighbour is 0, and 3
+            {0,3},
+            {1,2,4},
+            {0,3}
+        };
+
+        Then, the computed commList is (commList can't have repeated indices for each row)
+        commList={
+            {0,1,2,3}, // 1st round, we exchange data between procs 0<->1 and procs 2<->3
+            {0,2,1,3}, // 2nd round, we exchange data between procs 0<->2 and procs 1<->3
+            {0,4},
+            {3,4}
+        }
+    */
+
+    label maxIters = 1000;
+    // main iteration
+    for(label iter=0;iter<maxIters;iter++)
+    {
+        if (iter==maxIters-1)
+        {
+            FatalErrorIn("calcOneToOneCommList")<<"maxIters reach! "<< exit(FatalError);
+        }
+
+        label finished = 1;
+        List<label> empty;
+        // append an empty list to commList for this iter
+        commList.append(empty);
+        //Info<<" commList "<<commList<<endl;
+        // now loop over all processors to see if the procI is already in commList
+        for(label procI=0; procI<Pstream::nProcs(); procI++)
+        {
+            if (commList[iter].found(procI))
+            {
+                // procI is already in commList, we need to check which neighbour procI is attached to this procI,
+                // and we need to remove the neighbour procI from neighbProcList (it has been added in commList)
+                // There are two possibilities:
+                // 1. procI is an even number, which means it appears as neibProcI<->procI in commList
+                // 2. procI is an odd number, which means it appears as procI<->neibProcI in commList
+                // For case 1, we need to remove the index before procI, for case 2, we need to remove
+                // the index after procI. This is because neibProcI<->procI always appear as a pair
+                // See the following line in "else"
+                //     commList[iter].append(procI);
+                //     commList[iter].append(neighbProcI);
+                label foundIndx = commList[iter].find(procI);
+                label foundIndxRemainder = foundIndx % 2;
+                label indxToRemove = -9999;
+                if (foundIndxRemainder == 0)
+                {
+                    indxToRemove = foundIndx + 1;
+                }
+                else
+                {
+                    indxToRemove = foundIndx - 1;
+                }
+                label valToRemove = commList[iter][indxToRemove];
+                forAll(neighbProcList[procI], idxI)
+                {
+                    const label& neiVal = neighbProcList[procI][idxI];
+                    if (neiVal == valToRemove)
+                    {
+                        neighbProcList[procI].remove(idxI);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // procI is NOT in commList, we need to add procI into commList
+                // we also need to add the neighbour procI that is associated with procI
+                // into commList, if neighbour procI is not there yet.
+                // Therefore, procI and neighbourProcI are always a pair in commList
+                // After we add neighbour procI into commList, we need to remove 
+                // it from  neighbProcList[procI]
+                forAll(neighbProcList[procI], idxI)
+                {
+                    const label& neighbProcI = neighbProcList[procI][idxI];
+                    if(!commList[iter].found(neighbProcI))
+                    {
+                        commList[iter].append(procI);
+                        commList[iter].append(neighbProcI);
+                        neighbProcList[procI].remove(idxI);
+                        //Info<<" neighbProcList "<<neighbProcList<<endl;
+                        //Info<<" commList "<<commList<<endl;
+                        break;
+                    }
+                }
+
+            }
+            if (neighbProcList[procI].size()!=0)
+            {
+                finished=0;
+            }
+        }
+        if(finished)
+        {
+            break;
+        }
+    }
+
+}
+
 namespace Foam
 {
     // Register re-reader
