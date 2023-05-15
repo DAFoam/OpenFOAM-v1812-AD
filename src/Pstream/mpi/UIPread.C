@@ -35,7 +35,7 @@ Description
 // MediPack
 #include <medi/medi.hpp>
 #include <codi.hpp>
-#include <codi/externals/codiMpiTypes.hpp>
+#include <codi/tools/mpi/codiMpiTypes.hpp>
 using namespace medi;
 // * * * * * * * * * * * * * * * * Constructor * * * * * * * * * * * * * * * //
 
@@ -277,7 +277,7 @@ Foam::label Foam::UIPstream::read
 {
 
     bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
-                   && codi::RealReverse::getGlobalTape().isActive();
+                   && codi::RealReverse::getTape().isActive();
 
     if (debug)
     {

@@ -42,13 +42,13 @@ SourceFiles
 // MediPack
 #include <medi/medi.hpp>
 #include <codi.hpp>
-#include <codi/externals/codiMpiTypes.hpp>
+#include <codi/tools/mpi/codiMpiTypes.hpp>
 using namespace medi;
 #ifdef CODI_AD_FORWARD
-using MpiTypes = CoDiMpiTypes<codi::RealForward>;
+using MpiTypes = codi::CoDiMpiTypes<codi::RealForward>;
 #endif
 #ifdef CODI_AD_REVERSE
-using MpiTypes = CoDiMpiTypes<codi::RealReverse>;
+using MpiTypes = codi::CoDiMpiTypes<codi::RealReverse>;
 #endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

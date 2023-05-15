@@ -41,7 +41,7 @@ SourceFiles
 // MediPack
 #include <medi/medi.hpp>
 #include <codi.hpp>
-#include <codi/externals/codiMpiTypes.hpp>
+#include <codi/tools/mpi/codiMpiTypes.hpp>
 using namespace medi;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
