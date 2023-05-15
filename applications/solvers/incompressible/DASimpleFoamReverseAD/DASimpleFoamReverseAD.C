@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 
     // setup AD inputs
     pointField meshPoints = mesh.points();
-    codi::RealReverse::TapeType& tape = codi::RealReverse::getGlobalTape();
+    codi::RealReverse::Tape& tape = codi::RealReverse::getTape();
     tape.setActive();
     forAll(meshPoints, i)
     {
