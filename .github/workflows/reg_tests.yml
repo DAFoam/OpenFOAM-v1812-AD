@@ -10,7 +10,7 @@ env:
 jobs:
 
   regresstion_tests:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     name: Regression tests
     steps:
     - uses: actions/checkout@v2
