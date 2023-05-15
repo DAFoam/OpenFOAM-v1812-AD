@@ -1,11 +1,11 @@
 /*
  * CoDiPack, a Code Differentiation Package
  *
- * Copyright (C) 2015-2020 Chair for Scientific Computing (SciComp), TU Kaiserslautern
+ * Copyright (C) 2015-2023 Chair for Scientific Computing (SciComp), University of Kaiserslautern-Landau
  * Homepage: http://www.scicomp.uni-kl.de
  * Contact:  Prof. Nicolas R. Gauger (codi@scicomp.uni-kl.de)
  *
- * Lead developers: Max Sagebaum, Tim Albring (SciComp, TU Kaiserslautern)
+ * Lead developers: Max Sagebaum, Johannes Blühdorn (SciComp, University of Kaiserslautern-Landau)
  *
  * This file is part of CoDiPack (http://www.scicomp.uni-kl.de/software/codi).
  *
@@ -23,91 +23,77 @@
  * General Public License along with CoDiPack.
  * If not, see <http://www.gnu.org/licenses/>.
  *
+ * For other licensing options please contact us.
+ *
  * Authors:
- *  - SciComp, TU Kaiserslautern:
- *     Max Sagebaum
- *     Tim Albring
- *     Johannes Blühdorn
+ *  - SciComp, University of Kaiserslautern-Landau:
+ *    - Max Sagebaum
+ *    - Johannes Blühdorn
+ *    - Former members:
+ *      - Tim Albring
  */
-
-
 #pragma once
 
-#include "../configure.h"
-#include "../exceptions.hpp"
-#include "../gradientTraits.hpp"
+#include "../config.h"
+#include "../expressions/lhsExpressionInterface.hpp"
+#include "../misc/exceptions.hpp"
+#include "../traits/gradientTraits.hpp"
+#include "data/dummy.hpp"
 #include "data/jacobian.hpp"
 #include "data/staticDummy.hpp"
 
-/**
- * @brief Global namespace for CoDiPack - Code Differentiation Package
- */
+/** \copydoc codi::Namespace */
 namespace codi {
 
   /**
-   * @brief Basic algorithms for tape evaluation in CoDiPack
+   * @brief Basic algorithms for tape evaluation in CoDiPack.
    *
    * This class provides algorithms for:
    *  - Jacobian assembly
    *  - Hessian assembly
    *
-   * All algorithms try to make the best choice for the evaluation mode, either forward or reverse. Which mode is
-   * selected can be get in advance with the method Algorithms::getEvaluationChoice.
+   * All algorithms try to make the best choice for the evaluation mode depending on the number of inputs and outputs,
+   * either forward or reverse. Which mode is selected can be queried in advance with the method
+   * Algorithms::getEvaluationChoice.
    *
-   * \section FunctionDefinition Mathematical definitions of variables
+   * See \ref sec_namingConventions for the naming conventions.
    *
-   * The function is defined by:
-   *  \f[ y = f(x) \f]
-   * where \f$ x \in \R^n \f$ is the input vector with the size \f$ n \f$ and \f$y \in \R^m \f$ is the output vector
-   * with the size \f$ m \f$
+   * Hessians have to implement the HessianInterface and Jacobians have to implement the JacobianInterface.
    *
-   * The Jacobian of \f$ f \f$ is defined by:
-   *  \f[ J = \frac{\d f}{\d x} \in \R^{m \times n} \f]
-   * The number of rows (\f$ m \f$) represents the number of output variables and the number of columns (\f$ n \f$)
-   * represents the number of input variable. The derivative for the i-th output with respect to the j-th input is
-   * represented by \f$ J_{i,j} \f$.
-   *
-   * The Jacobian of \f$ f \f$ is defined by:
-   *  \f[ H = \frac{\d^2 f}{\d^2 x} \in \R^{m \times n \times n} \f]
-   * The first dimension (\f$ m \f$) represents the number of output variables, the second and third dimension (\f$ n \f$) represents the
-   * first and second derivative with respect to the input variables.
-   * The second derivative for the i-th output with respect to the j-th and k-th input is
-   * represented by \f$ H_{i,j,k} \f$.
-   *
-   * @tparam CoDiType      An ActiveReal type that has a tape which implements the ReverseTapeInterface
+   * @tparam T_Type  An ActiveReal type that has a tape which implements the ReverseTapeInterface
    * @tparam ActiveChecks  If activity checks for the seeding of gradient data should be performed. [Default: true]
    */
-  template<typename CoDiType, bool ActiveChecks = true>
+  template<typename T_Type, bool T_ActiveChecks = true>
   struct Algorithms {
+    public:
 
-      using Tape = typename CoDiType::TapeType; /**< Tape type of the active real*/
-      using Position = typename Tape::Position; /**< Position type of the tape */
-      using Real = typename CoDiType::Real; /**< Inner type of the active real */
-      using GradientData = typename CoDiType::GradientData; /**< Gradient data (identifier) of the tape */
-      using GradientValue = typename CoDiType::GradientValue; /**< Gradient value type. */
+      /// See Algorithms.
+      using Type = CODI_DD(T_Type, CODI_DEFAULT_LHS_EXPRESSION);
 
-      using GT = GradientValueTraits<GradientValue>; /**< Traits for the gradient value type. */
+      static bool constexpr ActiveChecks = T_ActiveChecks;  ///< See Algorithms.
 
-      /**
-       * @brief Enumeration for the possible evaluation choices of a tape.
-       */
+      using Tape = typename Type::Tape;              ///< See LhsExpressionInterface.
+      using Position = typename Tape::Position;      ///< See LhsExpressionInterface.
+      using Real = typename Type::Real;              ///< See LhsExpressionInterface.
+      using Identifier = typename Type::Identifier;  ///< See LhsExpressionInterface.
+      using Gradient = typename Type::Gradient;      ///< See LhsExpressionInterface.
+
+      using GT = GradientTraits::TraitsImplementation<Gradient>;  ///< Shortcut for traits of gradient.
+
+      /// See GradientAccessTapeInterface::ResizingPolicy.
+      using ResizingPolicy = typename GradientAccessTapeInterface<Gradient, Identifier>::ResizingPolicy;
+
+      /// Evaluation modes for the derivative computation.
       enum class EvaluationType {
-          Forward,
-          Reverse
+        Forward,
+        Reverse
       };
 
-      /**
-       * @brief Which path the algorithm will select for the evaluation.
-       *
-       * If the number of inputs are smaller than the outputs a forward evaluation will be chosen. Otherwise a
-       * reverse evaluation.
-       *
-       * @param[in]  inputs  Number of inputs (n)
-       * @param[in] outputs  Number of outputs (m)
-       * @return
-       */
+      /// Returns the preferred evaluation mode depending on the number of inputs and outputs.
+      /// If the number of inputs is smaller than the number of outputs, a forward evaluation will be chosen.
+      /// Otherwise, a reverse evaluation is preferred.
       static CODI_INLINE EvaluationType getEvaluationChoice(size_t const inputs, size_t const outputs) {
-        if(inputs <= outputs) {
+        if (inputs <= outputs) {
           return EvaluationType::Forward;
         } else {
           return EvaluationType::Reverse;
@@ -117,166 +103,166 @@ namespace codi {
       /**
        * @brief Compute the Jacobian with multiple tape sweeps.
        *
-       * It has to hold start < end
+       * The following prerequisites must be met.
+       * - It must hold start < end.
+       * - The gradient for every identifier used in the tape section [start, end] is seeded with zero.
+       * - Every input to the tape section [start, end] that is a computational dependency of the specified outputs is
+       *   contained in the specified inputs.
        *
-       * The algorithm expects that no gradient data has been seeded with non zero values.
-       * After the return the algorithm ensures that all gradient data have zero values.
+       * The function has the following behavior.
+       * - After return, the gradient for every input identifier, output identifier and all identifiers used in the tape
+       *   section [start, end] on a left hand side are zero.
+       * - If an output identifier is specified multiple times
+       *   - and the forward mode is used, every row of the Jacobian corresponding to that output identifier except for
+       *     the last one is zero.
+       *   - and the reverse mode is used, every row of the Jacobian corresponding to that output identifier is
+       *     identical.
+       * - If an input identifier is specified multiple times
+       *   - and the forward mode is used, every column of the Jacobian corresponding to that input identifier is
+       *     identical.
+       *   - and the reverse mode is used, every column of the Jacobian corresponding to that input identifier except
+       *     for the first one is zero.
        *
-       * @param[in,out]   tape  The tape with the recorded information for the derivative computation.
-       * @param[in]      start  Starting position of the derivative information on the tape.
-       * @param[in]        end  Ending position of the derivative information on the tape.
-       * @param[in]      input  The gradient information for the input variables of f.
-       * @param[in]  inputSize  The size of the input array.
-       * @param[in]     output  The gradient information for the output variables of f.
-       * @param[in] outputSize  The size of the output array.
-       * @param[in,out]    jac  The Jacobian where the computed derivative information is stored.
+       * The following usage is recommended.
+       * - There should be no duplicate identifiers among the specified inputs.
+       * - There should be no duplicate identifiers among the specified outputs.
        *
-       * @tparam           Jac  Type of the Jacobian matrix. This type needs to implement the interface of the
-       *                          Jacobian class.
-       * @tparam usePreAccEval  If the specialized preaccumulation evaluation routines should be used.
-       *                          For short tapes the specialized functions should be used. For large tapes the regular
-       *                          functions are more performant.
+       * The following usage is allowed.
+       * - The specified input identifiers and output identifiers need not be disjoint.
+       *
+       * The algorithm conforms with the mechanism for mutual exclusion of adjoint vector usage and adjoint vector
+       * reallocation and can therefore be applied in multithreaded taping.
+       *
+       * #### Parameters
+       * [in,out] __jac__  Has to implement JacobianInterface.
        */
-      template<typename Jac, bool usePreAccEval = true>
-      static CODI_INLINE void computeJacobian(
-          Tape& tape, Position const& start, Position const& end,
-          GradientData const * input, size_t const inputSize,
-          GradientData const * output, size_t const outputSize,
-          Jac& jac)
-      {
-        constexpr size_t gradDim = GT::getVectorSize();
+      template<typename Jac, bool keepState = true>
+      static CODI_INLINE void computeJacobian(Tape& tape, Position const& start, Position const& end,
+                                              Identifier const* input, size_t const inputSize, Identifier const* output,
+                                              size_t const outputSize, Jac& jac) {
+        size_t constexpr gradDim = GT::dim;
+
+        // Resize up front for subsequent gradient access without bounds checking and implicit resizing.
+        tape.resizeAdjointVector();
 
         EvaluationType evalType = getEvaluationChoice(inputSize, outputSize);
-        if(EvaluationType::Forward == evalType) {
+        if (EvaluationType::Forward == evalType) {
+          for (size_t j = 0; j < inputSize; j += gradDim) {
+            // Declare adjoint vector usage, at the same time avoid bounds checking and implicit resizing.
+            tape.beginUseAdjointVector();
+            setGradientOnIdentifier(tape, j, input, inputSize, typename GT::Real(1.0),
+                                    ResizingPolicy::NoBoundsChecking);
+            tape.endUseAdjointVector();
 
-          for(size_t j = 0; j < inputSize; j += gradDim) {
-            setGradientOnGradientData(tape, j, input, inputSize, typename GT::Data(1.0));
-
-            if(usePreAccEval) {
-              tape.evaluateForwardPreacc(start, end);
+            if (keepState) {
+              tape.evaluateForwardKeepState(start, end);
             } else {
               tape.evaluateForward(start, end);
             }
 
-            for(size_t i = 0; i < outputSize; i += 1) {
-              for(size_t curDim = 0; curDim < gradDim && j + curDim < inputSize; curDim += 1) {
-                jac(i,j + curDim) = GT::at(tape.getGradient(output[i]), curDim);
+            // Declare adjoint vector usage, at the same time avoid bounds checking and implicit resizing.
+            tape.beginUseAdjointVector();
+            for (size_t i = 0; i < outputSize; i += 1) {
+              for (size_t curDim = 0; curDim < gradDim && j + curDim < inputSize; curDim += 1) {
+                jac(outputSize - i - 1, j + curDim) = GT::at(tape.getGradient(output[outputSize - i - 1]), curDim);
+                if (Gradient() != output[i]) {
+                  GT::at(tape.gradient(output[outputSize - i - 1], ResizingPolicy::NoBoundsChecking), curDim) =
+                      typename GT::Real();
+                }
               }
             }
 
-            setGradientOnGradientData(tape, j, input, inputSize, typename GT::Data());
+            setGradientOnIdentifier(tape, j, input, inputSize, typename GT::Real(), ResizingPolicy::NoBoundsChecking);
+            tape.endUseAdjointVector();
           }
 
           tape.clearAdjoints(end, start);
 
-        } else if(EvaluationType::Reverse == evalType) {
+        } else if (EvaluationType::Reverse == evalType) {
+          for (size_t i = 0; i < outputSize; i += gradDim) {
+            // Declare adjoint vector usage, at the same time avoid bounds checking and implicit resizing.
+            tape.beginUseAdjointVector();
+            setGradientOnIdentifier(tape, i, output, outputSize, typename GT::Real(1.0),
+                                    ResizingPolicy::NoBoundsChecking);
+            tape.endUseAdjointVector();
 
-          for(size_t i = 0; i < outputSize; i += gradDim) {
-            setGradientOnGradientData(tape, i, output, outputSize, typename GT::Data(1.0));
-
-            if(usePreAccEval) {
-              tape.evaluatePreacc(end, start);
+            if (keepState) {
+              tape.evaluateKeepState(end, start);
             } else {
               tape.evaluate(end, start);
             }
 
-            for(size_t j = 0; j < inputSize; j += 1) {
-              for(size_t curDim = 0; curDim < gradDim && i + curDim < outputSize; curDim += 1) {
-                jac(i + curDim,j) = GT::at(tape.getGradient(input[j]), curDim);
-                GT::at(tape.gradient(input[j]), curDim) = typename GT::Data();
+            // Declare adjoint vector usage, at the same time avoid bounds checking and implicit resizing.
+            tape.beginUseAdjointVector();
+            for (size_t j = 0; j < inputSize; j += 1) {
+              for (size_t curDim = 0; curDim < gradDim && i + curDim < outputSize; curDim += 1) {
+                jac(i + curDim, j) = GT::at(tape.getGradient(input[j]), curDim);
+                GT::at(tape.gradient(input[j], ResizingPolicy::NoBoundsChecking), curDim) = typename GT::Real();
               }
             }
 
-            setGradientOnGradientData(tape, i, output, outputSize, typename GT::Data());
+            setGradientOnIdentifier(tape, i, output, outputSize, typename GT::Real(), ResizingPolicy::NoBoundsChecking);
+            tape.endUseAdjointVector();
 
-            if(!ZeroAdjointReverse) {
+            if (!Config::ReversalZeroesAdjoints) {
               tape.clearAdjoints(end, start);
             }
           }
         } else {
-          CODI_EXCEPTION("Evaluation mode not implemented for preaccumulation. Mode is: %d.", (int)evalType);
+          CODI_EXCEPTION("Evaluation mode not implemented. Mode is: %d.", (int)evalType);
         }
       }
 
-      /**
-       * @brief Compute the Jacobian with multiple tape sweeps of the global tape.
-       *
-       * This method calls the more generalized version computeJacobian(Tape& tape, Position const& start, Position const& end, GradientData const * input, size_t const inputSize, GradientData const * output, size_t const outputSize, Jac& jac)
-       * It has to hold start < end
-       *
-       * @param[in]      start  Starting position of the derivative information on the tape.
-       * @param[in]        end  Ending position of the derivative information on the tape.
-       * @param[in]      input  The gradient information for the input variables of f.
-       * @param[in]  inputSize  The size of the input array.
-       * @param[in]     output  The gradient information for the output variables of f.
-       * @param[in] outputSize  The size of the output array.
-       * @param[in,out]    jac  The Jacobian where the computed derivative information is stored.
-       *
-       * @tparam           Jac  Type of the Jacobian matrix. This type needs to implement the interface of the
-       *                          Jacobian class.
-       */
+      // clang-format off
+      /// \copybrief computeJacobian(Tape&, Position const&, Position const&, Identifier const*, size_t const, Identifier const*, size_t const, Jac& jac)
+      /// \n This method uses the global tape for the Jacobian evaluation.
+      /// \copydetails computeJacobian(Tape&, Position const&, Position const&, Identifier const*, size_t const, Identifier const*, size_t const, Jac& jac)
+      // clang-format on
       template<typename Jac>
-      static CODI_INLINE void computeJacobian(
-          Position const& start, Position const& end,
-          GradientData const * input, size_t const inputSize,
-          GradientData const * output, size_t const outputSize,
-          Jac& jac)
-      {
-        computeJacobian(CoDiType::getGlobalTape(), start, end, input, inputSize, output, outputSize, jac);
+      static CODI_INLINE void computeJacobian(Position const& start, Position const& end, Identifier const* input,
+                                              size_t const inputSize, Identifier const* output, size_t const outputSize,
+                                              Jac& jac) {
+        computeJacobian(Type::getTape(), start, end, input, inputSize, output, outputSize, jac);
       }
 
       /**
        * @brief Compute the Hessian with multiple tape sweeps.
        *
-       * This algorithm is only available if the tape implements the ReversePrimalValueTapeInterface. Since it performs
-       * repeated primal evaluations to change original seeding of the tape. It also requires that the tape can compute
+       * This algorithm is only available if the tape implements the PrimalEvaluationTapeInterface. It performs repeated
+       * primal evaluations to change the original seeding of the tape. It also requires that the tape can compute
        * second order derivatives via a nested first order forward type.
        *
-       * The algorithm expects that no gradient data has been seeded with non zero values.
-       * It also expects that the current tape state was just recorded. This is, the primal values in the tape represent
+       * The algorithm expects that no gradients have been seeded with nonzero values.
+       * It also expects that the current tape state was just recorded, that is, the primal values in the tape represent
        * the output values of f.
-       * After the return the algorithm ensures that all gradient data have zero values.
+       * At return, it is ensured that all gradients have zero values.
        *
        * It has to hold start < end.
        *
-       * @param[in,out]   tape  The tape with the recorded information for the derivative computation.
-       * @param[in]      start  Starting position of the derivative information on the tape.
-       * @param[in]        end  Ending position of the derivative information on the tape.
-       * @param[in]      input  The gradient information for the input variables of f.
-       * @param[in]  inputSize  The size of the input array.
-       * @param[in]     output  The gradient information for the output variables of f.
-       * @param[in] outputSize  The size of the output array.
-       * @param[in,out]    hes  The Hessian where the computed derivative information is stored.
-       * @param[in,out]    jac  Optional Jacobian matrix. If set also the gradient values are extracted during the
-       *                          Hessian evaluation.
-       *
-       * @tparam           Hes  Type of the Hessian matrix. This type needs to implement the interface of the
-       *                          Hessian class.
-       * @tparam           Jac  Type of the Jacobian matrix. The type needs to implement the interface of the
-       *                          Jacobian class.
+       * #### Parameters
+       * [in,out] __hes__  Has to implement HessianInterface. \n
+       * [in,out] __jac__  Optional: Jacobian values are also extracted. Has to implement JacobianInterface.
        */
       template<typename Hes, typename Jac = DummyJacobian>
-      static CODI_INLINE void computeHessianPrimalValueTape(
-          Tape& tape, Position const& start, Position const& end,
-          GradientData const * input, size_t const inputSize,
-          GradientData const * output, size_t const outputSize,
-          Hes& hes, Jac& jac = StaticDummy<DummyJacobian>::dummy)
-      {
+      static CODI_INLINE void computeHessianPrimalValueTape(Tape& tape, Position const& start, Position const& end,
+                                                            Identifier const* input, size_t const inputSize,
+                                                            Identifier const* output, size_t const outputSize, Hes& hes,
+                                                            Jac& jac = StaticDummy<DummyJacobian>::dummy) {
         EvaluationType evalType = getEvaluationChoice(inputSize, outputSize);
-        if(EvaluationType::Forward == evalType) {
+        if (EvaluationType::Forward == evalType) {
           computeHessianPrimalValueTapeForward(tape, start, end, input, inputSize, output, outputSize, hes, jac);
-        } else if(EvaluationType::Reverse == evalType) {
+        } else if (EvaluationType::Reverse == evalType) {
           computeHessianPrimalValueTapeReverse(tape, start, end, input, inputSize, output, outputSize, hes, jac);
         } else {
-          CODI_EXCEPTION("Evaluation mode not implemented for preaccumulation. Mode is: %d.", (int)evalType);
+          CODI_EXCEPTION("Evaluation mode not implemented. Mode is: %d.", (int)evalType);
         }
       }
 
       /**
-       * @brief Forward version of the hessian computation.
+       * @brief Forward version of the Hessian computation.
        *
        * Two input variables are seeded with gradient information and then a forward evaluation is performed.
-       * Before each evaluation the primal values of the tape are reverted to the start position.
+       * Before each evaluation, the primal values of the tape are reverted to the start position.
        *
        * The algorithm exploits symmetry and will perform n * (n + 1) / 2 forward tape evaluation. Vector gradient
        * values for the first and second order derivatives will reduce the tape evaluations accordingly.
@@ -284,115 +270,115 @@ namespace codi {
        * \copydetails computeHessianPrimalValueTape
        */
       template<typename Hes, typename Jac = DummyJacobian>
-      static CODI_INLINE void computeHessianPrimalValueTapeForward(
-          Tape& tape, Position const& start, Position const& end,
-          GradientData const * input, size_t const inputSize,
-          GradientData const * output, size_t const outputSize,
-          Hes& hes, Jac& jac = StaticDummy<DummyJacobian>::dummy)
-      {
+      static CODI_INLINE void computeHessianPrimalValueTapeForward(Tape& tape, Position const& start,
+                                                                   Position const& end, Identifier const* input,
+                                                                   size_t const inputSize, Identifier const* output,
+                                                                   size_t const outputSize, Hes& hes,
+                                                                   Jac& jac = StaticDummy<DummyJacobian>::dummy) {
         using GT1st = GT;
-        constexpr size_t gradDim1st = GT1st::getVectorSize();
-        using GT2nd = GradientValueTraits<typename Real::GradientValue>;
-        constexpr size_t gradDim2nd = GT2nd::getVectorSize();
+        size_t constexpr gradDim1st = GT1st::dim;
+        using GT2nd = GradientTraits::TraitsImplementation<CODI_DD(typename Real::Gradient, double)>;
+        size_t constexpr gradDim2nd = GT2nd::dim;
 
-        // Assume tape that was just recorded
+        // Assume that the tape was just recorded.
         tape.revertPrimals(start);
 
-        for(size_t j = 0; j < inputSize; j += gradDim2nd) {
-          setGradient2ndOnGradientData(tape, j, input, inputSize, typename GT2nd::Data(1.0));
+        for (size_t j = 0; j < inputSize; j += gradDim2nd) {
+          setGradient2ndOnIdentifier(tape, j, input, inputSize, typename GT2nd::Real(1.0));
 
-          // The k = j init is no problem, it will evaluated slightly more elements around the diagonal
-          for(size_t k = j; k < inputSize; k += gradDim1st) {
-            setGradientOnGradientData(tape, k, input, inputSize, typename GT::Data(1.0));
+          // The k = j init is no problem, it will evaluate slightly more elements around the diagonal.
+          for (size_t k = j; k < inputSize; k += gradDim1st) {
+            setGradientOnIdentifier(tape, k, input, inputSize, typename GT1st::Real(1.0));
 
             tape.evaluateForward(start, end);
 
-            for(size_t i = 0; i < outputSize; i += 1) {
-              for(size_t vecPos1st = 0; vecPos1st < gradDim1st && k + vecPos1st < inputSize; vecPos1st += 1) {
-                for(size_t vecPos2nd = 0; vecPos2nd < gradDim2nd && j + vecPos2nd < inputSize; vecPos2nd += 1) {
-                  hes(i, j + vecPos2nd, k + vecPos1st) = GT2nd::at(GT1st::at(tape.getGradient(output[i]), vecPos1st).gradient(), vecPos2nd);
-                  hes(i, k + vecPos1st, j + vecPos2nd) = hes(i, j + vecPos2nd, k + vecPos1st); // symmetry
+            for (size_t i = 0; i < outputSize; i += 1) {
+              for (size_t vecPos1st = 0; vecPos1st < gradDim1st && k + vecPos1st < inputSize; vecPos1st += 1) {
+                for (size_t vecPos2nd = 0; vecPos2nd < gradDim2nd && j + vecPos2nd < inputSize; vecPos2nd += 1) {
+                  hes(i, j + vecPos2nd, k + vecPos1st) =
+                      GT2nd::at(GT1st::at(tape.getGradient(output[i]), vecPos1st).gradient(), vecPos2nd);
+                  hes(i, k + vecPos1st, j + vecPos2nd) = hes(i, j + vecPos2nd, k + vecPos1st);  // Symmetry
                 }
               }
 
-              if(j == 0) {
-                for(size_t vecPos = 0; vecPos < gradDim1st && k + vecPos < inputSize; vecPos += 1) {
+              if (j == 0) {
+                for (size_t vecPos = 0; vecPos < gradDim1st && k + vecPos < inputSize; vecPos += 1) {
                   jac(i, k + vecPos) = GT1st::at(tape.getGradient(output[i]), vecPos).value();
                 }
               }
             }
 
-            setGradientOnGradientData(tape, k, input, inputSize, typename GT::Data());
+            setGradientOnIdentifier(tape, k, input, inputSize, typename GT1st::Real());
           }
 
-          setGradient2ndOnGradientData(tape, j, input, inputSize, typename GT2nd::Data());
+          setGradient2ndOnIdentifier(tape, j, input, inputSize, typename GT2nd::Real());
         }
       }
 
       /**
-       * @brief Reverse version of the hessian computation.
+       * @brief Reverse version of the Hessian computation.
        *
        * One input variable is seeded with gradient information and then a forward evaluation is performed.
-       * Afterwards one output variable is seeded with gradient information and then a reverse evaluation is performed.
+       * Afterwards, one output variable is seeded with gradient information and then a reverse evaluation is performed.
        *
-       * The algorithm can not exploit symmetry and will perform n forward evaluation and n * m reverse evaluations.
+       * The algorithm cannot exploit symmetry and will perform n forward evaluation and n * m reverse evaluations.
        * Vector gradient values for the first and second order derivatives will reduce the tape evaluations accordingly.
        *
        * \copydetails computeHessianPrimalValueTape
        */
       template<typename Hes, typename Jac = DummyJacobian>
-      static CODI_INLINE void computeHessianPrimalValueTapeReverse(
-          Tape& tape, Position const& start, Position const& end,
-          GradientData const * input, size_t const inputSize,
-          GradientData const * output, size_t const outputSize,
-          Hes& hes, Jac& jac = StaticDummy<DummyJacobian>::dummy)
-      {
+      static CODI_INLINE void computeHessianPrimalValueTapeReverse(Tape& tape, Position const& start,
+                                                                   Position const& end, Identifier const* input,
+                                                                   size_t const inputSize, Identifier const* output,
+                                                                   size_t const outputSize, Hes& hes,
+                                                                   Jac& jac = StaticDummy<DummyJacobian>::dummy) {
         using GT1st = GT;
-        constexpr size_t gradDim1st = GT1st::getVectorSize();
-        using GT2nd = GradientValueTraits<typename Real::GradientValue>;
-        constexpr size_t gradDim2nd = GT2nd::getVectorSize();
+        size_t constexpr gradDim1st = GT1st::dim;
+        using GT2nd = GradientTraits::TraitsImplementation<CODI_DD(typename Real::Gradient, double)>;
+        size_t constexpr gradDim2nd = GT2nd::dim;
 
-        // Assume tape that was just recorded
+        // Assume that the tape was just recorded.
         tape.revertPrimals(start);
 
-        for(size_t j = 0; j < inputSize; j += gradDim2nd) {
-          setGradient2ndOnGradientData(tape, j, input, inputSize, typename GT2nd::Data(1.0));
+        for (size_t j = 0; j < inputSize; j += gradDim2nd) {
+          setGradient2ndOnIdentifier(tape, j, input, inputSize, typename GT2nd::Real(1.0));
 
-          // propagate the new derivative information
+          // Propagate the new derivative information.
           tape.evaluatePrimal(start, end);
 
-          for(size_t i = 0; i < outputSize; i += gradDim1st) {
-            setGradientOnGradientData(tape, i, output, outputSize, typename GT::Data(1.0));
+          for (size_t i = 0; i < outputSize; i += gradDim1st) {
+            setGradientOnIdentifier(tape, i, output, outputSize, typename GT1st::Real(1.0));
 
-            // propagate the derivatives backward for second order derivatives
-            tape.evaluatePreacc(end, start);
+            // Propagate the derivatives backward for second order derivatives.
+            tape.evaluateKeepState(end, start);
 
-            for(size_t k = 0; k < inputSize; k += 1) {
-              for(size_t vecPos1st = 0; vecPos1st < gradDim1st && i + vecPos1st < outputSize; vecPos1st += 1) {
-                for(size_t vecPos2nd = 0; vecPos2nd < gradDim2nd && j + vecPos2nd < inputSize; vecPos2nd += 1) {
-                  hes(i + vecPos1st, j + vecPos2nd, k) = GT2nd::at(GT1st::at(tape.gradient(input[k]), vecPos1st).gradient(), vecPos2nd);
+            for (size_t k = 0; k < inputSize; k += 1) {
+              for (size_t vecPos1st = 0; vecPos1st < gradDim1st && i + vecPos1st < outputSize; vecPos1st += 1) {
+                for (size_t vecPos2nd = 0; vecPos2nd < gradDim2nd && j + vecPos2nd < inputSize; vecPos2nd += 1) {
+                  hes(i + vecPos1st, j + vecPos2nd, k) =
+                      GT2nd::at(GT1st::at(tape.gradient(input[k]), vecPos1st).gradient(), vecPos2nd);
                 }
               }
 
-              if(j == 0) {
-                for(size_t vecPos1st = 0; vecPos1st < gradDim1st && i + vecPos1st < outputSize; vecPos1st += 1) {
+              if (j == 0) {
+                for (size_t vecPos1st = 0; vecPos1st < gradDim1st && i + vecPos1st < outputSize; vecPos1st += 1) {
                   jac(i + vecPos1st, k) = GT1st::at(tape.getGradient(input[k]), vecPos1st).value();
                 }
               }
 
-              tape.gradient(input[k]) = GradientValue();
+              tape.gradient(input[k]) = Gradient();
             }
 
-            setGradientOnGradientData(tape, i, output, outputSize, typename GT::Data());
+            setGradientOnIdentifier(tape, i, output, outputSize, typename GT1st::Real());
 
-            if(!ZeroAdjointReverse) {
+            if (!Config::ReversalZeroesAdjoints) {
               tape.clearAdjoints(end, start);
             }
           }
 
-          setGradient2ndOnGradientData(tape, j, input, inputSize, typename GT2nd::Data());
+          setGradient2ndOnIdentifier(tape, j, input, inputSize, typename GT2nd::Real());
 
-          if(j + gradDim2nd < inputSize) {
+          if (j + gradDim2nd < inputSize) {
             tape.revertPrimals(start);
           }
         }
@@ -409,98 +395,93 @@ namespace codi {
        *
        * It has to hold start < end.
        *
-       * @param[in]           func  The function for the recording of the tape. It needs to be a function object that
-       *                              will accept the call: func(input, output)
-       * @param[in,out]      input  The input values for the function. The gradient seeding will be changed on these values.
-       * @param[in,out]     output  The output values for the function. They will be overwritten in a call to func.
-       * @param[in,out]    hes  The Hessian where the computed derivative information is stored.
-       * @param[in,out]    jac  Optional Jacobian matrix. If set also the gradient values are extracted during the
-       *                          Hessian evaluation.
-       *
-       * @tparam           Hes  Type of the Hessian matrix. This type needs to implement the interface of the
-       *                          Hessian class.
-       * @tparam           Jac  Type of the Jacobian matrix. The type needs to implement the interface of the
-       *                          Jacobian class.
+       * #### Parameters
+       * [in]     __func__  The function for the recording of the tape. It needs to be a function object that
+       *                         will accept the call: func(input, output) \n
+       * [in,out] __hes__  Has to implement HessianInterface. \n
+       * [in,out] __jac__  Optional: Jacobian values are also extracted. Has to implement JacobianInterface.
        */
       template<typename Func, typename VecIn, typename VecOut, typename Hes, typename Jac = DummyJacobian>
-      static CODI_INLINE void computeHessian(Func func, VecIn& input, VecOut& output, Hes& hes, Jac& jac = StaticDummy<DummyJacobian>::dummy) {
+      static CODI_INLINE void computeHessian(Func func, VecIn& input, VecOut& output, Hes& hes,
+                                             Jac& jac = StaticDummy<DummyJacobian>::dummy) {
         EvaluationType evalType = getEvaluationChoice(input.size(), output.size());
-        if(EvaluationType::Forward == evalType) {
+        if (EvaluationType::Forward == evalType) {
           computeHessianForward(func, input, output, hes, jac);
-        } else if(EvaluationType::Reverse == evalType) {
+        } else if (EvaluationType::Reverse == evalType) {
           computeHessianReverse(func, input, output, hes, jac);
         } else {
-          CODI_EXCEPTION("Evaluation mode not implemented for preaccumulation. Mode is: %d.", (int)evalType);
+          CODI_EXCEPTION("Evaluation mode not implemented. Mode is: %d.", (int)evalType);
         }
       }
 
       /**
-       * @brief Forward version of the hessian computation with a function object.
+       * @brief Forward version of the Hessian computation with a function object.
        *
        * One input variable is seeded with gradient information and then a tape is recorded.
-       * Afterwards a second input variable is seeded with gradient information and the tape is evaluated multiple times in
-       * the forward mode.
-       * Before each recording the global tape is reset.
+       * Afterwards a second input variable is seeded with gradient information and the tape is evaluated multiple times
+       * in the forward mode. Before each recording the global tape is reset.
        *
-       * The algorithm will record n tapes and exploits symmetry for the reverse evaluation which will result in
+       * The algorithm will record n tapes and exploits symmetry for the forward evaluation which will result in
        * n * (n + 1) / 2 forward tape evaluations. Vector gradient values for the first and second order derivatives
        * will reduce the tape evaluations accordingly.
        *
        * \copydetails computeHessian
        */
       template<typename Func, typename VecIn, typename VecOut, typename Hes, typename Jac = DummyJacobian>
-      static CODI_INLINE void computeHessianForward(Func func, VecIn& input, VecOut& output, Hes& hes, Jac& jac = StaticDummy<DummyJacobian>::dummy) {
+      static CODI_INLINE void computeHessianForward(Func func, VecIn& input, VecOut& output, Hes& hes,
+                                                    Jac& jac = StaticDummy<DummyJacobian>::dummy) {
         using GT1st = GT;
-        constexpr size_t gradDim1st = GT1st::getVectorSize();
-        using GT2nd = GradientValueTraits<typename Real::GradientValue>;
-        constexpr size_t gradDim2nd = GT2nd::getVectorSize();
+        size_t constexpr gradDim1st = GT1st::dim;
+        using GT2nd = GradientTraits::TraitsImplementation<CODI_DD(typename Real::Gradient, double)>;
+        size_t constexpr gradDim2nd = GT2nd::dim;
 
-        Tape& tape = CoDiType::getGlobalTape();
+        Tape& tape = Type::getTape();
 
-        for(size_t j = 0; j < input.size(); j += gradDim2nd) {
-          setGradient2ndOnCoDiValue(j, input.data(), input.size(), typename GT2nd::Data(1.0));
+        for (size_t j = 0; j < input.size(); j += gradDim2nd) {
+          setGradient2ndOnCoDiValue(j, input.data(), input.size(), typename GT2nd::Real(1.0));
 
-          // propagate the new derivative information
+          // Propagate the new derivative information.
           recordTape(func, input, output);
 
-          // The k = j init is no problem, it will evaluated slightly more elements around the diagonal
-          for(size_t k = j; k < input.size(); k += gradDim1st) {
-            setGradientOnCoDiValue(tape, k, input.data(), input.size(), typename GT::Data(1.0));
+          // The k = j init is no problem, it will evaluate slightly more elements around the diagonal.
+          for (size_t k = j; k < input.size(); k += gradDim1st) {
+            setGradientOnCoDiValue(tape, k, input.data(), input.size(), typename GT1st::Real(1.0));
 
-            // propagate the derivatives forward for second order derivatives
-            tape.evaluateForwardPreacc(tape.getZeroPosition(), tape.getPosition());
+            // Propagate the derivatives forward for second order derivatives.
+            tape.evaluateForwardKeepState(tape.getZeroPosition(), tape.getPosition());
 
-            for(size_t i = 0; i < output.size(); i += 1) {
-              for(size_t vecPos1st = 0; vecPos1st < gradDim1st && k + vecPos1st < input.size(); vecPos1st += 1) {
-                for(size_t vecPos2nd = 0; vecPos2nd < gradDim2nd && j + vecPos2nd < input.size(); vecPos2nd += 1) {
-                  hes(i, j + vecPos2nd, k + vecPos1st) = GT2nd::at(GT1st::at(tape.getGradient(output[i].getGradientData()), vecPos1st).gradient(), vecPos2nd);
-                  hes(i, k + vecPos1st, j + vecPos2nd) = hes(i, j + vecPos2nd, k + vecPos1st); // symmetry
+            for (size_t i = 0; i < output.size(); i += 1) {
+              for (size_t vecPos1st = 0; vecPos1st < gradDim1st && k + vecPos1st < input.size(); vecPos1st += 1) {
+                for (size_t vecPos2nd = 0; vecPos2nd < gradDim2nd && j + vecPos2nd < input.size(); vecPos2nd += 1) {
+                  hes(i, j + vecPos2nd, k + vecPos1st) = GT2nd::at(
+                      GT1st::at(tape.getGradient(output[i].getIdentifier()), vecPos1st).gradient(), vecPos2nd);
+                  hes(i, k + vecPos1st, j + vecPos2nd) = hes(i, j + vecPos2nd, k + vecPos1st);  // Symmetry
                 }
               }
 
-              if(j == 0) {
-                for(size_t vecPos = 0; vecPos < gradDim1st && k + vecPos < input.size(); vecPos += 1) {
-                  jac(i, k + vecPos) = GT1st::at(tape.getGradient(output[i].getGradientData()), vecPos).value();
+              if (j == 0) {
+                for (size_t vecPos = 0; vecPos < gradDim1st && k + vecPos < input.size(); vecPos += 1) {
+                  jac(i, k + vecPos) = GT1st::at(tape.getGradient(output[i].getIdentifier()), vecPos).value();
                 }
               }
             }
 
-            setGradientOnCoDiValue(tape, k, input.data(), input.size(), typename GT::Data());
+            setGradientOnCoDiValue(tape, k, input.data(), input.size(), typename GT1st::Real());
           }
 
-          setGradient2ndOnCoDiValue(j, input.data(), input.size(), typename GT2nd::Data());
+          setGradient2ndOnCoDiValue(j, input.data(), input.size(), typename GT2nd::Real());
 
           tape.reset();
         }
       }
 
       /**
-       * @brief Reverse version of the hessian computation with a function object.
+       * @brief Reverse version of the Hessian computation with a function object.
        *
        * One input variable is seeded with gradient information and then a tape is recorded.
        * Afterwards an output variable is seeded with gradient information and the tape is evaluated once in the reverse
        * mode.
-       * Before each recording the global tape is reset.
+       * Before each recording, the global tape is reset.
        *
        * The algorithm will record n tapes and perform m * n reverse tape evaluations.
        * Vector gradient values for the first and second order derivatives will reduce the tape evaluations accordingly.
@@ -508,50 +489,52 @@ namespace codi {
        * \copydetails computeHessian
        */
       template<typename Func, typename VecIn, typename VecOut, typename Hes, typename Jac = DummyJacobian>
-      static CODI_INLINE void computeHessianReverse(Func func, VecIn& input, VecOut& output, Hes& hes, Jac& jac = StaticDummy<DummyJacobian>::dummy) {
+      static CODI_INLINE void computeHessianReverse(Func func, VecIn& input, VecOut& output, Hes& hes,
+                                                    Jac& jac = StaticDummy<DummyJacobian>::dummy) {
         using GT1st = GT;
-        constexpr size_t gradDim1st = GT1st::getVectorSize();
-        using GT2nd = GradientValueTraits<typename Real::GradientValue>;
-        constexpr size_t gradDim2nd = GT2nd::getVectorSize();
+        size_t constexpr gradDim1st = GT1st::dim;
+        using GT2nd = GradientTraits::TraitsImplementation<CODI_DD(typename Real::Gradient, double)>;
+        size_t constexpr gradDim2nd = GT2nd::dim;
 
-        Tape& tape = CoDiType::getGlobalTape();
+        Tape& tape = Type::getTape();
 
-        for(size_t j = 0; j < input.size(); j += gradDim2nd) {
-          setGradient2ndOnCoDiValue(j, input.data(), input.size(), typename GT2nd::Data(1.0));
+        for (size_t j = 0; j < input.size(); j += gradDim2nd) {
+          setGradient2ndOnCoDiValue(j, input.data(), input.size(), typename GT2nd::Real(1.0));
 
-          // propagate the new derivative information
+          // Propagate the new derivative information.
           recordTape(func, input, output);
 
-          for(size_t i = 0; i < output.size(); i += gradDim1st) {
-            setGradientOnCoDiValue(tape, i, output.data(), output.size(), typename GT::Data(1.0));
+          for (size_t i = 0; i < output.size(); i += gradDim1st) {
+            setGradientOnCoDiValue(tape, i, output.data(), output.size(), typename GT1st::Real(1.0));
 
-            // propagate the derivatives backward for second order derivatives
-            tape.evaluatePreacc(tape.getPosition(), tape.getZeroPosition());
+            // Propagate the derivatives backward for second order derivatives.
+            tape.evaluateKeepState(tape.getPosition(), tape.getZeroPosition());
 
-            for(size_t k = 0; k < input.size(); k += 1) {
-              for(size_t vecPos1st = 0; vecPos1st < gradDim1st && i + vecPos1st < output.size(); vecPos1st += 1) {
-                for(size_t vecPos2nd = 0; vecPos2nd < gradDim2nd && j + vecPos2nd < input.size(); vecPos2nd += 1) {
-                  hes(i + vecPos1st, j + vecPos2nd, k) = GT2nd::at(GT1st::at(tape.gradient(input[k].getGradientData()), vecPos1st).gradient(), vecPos2nd);
+            for (size_t k = 0; k < input.size(); k += 1) {
+              for (size_t vecPos1st = 0; vecPos1st < gradDim1st && i + vecPos1st < output.size(); vecPos1st += 1) {
+                for (size_t vecPos2nd = 0; vecPos2nd < gradDim2nd && j + vecPos2nd < input.size(); vecPos2nd += 1) {
+                  hes(i + vecPos1st, j + vecPos2nd, k) =
+                      GT2nd::at(GT1st::at(tape.gradient(input[k].getIdentifier()), vecPos1st).gradient(), vecPos2nd);
                 }
               }
 
-              if(j == 0) {
-                for(size_t vecPos1st = 0; vecPos1st < gradDim1st && i + vecPos1st < output.size(); vecPos1st += 1) {
-                  jac(i + vecPos1st, k) = GT1st::at(tape.getGradient(input[k].getGradientData()), vecPos1st).value();
+              if (j == 0) {
+                for (size_t vecPos1st = 0; vecPos1st < gradDim1st && i + vecPos1st < output.size(); vecPos1st += 1) {
+                  jac(i + vecPos1st, k) = GT1st::at(tape.getGradient(input[k].getIdentifier()), vecPos1st).value();
                 }
               }
 
-              tape.gradient(input[k].getGradientData()) = GradientValue();
+              tape.gradient(input[k].getIdentifier()) = Gradient();
             }
 
-            setGradientOnCoDiValue(tape, i, output.data(), output.size(), typename GT::Data());
+            setGradientOnCoDiValue(tape, i, output.data(), output.size(), typename GT1st::Real());
 
-            if(!ZeroAdjointReverse) {
+            if (!Config::ReversalZeroesAdjoints) {
               tape.clearAdjoints(tape.getPosition(), tape.getZeroPosition());
             }
           }
 
-          setGradient2ndOnCoDiValue(j, input.data(), input.size(), typename GT2nd::Data());
+          setGradient2ndOnCoDiValue(j, input.data(), input.size(), typename GT2nd::Real());
 
           tape.reset();
         }
@@ -560,120 +543,84 @@ namespace codi {
     private:
 
       /**
-       * @brief Set gradient values for a vector mode evaluation.
+       * @brief Sets the gradient for vector modes. Seeds the next GT::dim dimensions.
        *
-       * @param[in,out] tape  The tape on which the seeding is set.
-       * @param[in]      pos  The position in the value vector.
-       * @param[in]   values  The value vector.
-       * @param[in]     size  The size of the value vector.
-       * @param[in]    value  The value which is set as gradient information.
-       *
-       * @tparam T  The type of the provided value.
+       * Does not perform bounds checking for the gradient access.
+       * Declares usage of the adjoint vector, see DataManagementTapeInterface.
        */
       template<typename T>
-      static CODI_INLINE void setGradientOnGradientData(Tape& tape, size_t const pos, GradientData const* values, const size_t size, T value) {
-        constexpr size_t gradDim = GT::getVectorSize();
+      static CODI_INLINE void setGradientOnIdentifier(Tape& tape, size_t const pos, Identifier const* identifiers,
+                                                      size_t const size, T value,
+                                                      ResizingPolicy resizingPolicy = ResizingPolicy::CheckAndAdapt) {
+        size_t constexpr gradDim = GT::dim;
 
-        for(size_t curDim = 0; curDim < gradDim && pos + curDim < size; curDim += 1) {
-          ENABLE_CHECK(ActiveChecks, tape.isActive(values[pos + curDim])) {
-            GT::at(tape.gradient(values[pos + curDim]), curDim) = value;
+        for (size_t curDim = 0; curDim < gradDim && pos + curDim < size; curDim += 1) {
+          if (CODI_ENABLE_CHECK(ActiveChecks, 0 != identifiers[pos + curDim])) {
+            GT::at(tape.gradient(identifiers[pos + curDim], resizingPolicy), curDim) = value;
           }
         }
       }
 
-      /**
-       * @brief Set gradient values for a vector mode evaluation on the second order gradient information.
-       *
-       * @param[in,out] tape  The tape on which the seeding is set.
-       * @param[in]      pos  The position in the value vector.
-       * @param[in]   values  The value vector.
-       * @param[in]     size  The size of the value vector.
-       * @param[in]    value  The value which is set as gradient information.
-       *
-       * @tparam T  The type of the provided value.
-       */
+      /// Sets the gradient for 2nd order vector modes. Seeds the next GT2nd:dim dimensions.
       template<typename T>
-      static CODI_INLINE void setGradient2ndOnGradientData(Tape& tape, size_t const pos, GradientData const* values, const size_t size, T value) {
-        using GT2nd = GradientValueTraits<typename Real::GradientValue>;
-        constexpr size_t gradDim2nd = GT2nd::getVectorSize();
+      static CODI_INLINE void setGradient2ndOnIdentifier(Tape& tape, size_t const pos, Identifier const* identifiers,
+                                                         size_t const size, T value) {
+        using GT2nd = GradientTraits::TraitsImplementation<CODI_DD(typename Real::Gradient, double)>;
+        size_t constexpr gradDim2nd = GT2nd::dim;
 
-        for(size_t curDim = 0; curDim < gradDim2nd && pos + curDim < size; curDim += 1) {
-          GT2nd::at(tape.primalValue(values[pos + curDim]).gradient(), curDim) = value;
+        for (size_t curDim = 0; curDim < gradDim2nd && pos + curDim < size; curDim += 1) {
+          // No activity check on the identifier required since forward types are used.
+          GT2nd::at(tape.primal(identifiers[pos + curDim]).gradient(), curDim) = value;
         }
       }
 
       /**
-       * @brief Set gradient values for a vector mode evaluation.
+       * @brief Sets the gradient for 1st order vector modes. Seeds the next GT:dim dimensions.
        *
-       * @param[in,out] tape  The tape on which the seeding is set.
-       * @param[in]      pos  The position in the value vector.
-       * @param[in]   values  The value vector.
-       * @param[in]     size  The size of the value vector.
-       * @param[in]    value  The value which is set as gradient information.
-       *
-       * @tparam T  The type of the provided value.
+       * Does not perform bounds checking for the gradient access.
+       * Declares usage of the adjoint vector, see DataManagementTapeInterface.
        */
       template<typename T>
-      static CODI_INLINE void setGradientOnCoDiValue(Tape& tape, size_t const pos, CoDiType* values, const size_t size, T value) {
-        constexpr size_t gradDim = GT::getVectorSize();
+      static CODI_INLINE void setGradientOnCoDiValue(Tape& tape, size_t const pos, Type* identifiers, size_t const size,
+                                                     T value) {
+        size_t constexpr gradDim = GT::dim;
 
-        for(size_t curDim = 0; curDim < gradDim && pos + curDim < size; curDim += 1) {
-          ENABLE_CHECK(ActiveChecks, tape.isActive(values[pos + curDim].getGradientData())) {
-            GT::at(tape.gradient(values[pos + curDim].getGradientData()), curDim) = value;
+        for (size_t curDim = 0; curDim < gradDim && pos + curDim < size; curDim += 1) {
+          if (CODI_ENABLE_CHECK(ActiveChecks, 0 != identifiers[pos + curDim].getIdentifier())) {
+            GT::at(tape.gradient(identifiers[pos + curDim].getIdentifier()), curDim) = value;
           }
         }
       }
 
-      /**
-       * @brief Set gradient values for a vector mode evaluation on the second order gradient information.
-       *
-       * @param[in]      pos  The position in the value vector.
-       * @param[in]   values  The value vector.
-       * @param[in]     size  The size of the value vector.
-       * @param[in]    value  The value which is set as gradient information.
-       *
-       * @tparam T  The type of the provided value.
-       */
+      /// Sets the gradient for 2nd order vector modes. Seeds the next GT2nd:dim dimensions.
       template<typename T>
-      static CODI_INLINE void setGradient2ndOnCoDiValue(size_t const pos, CoDiType* values, const size_t size, T value) {
-        using GT2nd = GradientValueTraits<typename Real::GradientValue>;
-        constexpr size_t gradDim2nd = GT2nd::getVectorSize();
+      static CODI_INLINE void setGradient2ndOnCoDiValue(size_t const pos, Type* identifiers, size_t const size,
+                                                        T value) {
+        using GT2nd = GradientTraits::TraitsImplementation<CODI_DD(typename Real::Gradient, double)>;
+        size_t constexpr gradDim2nd = GT2nd::dim;
 
-        for(size_t curDim = 0; curDim < gradDim2nd && pos + curDim < size; curDim += 1) {
-          // No check required since this are forward types.
-          GT2nd::at(values[pos + curDim].value().gradient(), curDim) = value;
+        for (size_t curDim = 0; curDim < gradDim2nd && pos + curDim < size; curDim += 1) {
+          // No activity check on the identifier required since forward types are used.
+          GT2nd::at(identifiers[pos + curDim].value().gradient(), curDim) = value;
         }
       }
 
-
-      /**
-       * @brief Record the tape from the evaluation of the function object.
-       *
-       * @param[in]       func  The function object for the evaluation. It needs to accept the call func(input, output).
-       * @param[in,out]  input  The values are registered as inputs.
-       * @param[in,out] output  The values are registered as outputs and overwritten by the call to the function object.
-       *
-       * @tparam   Func  Function object.
-       * @tparam  VecIn  Type of the input vector. Needs to implement the std interface.
-       * @tparam VecOut  Type of the output vector.  Needs to implement the std interface.
-       */
+      /// Record an evalaution of the function.
       template<typename Func, typename VecIn, typename VecOut>
       static CODI_INLINE void recordTape(Func func, VecIn& input, VecOut& output) {
-
-        Tape& tape = CoDiType::getGlobalTape();
+        Tape& tape = Type::getTape();
         tape.setActive();
-        for(size_t curIn = 0; curIn < input.size(); curIn += 1) {
+        for (size_t curIn = 0; curIn < input.size(); curIn += 1) {
           tape.registerInput(input[curIn]);
         }
 
         func(input, output);
 
-        for(size_t curOut = 0; curOut < output.size(); curOut += 1) {
+        for (size_t curOut = 0; curOut < output.size(); curOut += 1) {
           tape.registerOutput(output[curOut]);
         }
         tape.setPassive();
       }
   };
-
 
 }

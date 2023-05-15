@@ -1,0 +1,72 @@
+.-
+.- MeDiPack, a Message Differentiation Package
+.-
+.- Copyright (C) 2017-2023 Chair for Scientific Computing (SciComp), University of Kaiserslautern-Landau
+.- Homepage: http://www.scicomp.uni-kl.de
+.- Contact:  Prof. Nicolas R. Gauger (codi@scicomp.uni-kl.de)
+.-
+.- Lead developers: Max Sagebaum (SciComp, University of Kaiserslautern-Landau)
+.-
+.- This file is part of MeDiPack (http://www.scicomp.uni-kl.de/software/codi).
+.-
+.- MeDiPack is free software: you can redistribute it and/or
+.- modify it under the terms of the GNU Lesser General Public
+.- License as published by the Free Software Foundation, either
+.- version 3 of the License, or (at your option) any later version.
+.-
+.- MeDiPack is distributed in the hope that it will be useful,
+.- but WITHOUT ANY WARRANTY; without even the implied warranty of
+.- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.-
+.- See the GNU Lesser General Public License for more details.
+.- You should have received a copy of the GNU
+.- Lesser General Public License along with MeDiPack.
+.- If not, see <http://www.gnu.org/licenses/>.
+.-
+.- Authors: Max Sagebaum, Tim Albring (SciComp, University of Kaiserslautern-Landau)
+.-
+.
+.ignorecase = 0
+.template 0
+
+function generateConst(item)
+   constMod = ""
+   if(defined(item.const))
+     if(item.const = "opt")
+       constMod = "MEDI_OPTIONAL_CONST "
+     else
+       constMod = "const "
+     endif
+   endif
+
+   return constMod
+endfunction
+
+function nonConst(typename, variable)
+  return "const_cast<typename " + my.typename + "::Type*>(" + my.variable + ")"
+endfunction
+
+function modifyTypeName(type)
+  return string.replace(my.type, "MPI_|AMPI_")
+endfunction
+
+function generateMPIVersion(version)
+  return "MEDI_MPI_VERSION_" + string.replace(my.version, ".|_")
+endfunction
+
+function startVersionGuard(item)
+  if(!defined(my.item.version))
+    abort("Error version: $(my.item.name)")
+  endif
+  if(defined(my.item.deprecated))
+>#if $(generateMPIVersion(my.item.version)) <= MEDI_MPI_TARGET && MEDI_MPI_TARGET < $(generateMPIVersion(my.item.deprecated))
+  else
+>#if $(generateMPIVersion(my.item.version)) <= MEDI_MPI_TARGET
+  endif
+endfunction
+
+function endVersionGuard(item)
+>#endif
+endfunction
+
+.endtemplate

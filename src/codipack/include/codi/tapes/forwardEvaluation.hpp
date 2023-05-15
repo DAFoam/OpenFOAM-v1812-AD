@@ -1,11 +1,11 @@
 /*
  * CoDiPack, a Code Differentiation Package
  *
- * Copyright (C) 2015-2020 Chair for Scientific Computing (SciComp), TU Kaiserslautern
+ * Copyright (C) 2015-2023 Chair for Scientific Computing (SciComp), University of Kaiserslautern-Landau
  * Homepage: http://www.scicomp.uni-kl.de
  * Contact:  Prof. Nicolas R. Gauger (codi@scicomp.uni-kl.de)
  *
- * Lead developers: Max Sagebaum, Tim Albring (SciComp, TU Kaiserslautern)
+ * Lead developers: Max Sagebaum, Johannes Blühdorn (SciComp, University of Kaiserslautern-Landau)
  *
  * This file is part of CoDiPack (http://www.scicomp.uni-kl.de/software/codi).
  *
@@ -23,237 +23,200 @@
  * General Public License along with CoDiPack.
  * If not, see <http://www.gnu.org/licenses/>.
  *
+ * For other licensing options please contact us.
+ *
  * Authors:
- *  - SciComp, TU Kaiserslautern:
- *     Max Sagebaum
- *     Tim Albring
- *     Johannes Blühdorn
+ *  - SciComp, University of Kaiserslautern-Landau:
+ *    - Max Sagebaum
+ *    - Johannes Blühdorn
+ *    - Former members:
+ *      - Tim Albring
  */
-
 #pragma once
 
-#include "../activeReal.hpp"
-#include "../tapeTypes.hpp"
-#include "../typeFunctions.hpp"
-#include "tapeInterface.hpp"
+#include "../config.h"
+#include "../expressions/lhsExpressionInterface.hpp"
+#include "../expressions/logic/helpers/jacobianComputationLogic.hpp"
+#include "../misc/macros.hpp"
+#include "../traits/expressionTraits.hpp"
+#include "../traits/realTraits.hpp"
+#include "../traits/tapeTraits.hpp"
+#include "interfaces/gradientAccessTapeInterface.hpp"
+#include "interfaces/internalStatementRecordingTapeInterface.hpp"
 
-/**
- * @brief Global namespace for CoDiPack - Code Differentiation Package
- */
+/** \copydoc codi::Namespace */
 namespace codi {
+
   /**
-   * @brief Tape for the tangent or forward AD mode
+   * @brief Implementation of a tape-free forward AD mode through the internal expression interfaces.
    *
-   * This tape implements the forward or tangent AD mode. For each statement
-   * \f[ y = f(x) \f]
-   * the rhs of the equation
-   * \f[ \dot{y} = \frac{df}{dx}(x)\cdot \dot {x} \f]
-   * is evaluated and stored into the GradientData of \f$y\f$. This is done by calling the store routine of the tape
-   * in the assignment operator of ActiveReal. Using expression templates, the evaluation of each expression on the rhs leads to an
-   * ActiveReal that then calls the pushJacobi routine to
-   * add the Jacobian (the partial derivative of the expression with respect to the inputs)
-   * multiplied by the tangent value of the input to the tangent value of \f$y\f$.
+   * For an explanation of the forward AD mode please see the Section \ref sec_forwardAD "forward AD".
    *
-   * GradientData is just the same as the active type
-   * uses for the storage of the floating point values.
+   * The store method implementation performs a reverse AD sweep on the expression itself. The result is then added to
+   * the tangent data of the left hand side type.
    *
+   * The identifier data in the LhsExpressionInterface implementations is used by this class to store the tangent data
+   * for each value.
    *
-   * @tparam TapeTypes_t  All the types for the tape. Including the calculation type and the vector types.
+   * This way, a tape-free foward mode is implemented in a manner that is consistent with CoDiPack's taping interface,
+   * even if no tape is actually recorded.
+   *
+   * See \ref TapeInterfaces for a general overview of the tape interface design in CoDiPack.
+   *
+   * @tparam T_Real        The computation type of a tape usually defined by ActiveType::Real.
+   * @tparam T_Gradient    The gradient type of a tape usually defined by ActiveType::Gradient.
+
    */
-  template<typename TapeTypes_t>
-  class ForwardEvaluation final : public TapeInterface<typename TapeTypes_t::Real, typename TapeTypes_t::GradientValue, typename TapeTypes_t::GradientValue>{
-  public:
+  template<typename T_Real, typename T_Gradient>
+  struct ForwardEvaluation : public InternalStatementRecordingTapeInterface<T_Gradient>,
+                             public GradientAccessTapeInterface<T_Gradient, T_Gradient> {
+    public:
 
-    using TapeTypes = TapeTypes_t; /**< All types used to define the tape */
+      using Real = CODI_DD(T_Real, double);          ///< See ForwardEvaluation.
+      using Gradient = CODI_DD(T_Gradient, double);  ///< See ForwardEvaluation.
 
-    CODI_INLINE_FORWARD_TAPE_TYPES(TapeTypes)
+      using PassiveReal = RealTraits::PassiveReal<Real>;  ///< Basic computation type.
+      using Identifier = Gradient;  ///< Same as the gradient type. Tangent data is stored in the active types.
 
-    /**
-     * @brief The tangent value for the active variable.
-     *
-     * The tangent data has the same type as the GradientValue data.
-     */
-    typedef GradientValue GradientData;
+      /*******************************************************************************/
+      /// @name Implementation of InternalStatementRecordingTapeInterface
+      /// @{
 
-    /** @brief Enables code path in CoDiPack that are optimized for Jacobi taping */
-    static const bool AllowJacobiOptimization = true;
+      static bool constexpr AllowJacobianOptimization = true;  ///< See InternalStatementRecordingTapeInterface
 
-    /**
-     * @brief Evaluates the primal expression and the tangent
-     *
-     * The store method evaluates the forward AD equation and the primal equation.
-     *
-     * @param[out]      value  The value of the rhs.
-     * @param[out] lhsTangent  The tangent of the lhs.
-     * @param[in]         rhs  The expression of the rhs.
-     */
-    template<typename Rhs>
-    CODI_INLINE void store(Real& value, GradientData& lhsTangent, const Rhs& rhs) {
-      GradientValue gradient = GradientValue();
-      rhs.template calcGradient<GradientValue>(gradient);
-      rhs.template pushLazyJacobies<GradientValue>(gradient);
-      lhsTangent  = gradient;
-      value = rhs.getValue();
-
-#if CODI_AdjointHandle_Tangent
-      handleTangentOperation(value, lhsTangent);
-#endif
-
-    }
-
-    /**
-     * @brief Evaluates the primal expression and the tangent
-     *
-     * The store method evaluates the forward AD equation and the primal equation.
-     *
-     * @param[out]      value  The value of the rhs.
-     * @param[out] lhsTangent  The tangent of the lhs.
-     * @param[in]         rhs  The expression of the rhs.
-     */
-    CODI_INLINE void store(Real& value, GradientData& lhsTangent, const ActiveReal<ForwardEvaluation<TapeTypes> >& rhs) {
-      lhsTangent = rhs.getGradient();
-      value = rhs.getValue();
-
-#if CODI_AdjointHandle_Tangent
-      handleTangentOperation(value, lhsTangent);
-#endif
-    }
-
-    /**
-     * @brief Specialization for store which has a constant value on the rhs.
-     *
-     * This implementation of store sets the gradient of th active type to zero as the rhs
-     * is inactive.
-     */
-    CODI_INLINE void store(Real& value, GradientData& tangent, const typename TypeTraits<Real>::PassiveReal& rhs) {
-      tangent = GradientValue();
-      value = rhs;
-    }
-
-    /**
-     * @brief Adds the jacobi to the tangent value of the expression.
-     *
-     * This method is called for each value on the rhs. The tangent of the value is added to the
-     * tangent of the lhs.
-     *
-     * @param[in,out] lhsTangent  The tangent of the lhs.
-     * @param[in]          value  Not used
-     * @param[in]     curTangent  The tangent of the current rhs value.
-     *
-     * @tparam Data  A Real.
-     */
-    template<typename Data>
-    CODI_INLINE void pushJacobi(Data& lhsTangent, const Real& value, const GradientData& curTangent) {
-      CODI_UNUSED(value);
-      lhsTangent += curTangent;
-    }
-
-    /**
-     * @brief Adds the jacobi to the tangent value of the expression.
-     *
-     * This method is called for each value on the rhs. The tangent of the value times the jacobi is added to the
-     * tangent of the lhs.
-     *
-     * @param[in,out] lhsTangent  The tangent of the lhs.
-     * @param[in]         jacobi  The jacobi value of the operation.
-     * @param[in]          value  Not used
-     * @param[in]     curTangent  The tangent of the current rhs value.
-     *
-     * @tparam Data  A Real.
-     */
-    template<typename Data>
-    CODI_INLINE void pushJacobi(Data& lhsTangent, const Real& jacobi, const Real& value, const GradientData& curTangent) {
-      CODI_UNUSED(value);
-      ENABLE_CHECK(OptIgnoreInvalidJacobies, codi::isfinite(jacobi)) {
-        lhsTangent += jacobi * curTangent;
+      /// \copydoc codi::InternalStatementRecordingTapeInterface::initIdentifier()
+      template<typename Real>
+      void initIdentifier(Real& value, Identifier& identifier) {
+        CODI_UNUSED(value);
+        identifier = Identifier();
       }
-    }
 
-    /**
-     * @brief Tangent is set to zero.
-     *
-     * The tangent is initialized with zero.
-     *
-     * @param[in]    value  Not used.
-     * @param[out] tangent  Set to zero.
-     */
-    CODI_INLINE void initGradientData(Real& value, GradientData& tangent) {
-      CODI_UNUSED(value);
-      tangent = GradientData();
-    }
+      /// \copydoc codi::InternalStatementRecordingTapeInterface::destroyIdentifier()
+      template<typename Real>
+      void destroyIdentifier(Real& value, Identifier& identifier) {
+        CODI_UNUSED(value, identifier);
+      }
 
-    /**
-     * @brief Nothing to do.
-     */
-    CODI_INLINE void destroyGradientData(Real& value, GradientData& tangent) {
-      CODI_UNUSED(value);
-      CODI_UNUSED(tangent);
-      /* do nothing */
-    }
+      /// @}
 
-    /**
-     * @brief Calls isTotalZero on the tangent direction.
-     *
-     * @param[in] gradientData  The tangent direction in this case.
-     * @return true if all entries are zero.
-     */
-    CODI_INLINE bool isGradientTotalZero(const GradientData& gradientData) {
-      return codi::isTotalZero(gradientData);
-    }
+    private:
 
-    /**
-     * Sets the gradient data to the tangent value.
-     *
-     * @param[out]   tangent  The tangent value of the active type.
-     * @param[in] newTangent  The new tangent value.
-     */
-    CODI_INLINE void setGradient(GradientData& tangent, const GradientValue& newTangent) {
-      tangent = newTangent;
-    }
+      struct LocalReverseLogic : public JacobianComputationLogic<LocalReverseLogic> {
+        public:
+          template<typename Node>
+          CODI_INLINE void handleJacobianOnActive(Node const& node, Real jacobian, Gradient& lhsGradient) {
+            if (CODI_ENABLE_CHECK(Config::IgnoreInvalidJacobians, RealTraits::isTotalFinite(jacobian))) {
+              lhsGradient += node.gradient() * jacobian;
+            }
+          }
+      };
 
-    /**
-     * Returns the tangent value of the active type.
-     *
-     * @param[in]  tangent  The gradient data of the active type is the tangent.
-     *
-     * @return The tangent value of the active type.
-     */
-    CODI_INLINE GradientValue getGradient(const GradientData& tangent) const {
-      return tangent;
-    }
+    public:
 
-    /**
-     * Returns the tangent value of the active type.
-     *
-     * @param[in]  tangent  The gradient data of the active type is the tangent.
-     *
-     * @return The reference of the tangent value of the active type.
-     */
-    CODI_INLINE GradientValue& gradient(GradientData& tangent) {
-      return tangent;
-    }
+      /// @{
 
-    /**
-     * Returns the constant tangent value of the active type.
-     *
-     * @param[in]  tangent  The gradient data of the active type is the tangent.
-     *
-     * @return The constant reference to the tangent value of the active type.
-     */
-    CODI_INLINE const GradientValue& gradient(const GradientData& tangent) const {
-      return tangent;
-    }
+      /// \copydoc codi::InternalStatementRecordingTapeInterface::store()
+      template<typename Lhs, typename Rhs>
+      void store(LhsExpressionInterface<Real, Gradient, ForwardEvaluation, Lhs>& lhs,
+                 ExpressionInterface<Real, Rhs> const& rhs) {
+        LocalReverseLogic reversal;
 
-    /**
-     * @brief Check whether the gradient data is zero.
-     *
-     * @param[in] tangent  The tangent value for the check.
-     * @return False if the gradient data is zero, otherwise returns true.
-     */
-    bool isActive(const GradientData& tangent) const {
-      return !codi::isTotalZero(tangent);
-    }
+        Gradient newGradient = Gradient();
+        reversal.eval(rhs.cast(), 1.0, newGradient);
+
+        lhs.cast().value() = rhs.cast().getValue();
+        lhs.cast().gradient() = newGradient;
+      }
+
+      /// \copydoc codi::InternalStatementRecordingTapeInterface::store() <br>
+      /// Optimization for copy statements.
+      template<typename Lhs, typename Rhs>
+      void store(LhsExpressionInterface<Real, Gradient, ForwardEvaluation, Lhs>& lhs,
+                 LhsExpressionInterface<Real, Gradient, ForwardEvaluation, Rhs> const& rhs) {
+        lhs.cast().value() = rhs.cast().getValue();
+        lhs.cast().gradient() = rhs.cast().getGradient();
+      }
+
+      /// \copydoc codi::InternalStatementRecordingTapeInterface::store() <br>
+      /// Specialization for passive assignments.
+      template<typename Lhs>
+      void store(LhsExpressionInterface<Real, Gradient, ForwardEvaluation, Lhs>& lhs, Real const& rhs) {
+        lhs.cast().value() = rhs;
+        lhs.cast().gradient() = Gradient();
+      }
+
+      /// @}
+      /*******************************************************************************/
+      /// @name Implementation of GradientAccessTapeInterface
+      /// @{
+
+      /// \copydoc codi::GradientAccessTapeInterface::setGradient()
+      void setGradient(Identifier& identifier, Gradient const& gradient) {
+        identifier = gradient;
+      }
+
+      /// \copydoc codi::GradientAccessTapeInterface::getGradient()
+      Gradient const& getGradient(Identifier const& identifier) const {
+        return identifier;
+      }
+
+      /// \copydoc codi::GradientAccessTapeInterface::gradient(Identifier const&, ResizingPolicy)
+      Gradient& gradient(Identifier& identifier) {
+        return identifier;
+      }
+
+      /// \copydoc codi::GradientAccessTapeInterface::gradient(Identifier const&) const
+      Gradient const& gradient(Identifier const& identifier) const {
+        return identifier;
+      }
+
+      /// @}
+
+    private:
+
+      void setGradient(Identifier const& identifier, Gradient const& gradient) {
+        CODI_UNUSED(identifier, gradient);
+      }
+
+      Gradient& gradient(Identifier const& identifier) {
+        CODI_UNUSED(identifier);
+        static Gradient temp = Gradient();
+        return temp;
+      }
+  };
+
+  /// \copydoc codi::RealTraits::IsTotalFinite <br>
+  /// Tests whether both value and gradient are finite.
+  template<typename T_Type>
+  struct RealTraits::IsTotalFinite<T_Type, TapeTraits::EnableIfForwardTape<typename T_Type::Tape>> {
+    public:
+
+      using Type = CODI_DD(
+          T_Type, CODI_T(LhsExpressionInterface<double, double, InternalStatementRecordingTapeInterface<CODI_ANY>,
+                                                T_Type>));  ///< See RealTraits::IsTotalFinite.
+
+      /// \copydoc codi::RealTraits::IsTotalFinite::isTotalFinite()
+      static CODI_INLINE bool isTotalFinite(Type const& v) {
+        using std::isfinite;
+        return RealTraits::isTotalFinite(v.getValue()) && RealTraits::isTotalFinite(v.getGradient());
+      }
+  };
+
+  /// \copydoc codi::RealTraits::IsTotalZero <br>
+  /// Tests whether both value and gradient are zero.
+  template<typename T_Type>
+  struct RealTraits::IsTotalZero<T_Type, TapeTraits::EnableIfForwardTape<typename T_Type::Tape>> {
+    public:
+
+      using Type = CODI_DD(
+          T_Type, CODI_T(LhsExpressionInterface<double, double, InternalStatementRecordingTapeInterface<CODI_ANY>,
+                                                T_Type>));  ///< See RealTraits::IsTotalZero.
+      using Real = typename Type::Real;                     ///< See
+                                                            ///< codi::LhsExpressionInterface::Real.
+
+      /// \copydoc codi::RealTraits::IsTotalFinite::isTotalZero()
+      static CODI_INLINE bool isTotalZero(Type const& v) {
+        return Real() == v.getValue() && typename Type::Gradient() == v.getGradient();
+      }
   };
 }
-
-

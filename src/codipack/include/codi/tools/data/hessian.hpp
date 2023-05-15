@@ -1,11 +1,11 @@
 /*
  * CoDiPack, a Code Differentiation Package
  *
- * Copyright (C) 2015-2020 Chair for Scientific Computing (SciComp), TU Kaiserslautern
+ * Copyright (C) 2015-2023 Chair for Scientific Computing (SciComp), University of Kaiserslautern-Landau
  * Homepage: http://www.scicomp.uni-kl.de
  * Contact:  Prof. Nicolas R. Gauger (codi@scicomp.uni-kl.de)
  *
- * Lead developers: Max Sagebaum, Tim Albring (SciComp, TU Kaiserslautern)
+ * Lead developers: Max Sagebaum, Johannes Blühdorn (SciComp, University of Kaiserslautern-Landau)
  *
  * This file is part of CoDiPack (http://www.scicomp.uni-kl.de/software/codi).
  *
@@ -23,175 +23,131 @@
  * General Public License along with CoDiPack.
  * If not, see <http://www.gnu.org/licenses/>.
  *
+ * For other licensing options please contact us.
+ *
  * Authors:
- *  - SciComp, TU Kaiserslautern:
- *     Max Sagebaum
- *     Tim Albring
- *     Johannes Blühdorn
+ *  - SciComp, University of Kaiserslautern-Landau:
+ *    - Max Sagebaum
+ *    - Johannes Blühdorn
+ *    - Former members:
+ *      - Tim Albring
  */
-
 #pragma once
 
-#include "dummyValue.hpp"
-#include "vectorStorage.hpp"
-#include "../../configure.h"
+#include <vector>
 
-/**
- * @brief Global namespace for CoDiPack - Code Differentiation Package
- */
+#include "../../config.h"
+#include "../../misc/constructVector.hpp"
+#include "dummy.hpp"
+#include "hessianInterface.hpp"
+#include "staticDummy.hpp"
+
+/** \copydoc codi::Namespace */
 namespace codi {
 
   /**
-   * @brief Basic interface definition what the algorithms in the EvaluationHelper, Algorithms, etc. classes use to
-   * access the data.
+   * @brief Default implementation of the Hessian interface.
    *
-   * @tparam T  The data type of the internal storage.
+   * Running index speed: j (fastest), i, k (slowest).
+   *
+   * Data is stored in an array of row-major matrices.
+   *
+   * @tparam T_T  Data type in the Hessian.
+   * @tparam T_Store  Storage allocator. Should implement the standard vector interface.
    */
-  template<typename T>
-  struct HessianInterface {
+  template<typename T_T, typename T_Store = std::vector<T_T>>
+  struct Hessian : public HessianInterface<T_T> {
+    public:
 
-      virtual ~HessianInterface(){}
+      using T = CODI_DD(T_T, double);                       ///< See Hessian.
+      using Store = CODI_DD(T_Store, std::vector<double>);  ///< See Hessian.
 
-      /**
-       * @brief Constant access to the specified element of the hessian.
-       *
-       * @param[in] i  Output value of the function. Range: [0, m)
-       * @param[in] j  Input value of the function. First derivative direction. Range: [0,n) (Fastest running index)
-       * @param[in] k  Input value of the function. Second derivative direction. Range: [0,n) (Slowest running index)
-       *
-       * @return Value/reference of the specified location.
-       */
-      virtual T operator()(const size_t i, const size_t j, const size_t k) const = 0;
+    protected:
+      Store values;  ///< Storage for the data.
 
-      /**
-       * @brief Access to the specified element of the hessian.
-       *
-       * \copydetails operator()(const size_t i, const size_t j, const size_t k) const
-       */
-      virtual T& operator()(const size_t i, const size_t j, const size_t k) = 0;
-
-  };
-
-  /**
-   * @brief A dummy hessian that can be accessed via the call operator.
-   */
-  struct DummyHessian {
-
-      /**
-       * @brief Returns a dummy value.
-       *
-       * @param[in] i  Not used
-       * @param[in] j  Not used
-       * @param[in] k  Not used
-       * @return A dummy value
-       */
-      CODI_INLINE DummyValue operator()(const size_t i, const size_t j, const size_t k) {
-        CODI_UNUSED(i);
-        CODI_UNUSED(j);
-        CODI_UNUSED(k);
-
-        return DummyValue();
-      }
-  };
-
-  /**
-   * @brief Default hessian implementation for algorithms in CoDiPack.
-   *
-   * The data layout of the hessian is described in the \ref FunctionDefinition "Algorithms" documentation.
-   * All mathematical symbol names are described there.
-   *
-   * Structures that implement the same functions can be used a the same places where this hessian implementation
-   * is used in CoDiPack.
-   *
-   * @tparam Vec  Either std::vector or std::array. For other types VectorStorage needs to be specialized.
-   */
-  template <typename Vec>
-  struct Hessian {
-
-    private:
-      VectorStorage<Vec> values; /**< Storage for the hessian matrix */
-
-      size_t m; /**< Number of function outputs */
-      size_t n; /**< Number of function inputs */
+      size_t m;  ///< Number of function outputs.
+      size_t n;  ///< Number of function inputs.
 
     public:
-      /**
-       * @brief Inner element of the vector type.
-       */
-      using T = typename VectorStorage<Vec>::Element;
 
-      /**
-       * @brief Create a hessian with the given output and input size.
-       *
-       * @param[in] m  Number of function outputs
-       * @param[in] n  Number of function inputs
-       */
-      explicit Hessian(size_t m, size_t n) : values(n * n * m), m(m), n(n) {}
+      /// Constructor
+      explicit Hessian(size_t m, size_t n) : values(constructVector<Store>(n * n * m)), m(m), n(n) {}
 
-      /**
-       * @brief Get the number of function outputs.
-       * @return Number of function outputs.
-       */
+      /// \copydoc HessianInterface::getM()
       CODI_INLINE size_t getM() const {
         return m;
       }
 
-      /**
-       * @brief Get the number of function inputs.
-       * @return Number of function inputs.
-       */
+      /// \copydoc HessianInterface::getN()
       CODI_INLINE size_t getN() const {
         return n;
       }
 
-      /**
-       * @brief Constant access to the specified element of the hessian.
-       *
-       * @param[in] i  Output value of the function. Range: [0, m)
-       * @param[in] j  Input value of the function. First derivative direction. Range: [0,n) (Fastest running index)
-       * @param[in] k  Input value of the function. Second derivative direction. Range: [0,n) (Slowest running index)
-       *
-       * @return Value/reference of the specified location.
-       */
-      CODI_INLINE T operator()(const size_t i, const size_t j, const size_t k) const {
-        return values.data()[computeIndex(i,j,k)];
+      /// \copydoc HessianInterface::operator()(size_t const i, size_t const j, size_t const k) const
+      CODI_INLINE T operator()(size_t const i, size_t const j, size_t const k) const {
+        return values.data()[computeIndex(i, j, k)];
       }
 
-      /**
-       * @brief Access to the specified element of the hessian.
-       *
-       * \copydetails operator()(const size_t i, const size_t j, const size_t k) const
-       */
-      CODI_INLINE T& operator()(const size_t i, const size_t j, const size_t k) {
-        return values.data()[computeIndex(i,j,k)];
+      /// \copydoc HessianInterface::operator()(size_t const i, size_t const j, size_t const k)
+      CODI_INLINE T& operator()(size_t const i, size_t const j, size_t const k) {
+        return values.data()[computeIndex(i, j, k)];
       }
 
-      /**
-       * @brief Set value in the hessian.
-       *
-       * @param[in] i  Output value of the function. Range: [0, m)
-       * @param[in] j  Input value of the function. First derivative direction. Range: [0,n) (Fastest running index)
-       * @param[in] k  Input value of the function. Second derivative direction. Range: [0,n) (Slowest running index)
-       * @param[in] v  The value that is set into the hessian.
-       */
-      template<typename T>
-      CODI_INLINE void set(const size_t i, const size_t j, const size_t k, const T& v) {
-        values.data()[computeIndex(i,j,k)] = v;
+      /// \copydoc HessianInterface::resize()
+      CODI_INLINE void resize(size_t const m, size_t const n) {
+        this->m = m;
+        this->n = n;
+
+        values.resize(m * n * n);
+      }
+
+      /// \copydoc HessianInterface::size()
+      CODI_INLINE size_t size() const {
+        return m * n * n;
       }
 
     private:
-
-      /**
-       * @brief Computes the offset into the data array.
-       *
-       * @param[in] i  n. Mid running index
-       * @param[in] j  1. Fastest running index
-       * @param[in] k  m*n. Slowest running index
-       * @return
-       */
-      CODI_INLINE size_t computeIndex(const size_t i, const size_t j, const size_t k) const {
+      CODI_INLINE size_t computeIndex(size_t const i, size_t const j, size_t const k) const {
         return k * n * m + i * n + j;
       }
   };
 
+  /// Dummy Hessian. Has size zero and no logic in any call.
+  struct DummyHessian : public HessianInterface<DummyValue> {
+    public:
+
+      /// \copydoc HessianInterface::getM()
+      size_t getM() const {
+        return 0;
+      }
+
+      /// \copydoc HessianInterface::getN()
+      size_t getN() const {
+        return 0;
+      }
+
+      /// \copydoc HessianInterface::operator()(size_t const i, size_t const j, size_t const k) const
+      CODI_INLINE DummyValue operator()(size_t const i, size_t const j, size_t const k) const {
+        CODI_UNUSED(i, j, k);
+
+        return DummyValue();
+      }
+
+      /// \copydoc HessianInterface::operator()(size_t const i, size_t const j, size_t const k)
+      CODI_INLINE DummyValue& operator()(size_t const i, size_t const j, size_t const k) {
+        CODI_UNUSED(i, j, k);
+
+        return StaticDummy<DummyValue>::dummy;
+      }
+
+      /// \copydoc HessianInterface::resize()
+      void resize(size_t const m, size_t const n) {
+        CODI_UNUSED(m, n);
+      }
+
+      /// \copydoc HessianInterface::size()
+      size_t size() const {
+        return 0;
+      }
+  };
 }

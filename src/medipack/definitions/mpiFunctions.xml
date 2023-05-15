@@ -1,0 +1,2990 @@
+<!--
+  MeDiPack, a Message Differentiation Package
+
+  Copyright (C) 2017-2023 Chair for Scientific Computing (SciComp), University of Kaiserslautern-Landau
+  Homepage: http://www.scicomp.uni-kl.de
+  Contact:  Prof. Nicolas R. Gauger (codi@scicomp.uni-kl.de)
+
+  Lead developers: Max Sagebaum (SciComp, University of Kaiserslautern-Landau)
+
+  This file is part of MeDiPack (http://www.scicomp.uni-kl.de/software/codi).
+
+  MeDiPack is free software: you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation, either
+  version 3 of the License, or (at your option) any later version.
+
+  MeDiPack is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+  See the GNU Lesser General Public License for more details.
+  You should have received a copy of the GNU
+  Lesser General Public License along with MeDiPack.
+  If not, see <http://www.gnu.org/licenses/>.
+
+  Authors: Max Sagebaum, Tim Albring (SciComp, University of Kaiserslautern-Landau)
+-->
+
+<functions>
+  <!-- A.2 C Bindings -->
+    <!-- A.2.1 Point-to-Point Communication Bindings -->
+
+      <function name="Bsend" version="1.0" mediHandle="transform">
+        <send name="buf" const="opt" type="datatype" count="count" />
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <function name="Buffer_attach" version="1.0">
+        <arg name="buffer" type="void*" />
+        <arg name="size" type="int" />
+      </function>
+
+      <function name="Buffer_detach" version="1.0">
+        <arg name="buffer_addr" type="void*" />
+        <arg name="size" type="int*" />
+      </function>
+
+      <function name="Cancel" version="1.0">
+        <request name="request" type="MPI_Request*" />
+      </function>
+
+	    <function name="Get_count" version="1.0">
+        <arg name="status" const="opt" type="MPI_Status*"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <arg name="count" type="int*"/>
+	    </function>
+
+      <function name="Ibsend" version="1.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="buf" const="opt" type="datatype" count="count" />
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <!-- moved generation order such that Ibsend is available -->
+      <function name="Bsend_init" version="1.0" mediHandle="transform" async="request" init="Ibsend">
+        <send name="buf" type="datatype" count="count" const="opt"/>
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*" />
+      </function>
+
+      <!-- handled in include/medi/ampi/message.hpp -->
+      <function name="Improbe" version="3.0" mediHandle="handled">
+        <arg name="source" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="flag" type="int*" />
+        <arg name="message" type="MPI_Message*" />
+        <arg name="status" type="MPI_Status*" />
+      </function>
+
+      <function name="Imrecv" version="3.0" async="request" mediHandle="transform">
+        <recv name="buf" type="datatype" count="count" />
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <message name="message" type="MPI_Message*" />
+        <request name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Iprobe" version="1.0">
+        <arg name="source" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="flag" type="int*" />
+        <arg name="status" type="MPI_Status*" />
+      </function>
+
+      <function name="Irecv" version="1.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <recv name="buf" type="datatype" count="count"/>
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <arg name="source" type="int"/>
+        <arg name="tag" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Irsend" version="1.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="buf" type="datatype" const="opt" count="count" />
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Isend" version="1.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="buf" const="opt" type="datatype" count="count"/>
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <arg name="dest" type="int"/>
+        <arg name="tag" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Issend" version="1.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="buf" type="datatype" const="opt" count="count" />
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <!-- handled in include/medi/ampi/message.hpp -->
+      <function name="Mprobe" version="3.0" mediHandle="handled">
+        <arg name="source" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="message" type="MPI_Message*" />
+        <arg name="status" type="MPI_Status*" />
+      </function>
+
+      <function name="Mrecv" version="3.0" mediHandle="transform">
+        <recv name="buf" type="datatype" count="count" />
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <message name="message" type="MPI_Message*" />
+        <arg name="status" type="MPI_Status*" />
+      </function>
+
+      <function name="Probe" version="1.0">
+        <arg name="source" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="status" type="MPI_Status*" />
+      </function>
+
+      <function name="Recv" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <recv name="buf" type="datatype" count="count"/>
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <arg name="source" type="int"/>
+        <arg name="tag" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+        <status name="status" type="MPI_Status"/>
+      </function>
+
+      <function name="Recv_init" version="1.0" mediHandle="transform" async="request" init="Irecv">
+        <recv name="buf" type="datatype" count="count"/>
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="source" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Request_free" version="1.0" mediHandle="handled">
+        <request name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Request_get_status" version="2.0" mediHandle="default">
+        <request name="request" type="MPI_Request" noptr="true" />
+        <arg name="flag" type="int*" />
+        <arg name="status" type="MPI_Status*" />
+      </function>
+
+      <function name="Rsend" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="buf" type="datatype" const="opt" count="count" />
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <function name="Rsend_init" version="1.0" mediHandle="transform" async="request" init="Irsend">
+        <send name="buf" type="datatype" count="count" const="opt"/>
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Send" version="1.0" mediHandle="transform">
+        <send name="buf" const="opt" type="datatype" count="count"/>
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <arg name="dest" type="int"/>
+        <arg name="tag" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+      </function>
+
+      <function name="Send_init" version="1.0" mediHandle="transform" async="request" init="Isend">
+        <send name="buf" type="datatype" count="count" const="opt"/>
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Sendrecv" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" const="opt" count="sendcount" />
+        <arg name="sendcount" type="int" />
+        <type name="sendtype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="sendtag" type="int" />
+        <recv name="recvbuf" type="recvtype" count="recvcount"/>
+        <arg name="recvcount" type="int" />
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="source" type="int" />
+        <arg name="recvtag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <status name="status" type="MPI_Status" />
+      </function>
+
+      <function name="Sendrecv_replace" version="1.0" mediHandle="disable">
+        <arg name="buf" type="void*" /> <!-- TODO: needs to be defined -->
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="sendtag" type="int" />
+        <arg name="source" type="int" />
+        <arg name="recvtag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="status" type="MPI_Status*" />
+      </function>
+
+      <function name="Ssend" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="buf" type="datatype" const="opt" count="count" />
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <function name="Ssend_init" version="1.0" mediHandle="transform" async="request" init="Issend">
+        <send name="buf" type="datatype" count="count" const="opt"/>
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="dest" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Start" version="1.0" mediHandle="handled">
+        <request name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Startall" version="1.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="array_of_requests" type="MPI_Request*" />
+      </function>
+
+      <function name="Test" version="1.0" mediHandle="handled">
+        <request name="request" type="MPI_Request*" />
+        <arg name="flag" type="int*" />
+        <arg name="status" type="MPI_Status*" />
+      </function>
+
+      <function name="Test_cancelled" version="1.0">
+        <arg name="status" type="MPI_Status*" const="opt"/>
+        <arg name="flag" type="int*" />
+      </function>
+
+      <function name="Testall" version="1.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <request name="array_of_requests" type="MPI_Request*" />
+        <arg name="flag" type="int*" />
+        <arg name="array_of_statuses" type="MPI_Status*" />
+      </function>
+
+      <function name="Testany" version="1.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <request name="array_of_requests" type="MPI_Request*" />
+        <arg name="index" type="int*" />
+        <arg name="flag" type="int*" />
+        <arg name="status" type="MPI_Status*" />
+      </function>
+
+      <function name="Testsome" version="1.0" mediHandle="handled">
+        <arg name="incount" type="int" />
+        <request name="array_of_requests" type="MPI_Request*" />
+        <arg name="outcount" type="int*" />
+        <arg name="array_of_indices" type="int*" />
+        <arg name="array_of_statuses" type="MPI_Status*" />
+      </function>
+
+      <function name="Wait" version="1.0" mediHandle="handled">
+        <arg name="request" type="MPI_Request " />
+        <arg name="status" type="MPI_Status " />
+      </function>
+
+      <function name="Waitall" version="1.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <request name="array_of_requests" type="MPI_Request*" />
+        <arg name="array_of_statuses" type="MPI_Status*" />
+      </function>
+
+      <function name="Waitany" version="1.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <request name="array_of_requests" type="MPI_Request*" />
+        <arg name="index" type="int*" />
+        <arg name="status" type="MPI_Status*" />
+      </function>
+
+      <function name="Waitsome" version="1.0" mediHandle="handled">
+        <arg name="incount" type="int" />
+        <request name="array_of_requests" type="MPI_Request*" />
+        <arg name="outcount" type="int*" />
+        <arg name="array_of_indices" type="int*" />
+        <arg name="array_of_statuses" type="MPI_Status*" />
+      </function>
+
+    <!-- A.2.2 Datatypes C Bindings -->
+
+      <function name="Aint_add" version="3.1" type="MPI_Aint" >
+        <arg name="base" type="MPI_Aint" />
+        <arg name="disp" type="MPI_Aint" />
+      </function>
+
+      <function name="Aint_diff" version="3.1" type="MPI_Aint" >
+        <arg name="addr1" type="MPI_Aint" />
+        <arg name="addr2" type="MPI_Aint" />
+      </function>
+
+      <function name="Get_address" version="2.0" >
+        <arg name="location" type="void*" const="opt"/>
+        <arg name="address" type="MPI_Aint*" />
+      </function>
+      <function name="Get_elements" version="1.0" >
+        <arg name="status" type="MPI_Status*" const="1"/>
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="count" type="int*" />
+      </function>
+
+      <function name="Get_elements_x" version="3.0" mediHandle="default">
+        <arg name="status" type="MPI_Status*" const="1"/>
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="count" type="MPI_Count*" />
+      </function>
+
+      <!-- currently not handled -->
+      <function name="Pack" version="1.0" mediHandle="disable">
+        <arg name="inbuf" type="void*" const="1"/>
+        <arg name="incount" type="int" />
+        <arg name="datatype" type="MPI_Datatype" />
+        <arg name="outbuf" type="void " />
+        <arg name="outsize" type="int" />
+        <arg name="position" type="int " />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <!-- currently not handled -->
+      <function name="Pack_external" version="2.0" mediHandle="disable">
+        <arg name="datarep" type="char*" const="1"/>
+        <arg name="inbuf" type="void " const="1"/>
+        <arg name="incount" type="int" />
+        <arg name="datatype" type="MPI_Datatype" />
+        <arg name="outbuf" type="void " />
+        <arg name="outsize" type="MPI_Aint" />
+        <arg name="position" type="MPI_Aint " />
+      </function>
+
+      <!-- currently not handled -->
+      <function name="Pack_external_size" version="2.0" mediHandle="disable">
+        <arg name="datarep" type="char*" const="1"/>
+        <arg name="incount" type="int" />
+        <arg name="datatype" type="MPI_Datatype" />
+        <arg name="size" type="MPI_Aint " />
+      </function>
+
+      <!-- currently not handled -->
+      <function name="Pack_size" version="1.0" mediHandle="disable">
+        <arg name="incount" type="int" />
+        <arg name="datatype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="size" type="int " />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_commit" version="1.0" mediHandle="handled">
+        <arg name="datatype" type="MPI_Datatype*" />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_contiguous" version="1.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="oldtype" type="MPI_Datatype" />
+        <arg name="newtype" type="MPI_Datatype*" />
+      </function>
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+<function name="Type_create_darray" version="2.0" mediHandle="disable">
+  <arg name="size" type="int" />
+  <arg name="rank" type="int" />
+  <arg name="ndims" type="int" />
+  <arg name="array_of_gsizes" type="int*" const="1"/>
+  <arg name="array_of_distribs" type="int*" const="1"/>
+  <arg name="array_of_dargs" type="int*" const="1"/>
+  <arg name="array_of_psizes" type="int*" const="1"/>
+  <arg name="order" type="int" />
+  <arg name="oldtype" type="MPI_Datatype" />
+  <arg name="newtype" type="MPI_Datatype*" />
+</function>
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_create_hindexed" version="2.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="array_of_blocklengths" type="int*" const="1"/>
+        <arg name="array_of_displacements" type="MPI_Aint*" const="1"/>
+        <arg name="oldtype" type="MPI_Datatype" />
+        <arg name="newtype" type="MPI_Datatype*" />
+      </function>
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_create_hindexed_block" version="3.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="blocklength" type="int" />
+        <arg name="array_of_displacements" type="MPI_Aint*" const="1"/>
+        <arg name="oldtype" type="MPI_Datatype" />
+        <arg name="newtype" type="MPI_Datatype*" />
+      </function>
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_create_hvector" version="2.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="blocklength" type="int" />
+        <arg name="stride" type="MPI_Aint" />
+        <arg name="oldtype" type="MPI_Datatype" />
+        <arg name="newtype" type="MPI_Datatype*" />
+      </function>
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_create_indexed_block" version="2.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="blocklength" type="int" />
+        <arg name="array_of_displacements" type="int*" const="1"/>
+        <arg name="oldtype" type="MPI_Datatype" />
+        <arg name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_create_resized" version="2.0" mediHandle="handled">
+        <arg name="oldtype" type="MPI_Datatype" />
+        <arg name="lb" type="MPI_Aint" />
+        <arg name="extent" type="MPI_Aint" />
+        <arg name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_create_struct" version="2.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="array_of_blocklengths" type="int*" const="1"/>
+        <arg name="array_of_displacements" type="MPI_Aint*" const="1"/>
+        <type name="array_of_types" type="MPI_Datatype*" const="1"/>
+        <type name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_create_subarray" version="2.0" mediHandle="handled">
+        <arg name="ndims" type="int" />
+        <arg name="array_of_sizes" type="int*" const="1"/>
+        <arg name="array_of_subsizes" type="int*" const="1"/>
+        <arg name="array_of_starts" type="int*" const="1"/>
+        <arg name="order" type="int" />
+        <type name="oldtype" type="MPI_Datatype" />
+        <type name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_dup" version="2.0" mediHandle="handled">
+        <type name="oldtype" type="MPI_Datatype" />
+        <type name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_free" version="1.0" mediHandle="handled">
+        <type name="datatype" type="MPI_Datatype*" />
+      </function>
+
+      <function name="Type_get_contents" version="2.0">
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="max_integers" type="int" />
+        <arg name="max_addresses" type="int" />
+        <arg name="max_datatypes" type="int" />
+        <arg name="array_of_integers" type="int*" />
+        <arg name="array_of_addresses" type="MPI_Aint*" />
+        <arg name="array_of_datatypes" type="MPI_Datatype*" />
+      </function>
+
+      <function name="Type_get_envelope" version="2.0">
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="num_integers" type="int*" />
+        <arg name="num_addresses" type="int*" />
+        <arg name="num_datatypes" type="int*" />
+        <arg name="combiner" type="int*" />
+      </function>
+
+      <function name="Type_get_extent" version="2.0" >
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="lb" type="MPI_Aint*" />
+        <arg name="extent" type="MPI_Aint*" />
+      </function>
+
+      <function name="Type_get_extent_x" version="3.0" >
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="lb" type="MPI_Count*" />
+        <arg name="extent" type="MPI_Count*" />
+      </function>
+
+      <function name="Type_get_true_extent" version="2.0" >
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="true_lb" type="MPI_Aint*" />
+        <arg name="true_extent" type="MPI_Aint*" />
+      </function>
+
+      <function name="Type_get_true_extent_x" version="3.0" >
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="true_lb" type="MPI_Count*" />
+        <arg name="true_extent" type="MPI_Count*" />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_indexed" version="1.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="array_of_blocklengths" type="int*" const="1"/>
+        <arg name="array_of_displacements" type="int*" const="1"/>
+        <type name="oldtype" type="MPI_Datatype" />
+        <type name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_hindexed" version="1.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="array_of_blocklengths" type="int*" const="1"/>
+        <arg name="array_of_displacements" type="MPI_Aint*" const="1"/>
+        <type name="oldtype" type="MPI_Datatype" />
+        <type name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_hvector" version="1.0"  mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="blocklength" type="int" />
+        <arg name="stride" type="MPI_Aint" />
+        <type name="oldtype" type="MPI_Datatype" />
+        <type name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <function name="Type_size" version="1.0" >
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="size" type="int*" />
+      </function>
+
+      <function name="Type_size_x" version="3.0" >
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="size" type="MPI_Count*" />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_struct" version="1.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="array_of_blocklengths" type="int*" const="1"/>
+        <arg name="array_of_displacements" type="MPI_Aint*" const="1"/>
+        <type name="array_of_types" type="MPI_Datatype*" const="1"/>
+        <type name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <!-- special handling in include/medi/ampi/mpiConstructedDatatypes.hpp -->
+      <function name="Type_vector" version="1.0" mediHandle="handled">
+        <arg name="count" type="int" />
+        <arg name="blocklength" type="int" />
+        <arg name="stride" type="int" />
+        <type name="oldtype" type="MPI_Datatype" />
+        <type name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <!-- currently not handled -->
+      <function name="Unpack" version="1.0" mediHandle="disable">
+        <send name="inbuf" type="void*" const="opt" type="type" count="insize" />
+        <arg name="insize" type="int" />
+        <arg name="position" type="int*" />
+        <recv name="outbuf" type="void*" type="type" count="outcount" />
+        <arg name="outcount" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+      <function name="Unpack_external" version="2.0" mediHandle="disable">
+        <arg name="datarep" type="char*" const="1"/>
+        <arg name="inbuf" type="void*" const="1"/>
+        <arg name="insize" type="MPI_Aint" />
+        <arg name="position" type="MPI_Aint*" />
+        <arg name="outbuf" type="void*" />
+        <arg name="outcount" type="int" />
+        <arg name="datatype)" type="MPI_Datatype" />
+      </function>
+
+    <!-- A.2.3 Collective Communication C Bindings -->
+
+      <function name="Allgather" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcount" all="comm" inplace="recvbuf" const="opt"/>
+        <arg name="sendcount" type="int"/>
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcount" ranks="comm"/>
+        <arg name="recvcount" type="int"/>
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm"/>
+      </function>
+
+      <function name="Allgatherv" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcount" all="comm" inplace="recvbuf" const="opt"/>
+        <arg name="sendcount" type="int"/>
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcounts" displs="displs"/>
+        <arg name="recvcounts" type="int*" const="opt"/>
+        <displs name="displs" type="int*" const="opt" ranks="comm" counts="recvcounts" />
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm"/>
+      </function>
+
+      <!-- Implemented in ampi/wrappers.hpp -->
+      <function name="Allreduce_global" version="1.0" mpiName="MPI_Allreduce" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" const="opt" type="datatype" count="count" inplace="recvbuf" all="comm" />
+        <recv name="recvbuf" type="datatype" count="count" />
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <operator name="op" type="MPI_Op"/>
+        <arg name="comm" type="MPI_Comm"/>
+      </function>
+
+      <function name="Alltoall" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcount" ranks="comm" const="opt" inplace="recvbuf"/>
+        <arg name="sendcount" type="int" />
+        <type name="sendtype" type="MPI_Datatype" />
+        <recv name="recvbuf" type="recvtype" count="recvcount" ranks="comm"/>
+        <arg name="recvcount" type="int" />
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <function name="Alltoallv" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcounts" displs="sdispls" const="opt" inplace="recvbuf"/>
+        <arg name="sendcounts" type="int*" const="opt"/>
+        <displs name="sdispls" type="int*" const="opt" ranks="comm" counts="sendcounts" />
+        <type name="sendtype" type="MPI_Datatype" />
+        <recv name="recvbuf" type="recvtype" count="recvcounts" displs="rdispls" />
+        <arg name="recvcounts" type="int*" const="opt"/>
+        <displs name="rdispls" type="int*" const="opt" ranks="comm" counts="recvcounts" />
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <function name="Alltoallw" version="2.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="sendcounts" type="int*" const="1"/>
+        <arg name="sdispls" type="int*" const="1"/>
+        <arg name="sendtypes" type="MPI_Datatype*" const="1"/>
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcounts" type="int*" const="1"/>
+        <arg name="rdispls" type="int*" const="1"/>
+        <arg name="recvtypes" type="MPI_Datatype*" const="1"/>
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <function name="Barrier" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <!-- modified interface in order to work with the structure a wrapper is implemented that wraps onto this routine -->
+      <function name="Bcast_wrap" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="bufferSend" type="datatype" count="count" root="root" all="comm" inplace="bufferRecv" />
+        <recv name="bufferRecv" type="datatype" count="count" />
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="root" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <!-- Implemented in ampi/wrappers.hpp -->
+      <function name="Exscan" version="2.0" mediHandle="handled"> <!-- all defined -->
+        <send name="sendbuf" const="opt" type="datatype" count="count" inplace="recvbuf" all="comm" />
+        <recv name="recvbuf" type="datatype" count="count" />
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <operator name="op" type="MPI_Op"/>
+        <arg name="comm" type="MPI_Comm"/>
+      </function>
+
+      <function name="Gather" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcount" inplace="recvbuf" const="opt"/>
+        <arg name="sendcount" type="int"/>
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcount" root="root" ranks="comm"/>
+        <arg name="recvcount" type="int"/>
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="root" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+      </function>
+
+      <function name="Gatherv" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcount" inplace="recvbuf" const="opt"/>
+        <arg name="sendcount" type="int"/>
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcounts" root="root" displs="displs"/>
+        <arg name="recvcounts" type="int*" const="1"/>
+        <displs name="displs" type="int*" const="1" ranks="comm" counts="recvcounts" />
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="root" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+      </function>
+
+      <function name="Iallgather" version="3.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcount" all="comm" inplace="recvbuf" const="opt"/>
+        <arg name="sendcount" type="int"/>
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcount" ranks="comm"/>
+        <arg name="recvcount" type="int"/>
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Iallgatherv" version="3.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcount" all="comm" inplace="recvbuf" const="opt"/>
+        <arg name="sendcount" type="int"/>
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcounts" displs="displs"/>
+        <arg name="recvcounts" type="int*" const="1"/>
+        <displs name="displs" type="int*" const="1" ranks="comm" counts="recvcounts" />
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <!-- Implemented in ampi/wrappers.hpp -->
+      <function name="Iallreduce_global" version="3.0" async="request" mpiName="MPI_Iallreduce" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" const="opt" type="datatype" count="count" inplace="recvbuf" all="comm" />
+        <recv name="recvbuf" type="datatype" count="count"/>
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <operator name="op" type="MPI_Op"/>
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Ialltoall" version="3.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcount" ranks="comm" const="opt" inplace="recvbuf"/>
+        <arg name="sendcount" type="int" />
+        <type name="sendtype" type="MPI_Datatype" />
+        <recv name="recvbuf" type="recvtype" count="recvcount" ranks="comm"/>
+        <arg name="recvcount" type="int" />
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Ialltoallv" version="3.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcounts" displs="sdispls" const="opt" inplace="recvbuf"/>
+        <arg name="sendcounts" type="int*" const="1"/>
+        <displs name="sdispls" type="int*" const="1" ranks="comm" counts="sendcounts" />
+        <type name="sendtype" type="MPI_Datatype" />
+        <recv name="recvbuf" type="recvtype" count="recvcounts" displs="rdispls" />
+        <arg name="recvcounts" type="int*" const="1"/>
+        <displs name="rdispls" type="int*" const="1" ranks="comm" counts="recvcounts" />
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <!-- Need to change generator to loop over types. -->
+      <function name="Ialltoallw" version="3.0" async="request" mediHandle="disable">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="request" type="MPI_Request*" />
+        <send name="sendbuf" type="sendtypes" count="sendcounts" displs="sdispls" const="opt" inplace="recvbuf"/>
+        <arg name="sendcounts" type="int*" const="1"/>
+        <displs name="sdispls" type="int*" const="1" ranks="comm" counts="sendcounts" />
+        <type name="sendtypes" type="MPI_Datatype*" const="1" />
+        <recv name="recvbuf" type="recvtypes" count="recvcounts" displs="rdispls" />
+        <arg name="recvcounts" type="int*" const="1"/>
+        <displs name="rdispls" type="int*" const="1" ranks="comm" counts="recvcounts" />
+        <type name="recvtypes" type="MPI_Datatype*" const="1"/>
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <!-- Implemented in ampi/async.hpp -->
+      <function name="Ibarrier" version="3.0" async="request" mediHandle="handled" >
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*" />
+      </function>
+
+      <!-- Implemented in ampi/wrappers.hpp -->
+      <function name="Ibcast_wrap" version="3.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="bufferSend" type="datatype" count="count" root="root" all="comm" inplace="bufferRecv" />
+        <recv name="bufferRecv" type="datatype" count="count" />
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="root" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <!-- Implemented in ampi/wrappers.hpp -->
+      <function name="Iexscan" version="3.0" async="request" mediHandle="handled"> <!-- all defined -->
+        <send name="sendbuf" type="datatype" count="count" inplace="recvbuf" all="comm" const="opt"/>
+        <recv name="recvbuf" type="datatype" count="count" />
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <operator name="op" type="MPI_Op"/>
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Igather" version="3.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcount" inplace="recvbuf" const="opt"/>
+        <arg name="sendcount" type="int"/>
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcount" root="root" ranks="comm"/>
+        <arg name="recvcount" type="int"/>
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="root" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Igatherv" version="3.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" type="sendtype" count="sendcount" inplace="recvbuf" const="opt"/>
+        <arg name="sendcount" type="int"/>
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcounts" root="root" displs="displs"/>
+        <arg name="recvcounts" type="int*" const="1"/>
+        <displs name="displs" type="int*" const="1" ranks="comm" counts="recvcounts" />
+        <type name="recvtype" type="MPI_Datatype" />
+        <arg name="root" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <!-- Implemented in ampi/wrappers.hpp -->
+      <function name="Ireduce_global" version="3.0" async="request" mpiName="MPI_Ireduce" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" const="opt" type="datatype" count="count" inplace="recvbuf"/>
+        <recv name="recvbuf" type="datatype" count="count" root="root"/>
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <operator name="op" type="MPI_Op"/>
+        <arg name="root" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Ireduce_scatter" version="3.0" async="request" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcounts" type="int*" const="1"/>
+        <arg name="datatype" type="MPI_Datatype" />
+        <arg name="op" type="MPI_Op" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Ireduce_scatter_block" version="3.0" async="request" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcount" type="int" />
+        <arg name="datatype" type="MPI_Datatype" />
+        <arg name="op" type="MPI_Op" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="request" type="MPI_Request*" />
+      </function>
+
+      <!-- Implemented in ampi/wrappers.hpp -->
+      <function name="Iscan" version="3.0" async="request" mediHandle="handled"> <!-- all defined -->
+        <send name="sendbuf" const="opt" type="datatype" count="count" inplace="recvbuf" all="comm" />
+        <recv name="recvbuf" type="datatype" count="count" />
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <operator name="op" type="MPI_Op"/>
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Iscatter" version="3.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" const="1" type="sendtype" count="sendcount" root="root" ranks="comm"/>
+        <arg name="sendcount" type="int"/>
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcount" inplace="sendbuf" />
+        <arg name="recvcount" type="int"/>
+        <type name="recvtype" type="MPI_Datatype"/>
+        <arg name="root" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Iscatterv" version="3.0" async="request" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" const="1" type="sendtype" count="sendcounts" root="root" displs="displs"/>
+        <arg name="sendcounts" type="int*" const="1"/>
+        <displs name="displs" type="int*" const="1" ranks="comm" counts="sendcounts" />
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcount" inplace="sendbuf" />
+        <arg name="recvcount" type="int"/>
+        <type name="recvtype" type="MPI_Datatype"/>
+        <arg name="root" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+        <request name="request" type="MPI_Request*"/>
+      </function>
+
+      <function name="Op_commutative" version="2.2" mediHandle="default">
+        <operator name="op" type="MPI_Op" />
+        <arg name="commute" type="int*" />
+      </function>
+
+      <function name="Op_create" version="1.0" mediHandle="handled">
+        <arg name="user_fn" type="MPI_User_function*" />
+        <arg name="commute" type="int" />
+        <operator name="op" type="MPI_Op*" />
+      </function>
+
+      <function name="Op_free" version="1.0" mediHandle="handled">
+        <operator name="op" type="MPI_Op*" />
+      </function>
+
+      <!-- Implemented in ampi/wrappers.hpp -->
+      <function name="Reduce_global" version="1.0" mpiName="MPI_Reduce" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" const="opt" type="datatype" count="count" inplace="recvbuf"/>
+        <recv name="recvbuf" type="datatype" count="count" root="root"/>
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <operator name="op" type="MPI_Op"/>
+        <arg name="root" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+      </function>
+
+      <!-- Implemented in ampi/wrappers.hpp -->
+      <function name="Reduce_local" version="2.2" mediHandle="handled">
+        <arg name="inbuf" type="void*" const="1"/>
+        <arg name="inoutbuf" type="void*" />
+        <arg name="count" type="int" />
+        <type name="datatype" type="MPI_Datatype" />
+        <operator name="op" type="MPI_Op" />
+      </function>
+
+      <function name="Reduce_scatter" version="1.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcounts" type="int*" const="1"/>
+        <arg name="datatype" type="MPI_Datatype" />
+        <arg name="op" type="MPI_Op" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <function name="Reduce_scatter_block" version="2.2" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcount" type="int" />
+        <arg name="datatype" type="MPI_Datatype" />
+        <arg name="op" type="MPI_Op" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <!-- Implemented in ampi/wrappers.hpp -->
+      <function name="Scan" version="1.0" mediHandle="handled"> <!-- all defined -->
+        <send name="sendbuf" const="opt" type="datatype" count="count" inplace="recvbuf" all="comm" />
+        <recv name="recvbuf" type="datatype" count="count" />
+        <arg name="count" type="int"/>
+        <type name="datatype" type="MPI_Datatype"/>
+        <operator name="op" type="MPI_Op"/>
+        <arg name="comm" type="MPI_Comm"/>
+      </function>
+
+      <function name="Scatter" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" const="opt" type="sendtype" count="sendcount" root="root" ranks="comm"/>
+        <arg name="sendcount" type="int"/>
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcount" inplace="sendbuf"/>
+        <arg name="recvcount" type="int"/>
+        <type name="recvtype" type="MPI_Datatype"/>
+        <arg name="root" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+      </function>
+
+      <function name="Scatterv" version="1.0" mediHandle="transform"> <!-- all defined -->
+        <send name="sendbuf" const="opt" type="sendtype" count="sendcounts" root="root" displs="displs"/>
+        <arg name="sendcounts" type="int*" const="1"/>
+        <displs name="displs" type="int*" const="1" ranks="comm" counts="sendcounts" />
+        <type name="sendtype" type="MPI_Datatype"/>
+        <recv name="recvbuf" type="recvtype" count="recvcount" inplace="sendbuf" />
+        <arg name="recvcount" type="int"/>
+        <type name="recvtype" type="MPI_Datatype"/>
+        <arg name="root" type="int"/>
+        <arg name="comm" type="MPI_Comm"/>
+      </function>
+
+    <!-- A.2.4 Groups, Contexts, Communicators, and Caching C Bindings -->
+
+      <function name="Comm_compare" version="1.0">
+        <arg name="comm1" type="MPI_Comm" />
+        <arg name="comm2" type="MPI_Comm" />
+        <arg name="result" type="int*" />
+      </function>
+
+      <function name="Comm_create" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="group" type="MPI_Group" />
+        <arg name="newcomm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Comm_create_group" version="3.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="group" type="MPI_Group" />
+        <arg name="tag" type="int" />
+        <arg name="newcomm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Comm_create_keyval" version="2.0">
+        <arg name="comm_copy_attr_fn" type="MPI_Comm_copy_attr_function*" />
+        <arg name="comm_delete_attr_fn" type="MPI_Comm_delete_attr_function*" />
+        <arg name="comm_keyval" type="int*" />
+        <arg name="extra_state" type="void*" />
+      </function>
+
+      <function name="Comm_delete_attr" version="2.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="comm_keyval" type="int" />
+      </function>
+
+      <function name="Comm_dup" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="newcomm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Comm_dup_with_info" version="3.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="info" type="MPI_Info" />
+        <arg name="newcomm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Comm_free" version="1.0">
+        <arg name="comm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Comm_free_keyval" version="2.0">
+        <arg name="comm_keyval" type="int*" />
+      </function>
+
+      <function name="Comm_get_attr" version="2.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="comm_keyval" type="int" />
+        <arg name="attribute_val" type="void*" />
+        <arg name="flag" type="int*" />
+      </function>
+
+      <function name="Comm_get_info" version="3.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="info_used" type="MPI_Info*" />
+      </function>
+
+      <function name="Comm_get_name" version="2.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="comm_name" type="char*" />
+        <arg name="resultlen" type="int*" />
+      </function>
+
+      <function name="Comm_group" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="group" type="MPI_Group*" />
+      </function>
+
+      <function name="Comm_idup" version="3.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="newcomm" type="MPI_Comm*" />
+        <request name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Comm_rank" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="rank" type="int*" />
+      </function>
+
+      <function name="Comm_remote_group" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="group" type="MPI_Group*" />
+      </function>
+
+      <function name="Comm_remote_size" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="size" type="int*" />
+      </function>
+
+      <function name="Comm_set_attr" version="2.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="comm_keyval" type="int" />
+        <arg name="attribute_val" type="void*" />
+      </function>
+
+      <function name="Comm_set_info" version="3.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="info" type="MPI_Info" />
+      </function>
+
+      <function name="Comm_set_name" version="2.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="comm_name" type="char*" const="opt"/>
+      </function>
+
+      <function name="Comm_size" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="size" type="int*" />
+      </function>
+
+      <function name="Comm_split" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="color" type="int" />
+        <arg name="key" type="int" />
+        <arg name="newcomm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Comm_split_type" version="3.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="split_type" type="int" />
+        <arg name="key" type="int" />
+        <arg name="info" type="MPI_Info" />
+        <arg name="newcomm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Comm_test_inter" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="flag" type="int*" />
+      </function>
+
+      <function name="Group_compare" version="1.0">
+        <arg name="group1" type="MPI_Group" />
+        <arg name="group2" type="MPI_Group" />
+        <arg name="result" type="int*" />
+      </function>
+
+      <function name="Group_difference" version="1.0">
+        <arg name="group1" type="MPI_Group" />
+        <arg name="group2" type="MPI_Group" />
+        <arg name="newgroup" type="MPI_Group*" />
+      </function>
+
+      <function name="Group_excl" version="1.0">
+        <arg name="group" type="MPI_Group" />
+        <arg name="n" type="int" />
+        <arg name="ranks" type="int*" const="opt"/>
+        <arg name="newgroup" type="MPI_Group*" />
+      </function>
+
+      <function name="Group_free" version="1.0">
+        <arg name="group" type="MPI_Group*" />
+      </function>
+
+      <function name="Group_incl" version="1.0">
+        <arg name="group" type="MPI_Group" />
+        <arg name="n" type="int" />
+        <arg name="ranks" type="int*" const="opt"/>
+        <arg name="newgroup" type="MPI_Group*" />
+      </function>
+
+      <function name="Group_intersection" version="1.0">
+        <arg name="group1" type="MPI_Group" />
+        <arg name="group2" type="MPI_Group" />
+        <arg name="newgroup" type="MPI_Group*" />
+      </function>
+
+      <function name="Group_range_excl" version="1.0">
+        <arg name="group" type="MPI_Group" />
+        <arg name="n" type="int" />
+        <arg name="ranges" type="::medi::common::Range*" />
+        <arg name="newgroup" type="MPI_Group*" />
+      </function>
+
+      <function name="Group_range_incl" version="1.0">
+        <arg name="group" type="MPI_Group" />
+        <arg name="n" type="int" />
+        <arg name="ranges" type="::medi::common::Range*" />
+        <arg name="newgroup" type="MPI_Group*" />
+      </function>
+
+      <function name="Group_rank" version="1.0">
+        <arg name="group" type="MPI_Group" />
+        <arg name="rank" type="int*" />
+      </function>
+
+      <function name="Group_size" version="1.0">
+        <arg name="group" type="MPI_Group" />
+        <arg name="size" type="int*" />
+      </function>
+
+      <function name="Group_translate_ranks" version="1.0">
+        <arg name="group1" type="MPI_Group" />
+        <arg name="n" type="int" />
+        <arg name="ranks1" type="int*" const="opt"/>
+        <arg name="group2" type="MPI_Group" />
+        <arg name="ranks2" type="int*" />
+      </function>
+
+      <function name="Group_union" version="1.0">
+        <arg name="group1" type="MPI_Group" />
+        <arg name="group2" type="MPI_Group" />
+        <arg name="newgroup" type="MPI_Group*" />
+      </function>
+
+      <function name="Intercomm_create" version="1.0">
+        <arg name="local_comm" type="MPI_Comm" />
+        <arg name="local_leader" type="int" />
+        <arg name="peer_comm" type="MPI_Comm" />
+        <arg name="remote_leader" type="int" />
+        <arg name="tag" type="int" />
+        <arg name="newintercomm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Intercomm_merge" version="1.0">
+        <arg name="intercomm" type="MPI_Comm" />
+        <arg name="high" type="int" />
+        <arg name="newintracomm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Type_create_keyval" version="2.0">
+        <arg name="type_copy_attr_fn" type="MPI_Type_copy_attr_function*" />
+        <arg name="type_delete_attr_fn" type="MPI_Type_delete_attr_function*" />
+        <arg name="type_keyval" type="int*" />
+        <arg name="extra_state" type="void*" />
+      </function>
+
+      <function name="Type_delete_attr" version="2.0">
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="type_keyval" type="int" />
+      </function>
+
+      <function name="Type_free_keyval" version="2.0">
+        <arg name="type_keyval" type="int*" />
+      </function>
+
+      <function name="Type_get_attr" version="2.0">
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="type_keyval" type="int" />
+        <arg name="attribute_val" type="void*" />
+        <arg name="flag" type="int*" />
+      </function>
+
+      <function name="Type_get_name" version="2.0">
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="type_name" type="char*" />
+        <arg name="resultlen" type="int*" />
+      </function>
+
+      <function name="Type_set_attr" version="2.0">
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="type_keyval" type="int" />
+        <arg name="attribute_val" type="void*" />
+      </function>
+
+      <function name="Type_set_name" version="2.0">
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="type_name" type="char*" const="1"/>
+      </function>
+
+      <function name="Win_create_keyval" version="2.0">
+        <arg name="win_copy_attr_fn" type="MPI_Win_copy_attr_function*" />
+        <arg name="win_delete_attr_fn" type="MPI_Win_delete_attr_function*" />
+        <arg name="win_keyval" type="int*" />
+        <arg name="extra_state" type="void*" />
+      </function>
+
+      <function name="Win_delete_attr" version="2.0">
+        <arg name="win" type="MPI_Win" />
+        <arg name="win_keyval" type="int" />
+      </function>
+
+      <function name="Win_free_keyval" version="2.0">
+        <arg name="win_keyval" type="int*" />
+      </function>
+
+      <function name="Win_get_attr" version="2.0">
+        <arg name="win" type="MPI_Win" />
+        <arg name="win_keyval" type="int" />
+        <arg name="attribute_val" type="void*" />
+        <arg name="flag" type="int*" />
+      </function>
+
+      <function name="Win_get_name" version="2.0">
+        <arg name="win" type="MPI_Win" />
+        <arg name="win_name" type="char*" />
+        <arg name="resultlen" type="int*" />
+      </function>
+
+      <function name="Win_set_attr" version="2.0">
+        <arg name="win" type="MPI_Win" />
+        <arg name="win_keyval" type="int" />
+        <arg name="attribute_val" type="void*" />
+      </function>
+
+      <function name="Win_set_name" version="2.0">
+        <arg name="win" type="MPI_Win" />
+        <arg name="win_name" type="char*" const="opt"/>
+      </function>
+
+    <!-- A.2.5 Process Topologies C Bindings -->
+
+      <function name="Cart_coords" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="rank" type="int" />
+        <arg name="maxdims" type="int" />
+        <arg name="coords" type="int*" />
+      </function>
+
+      <function name="Cart_create" version="1.0">
+        <arg name="comm_old" type="MPI_Comm" />
+        <arg name="ndims" type="int" />
+        <arg name="dims" type="int*" const="opt"/>
+        <arg name="periods" type="int*" const="opt"/>
+        <arg name="reorder" type="int" />
+        <arg name="comm_cart" type="MPI_Comm*" />
+      </function>
+
+      <function name="Cart_get" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="maxdims" type="int" />
+        <arg name="dims" type="int*" />
+        <arg name="periods" type="int*" />
+        <arg name="coords" type="int*" />
+      </function>
+
+      <function name="Cart_map" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="ndims" type="int" />
+        <arg name="dims" type="int*" const="opt"/>
+        <arg name="periods" type="int*" const="opt"/>
+        <arg name="newrank" type="int*" />
+      </function>
+
+      <function name="Cart_rank" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="coords" type="int*" const="opt"/>
+        <arg name="rank" type="int*" />
+      </function>
+
+      <function name="Cart_shift" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="direction" type="int" />
+        <arg name="disp" type="int" />
+        <arg name="rank_source" type="int*" />
+        <arg name="rank_dest" type="int*" />
+      </function>
+
+      <function name="Cart_sub" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="remain_dims" type="int*" const="opt"/>
+        <arg name="newcomm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Cartdim_get" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="ndims" type="int*" />
+      </function>
+
+      <function name="Dims_create" version="1.0">
+        <arg name="nnodes" type="int" />
+        <arg name="ndims" type="int" />
+        <arg name="dims" type="int*" />
+      </function>
+
+      <function name="Dist_graph_create" version="2.2">
+        <arg name="comm_old" type="MPI_Comm" />
+        <arg name="n" type="int" />
+        <arg name="sources" type="int*" const="opt"/>
+        <arg name="degrees" type="int*" const="opt"/>
+        <arg name="destinations" type="int*" const="opt"/>
+        <arg name="weights" type="int*" const="opt"/>
+        <arg name="info" type="MPI_Info" />
+        <arg name="reorder" type="int" />
+        <arg name="comm_dist_graph" type="MPI_Comm*" />
+      </function>
+
+      <function name="Dist_graph_create_adjacent" version="2.2">
+        <arg name="comm_old" type="MPI_Comm" />
+        <arg name="indegree" type="int" />
+        <arg name="sources" type="int*" const="opt"/>
+        <arg name="sourceweights" type="int*" const="opt"/>
+        <arg name="outdegree" type="int" />
+        <arg name="destinations" type="int*" const="opt"/>
+        <arg name="destweights" type="int*" const="opt"/>
+        <arg name="info" type="MPI_Info" />
+        <arg name="reorder" type="int" />
+        <arg name="comm_dist_graph" type="MPI_Comm*" />
+      </function>
+
+      <function name="Dist_graph_neighbors" version="2.2">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="maxindegree" type="int" />
+        <arg name="sources" type="int*" />
+        <arg name="sourceweights" type="int*" />
+        <arg name="maxoutdegree" type="int" />
+        <arg name="destinations" type="int*" />
+        <arg name="destweights" type="int*" />
+      </function>
+
+      <function name="Dist_graph_neighbors_count" version="2.2">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="indegree" type="int*" />
+        <arg name="outdegree" type="int*" />
+        <arg name="weighted" type="int*" />
+      </function>
+
+      <function name="Graph_create" version="1.0">
+        <arg name="comm_old" type="MPI_Comm" />
+        <arg name="nnodes" type="int" />
+        <arg name="index" type="int*" const="opt"/>
+        <arg name="edges" type="int*" const="opt"/>
+        <arg name="reorder" type="int" />
+        <arg name="comm_graph" type="MPI_Comm*" />
+      </function>
+
+      <function name="Graph_get" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="maxindex" type="int" />
+        <arg name="maxedges" type="int" />
+        <arg name="index" type="int*" />
+        <arg name="edges" type="int*" />
+      </function>
+
+      <function name="Graph_map" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="nnodes" type="int" />
+        <arg name="index" type="int*" const="opt"/>
+        <arg name="edges" type="int*" const="opt"/>
+        <arg name="newrank" type="int*" />
+      </function>
+
+      <function name="Graph_neighbors" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="rank" type="int" />
+        <arg name="maxneighbors" type="int" />
+        <arg name="neighbors" type="int*" />
+      </function>
+
+      <function name="Graph_neighbors_count" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="rank" type="int" />
+        <arg name="nneighbors" type="int*" />
+      </function>
+
+      <function name="Graphdims_get" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="nnodes" type="int*" />
+        <arg name="nedges" type="int*" />
+      </function>
+
+      <!-- The communication size needs to be generalized in order to support this functions. -->
+      <function name="Ineighbor_allgather" version="3.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="sendcount" type="int" />
+        <arg name="sendtype" type="MPI_Datatype" />
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcount" type="int" />
+        <arg name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="request" type="MPI_Request*" />
+      </function>
+      <function name="Ineighbor_allgatherv" version="3.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="sendcount" type="int" />
+        <arg name="sendtype" type="MPI_Datatype" />
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcounts" type="int*" const="1"/>
+        <arg name="displs" type="int*" const="1"/>
+        <arg name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="request" type="MPI_Request*" />
+      </function>
+      <function name="Ineighbor_alltoall" version="3.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="sendcount" type="int" />
+        <arg name="sendtype" type="MPI_Datatype" />
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcount" type="int" />
+        <arg name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="request" type="MPI_Request*" />
+      </function>
+      <function name="Ineighbor_alltoallv" version="3.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="sendcounts" type="int*" const="1"/>
+        <arg name="sdispls" type="int*" const="1"/>
+        <arg name="sendtype" type="MPI_Datatype" />
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcounts" type="int*" const="1"/>
+        <arg name="rdispls" type="int*" const="1"/>
+        <arg name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="request" type="MPI_Request*" />
+      </function>
+      <function name="Ineighbor_alltoallw" version="3.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="sendcounts" type="int*" const="1"/>
+        <arg name="sdispls" type="MPI_Aint*" const="1"/>
+        <arg name="sendtypes" type="MPI_Datatype*" const="1"/>
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcounts" type="int*" const="1"/>
+        <arg name="rdispls" type="MPI_Aint*" const="1"/>
+        <arg name="recvtypes" type="MPI_Datatype*" const="1"/>
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="request" type="MPI_Request*" />
+      </function>
+      <function name="Neighbor_allgather" version="3.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="sendcount" type="int" />
+        <arg name="sendtype" type="MPI_Datatype" />
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcount" type="int" />
+        <arg name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+      <function name="Neighbor_allgatherv" version="3.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="sendcount" type="int" />
+        <arg name="sendtype" type="MPI_Datatype" />
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcounts" type="int*" const="1"/>
+        <arg name="displs" type="int*" const="1"/>
+        <arg name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+      <function name="Neighbor_alltoall" version="3.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="sendcount" type="int" />
+        <arg name="sendtype" type="MPI_Datatype" />
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcount" type="int" />
+        <arg name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+      <function name="Neighbor_alltoallv" version="3.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="sendcounts" type="int*" const="1"/>
+        <arg name="sdispls" type="int*" const="1"/>
+        <arg name="sendtype" type="MPI_Datatype" />
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcounts" type="int*" const="1"/>
+        <arg name="rdispls" type="int*" const="1"/>
+        <arg name="recvtype" type="MPI_Datatype" />
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+      <function name="Neighbor_alltoallw" version="3.0" mediHandle="disable">
+        <arg name="sendbuf" type="void*" const="1"/>
+        <arg name="sendcounts" type="int*" const="1"/>
+        <arg name="sdispls" type="MPI_Aint*" const="1"/>
+        <arg name="sendtypes" type="MPI_Datatype*" const="1"/>
+        <arg name="recvbuf" type="void*" />
+        <arg name="recvcounts" type="int*" const="1"/>
+        <arg name="rdispls" type="MPI_Aint*" const="1"/>
+        <arg name="recvtypes" type="MPI_Datatype*" const="1"/>
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <function name="Topo_test" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="status" type="int*" />
+      </function>
+
+    <!-- A.2.6 MPI Environmental Management C Bindings -->
+
+      <function name="Wtick" version="1.0" type="double" >
+      </function>
+
+      <function name="Wtime" version="1.0" type="double" >
+      </function>
+
+      <function name="Abort" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="errorcode" type="int" />
+      </function>
+
+      <function name="Add_error_class" version="2.0">
+        <arg name="errorclass" type="int*" />
+      </function>
+
+      <function name="Add_error_code" version="2.0">
+        <arg name="errorclass" type="int" />
+        <arg name="errorcode" type="int*" />
+      </function>
+
+      <function name="Add_error_string" version="2.0">
+        <arg name="errorcode" type="int" />
+        <arg name="string" type="char*" const="opt"/>
+      </function>
+
+      <function name="Alloc_mem" version="2.0">
+        <arg name="size" type="MPI_Aint" />
+        <arg name="info" type="MPI_Info" />
+        <arg name="baseptr" type="void*" />
+      </function>
+
+      <function name="Comm_call_errhandler" version="2.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="errorcode" type="int" />
+      </function>
+
+      <function name="Comm_create_errhandler" version="2.2">
+        <arg name="comm_errhandler_fn" type="MPI_Comm_errhandler_function*" />
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="Comm_create_errhandler" version="2.0" deprecated="2.2">
+        <arg name="comm_errhandler_fn" type="MPI_Comm_errhandler_fn*" />
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="Comm_get_errhandler" version="2.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="Comm_set_errhandler" version="2.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="errhandler" type="MPI_Errhandler" />
+      </function>
+
+      <function name="Errhandler_free" version="1.0">
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="Error_class" version="1.0">
+        <arg name="errorcode" type="int" />
+        <arg name="errorclass" type="int*" />
+      </function>
+
+      <function name="Error_string" version="1.0">
+        <arg name="errorcode" type="int" />
+        <arg name="string" type="char*" />
+        <arg name="resultlen" type="int*" />
+      </function>
+
+      <function name="File_call_errhandler" version="2.0">
+        <arg name="fh" type="MPI_File" />
+        <arg name="errorcode" type="int" />
+      </function>
+
+      <function name="File_create_errhandler" version="2.2">
+        <arg name="file_errhandler_fn" type="MPI_File_errhandler_function*" />
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="File_create_errhandler" version="2.0" deprecated="2.2">
+        <arg name="file_errhandler_fn" type="MPI_File_errhandler_fn*" />
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="File_get_errhandler" version="2.0">
+        <arg name="file" type="MPI_File" />
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="File_set_errhandler" version="2.0">
+        <arg name="file" type="MPI_File" />
+        <arg name="errhandler" type="MPI_Errhandler" />
+      </function>
+
+      <function name="Finalize" version="1.0">
+      </function>
+
+      <function name="Finalized" version="2.0">
+        <arg name="flag" type="int*" />
+      </function>
+
+      <function name="Free_mem" version="2.0">
+        <arg name="base" type="void*" />
+      </function>
+
+      <function name="Get_library_version" version="3.0">
+        <arg name="version" type="char*" />
+        <arg name="resultlen" type="int*" />
+      </function>
+
+      <function name="Get_processor_name" version="1.0">
+        <arg name="name" type="char*" />
+        <arg name="resultlen" type="int*" />
+      </function>
+
+      <function name="Get_version" version="1.0">
+        <arg name="version" type="int*" />
+        <arg name="subversion" type="int*" />
+      </function>
+
+      <!-- Handled in medi/ampi/wrappers.hpp -->
+      <function name="Init" version="1.0" mediHandle="handled">
+        <arg name="argc" type="int*" />
+        <arg name="argv" type="char***" />
+      </function>
+
+      <function name="Initialized" version="1.0">
+        <arg name="flag" type="int*" />
+      </function>
+
+      <function name="Win_call_errhandler" version="2.0">
+        <arg name="win" type="MPI_Win" />
+        <arg name="errorcode" type="int" />
+      </function>
+
+      <function name="Win_create_errhandler" version="2.2">
+        <arg name="win_errhandler_fn" type="MPI_Win_errhandler_function*" />
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="Win_create_errhandler" version="2.0" deprecated="2.2">
+        <arg name="win_errhandler_fn" type="MPI_Win_errhandler_fn*" />
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="Win_get_errhandler" version="2.0">
+        <arg name="win" type="MPI_Win" />
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="Win_set_errhandler" version="2.0">
+        <arg name="win" type="MPI_Win" />
+        <arg name="errhandler" type="MPI_Errhandler" />
+      </function>
+
+    <!-- A.2.7 Info Object C Bindings -->
+
+      <function name="Info_create" version="2.0">
+        <arg name="info" type="MPI_Info*" />
+      </function>
+
+      <function name="Info_delete" version="2.0">
+        <arg name="info" type="MPI_Info" />
+        <arg name="key" type="char*" const="opt" />
+      </function>
+
+      <function name="Info_dup" version="2.0">
+        <arg name="info" type="MPI_Info" />
+        <arg name="newinfo" type="MPI_Info*" />
+      </function>
+
+      <function name="Info_free" version="2.0">
+        <arg name="info" type="MPI_Info*" />
+      </function>
+
+      <function name="Info_get" version="2.0">
+        <arg name="info" type="MPI_Info" />
+        <arg name="key" type="char*" const="opt"/>
+        <arg name="valuelen" type="int" />
+        <arg name="value" type="char*" />
+        <arg name="flag" type="int*" />
+      </function>
+
+      <function name="Info_get_nkeys" version="2.0">
+        <arg name="info" type="MPI_Info" />
+        <arg name="nkeys" type="int*" />
+      </function>
+
+      <function name="Info_get_nthkey" version="2.0">
+        <arg name="info" type="MPI_Info" />
+        <arg name="n" type="int" />
+        <arg name="key" type="char*" />
+      </function>
+
+      <function name="Info_get_valuelen" version="2.0">
+        <arg name="info" type="MPI_Info" />
+        <arg name="key" type="char*" const="opt"/>
+        <arg name="valuelen" type="int*" />
+        <arg name="flag" type="int*" />
+      </function>
+
+      <function name="Info_set" version="2.0">
+        <arg name="info" type="MPI_Info" />
+        <arg name="key" type="char*" const="opt" />
+        <arg name="value" type="char*" const="opt"/>
+      </function>
+
+    <!-- A.2.8 Process Creation and Management C Bindings -->
+
+      <function name="Close_port" version="2.0">
+        <arg name="port_name" type="char*" const="opt"/>
+      </function>
+
+      <function name="Comm_accept" version="2.0">
+        <arg name="port_name" type="char*" const="opt"/>
+        <arg name="info" type="MPI_Info" />
+        <arg name="root" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="newcomm" type="MPI_Comm*"/>
+      </function>
+
+      <function name="Comm_connect" version="2.0">
+        <arg name="port_name" type="char*" const="opt"/>
+        <arg name="info" type="MPI_Info" />
+        <arg name="root" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="newcomm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Comm_disconnect" version="2.0">
+        <arg name="comm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Comm_get_parent" version="2.0">
+        <arg name="parent" type="MPI_Comm*" />
+      </function>
+
+      <function name="Comm_join" version="2.0">
+        <arg name="fd" type="int" />
+        <arg name="intercomm" type="MPI_Comm*" />
+      </function>
+
+      <function name="Comm_spawn" version="2.0">
+        <arg name="command" type="char*" const="opt"/>
+        <arg name="argv" type="char**" />
+        <arg name="maxprocs" type="int" />
+        <arg name="info" type="MPI_Info" />
+        <arg name="root" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="intercomm" type="MPI_Comm*" />
+        <arg name="array_of_errcodes" type="int*" />
+      </function>
+
+      <function name="Comm_spawn_multiple" version="2.0">
+        <arg name="count" type="int" />
+        <arg name="array_of_commands" type="char**" />
+        <arg name="array_of_argv" type="char***" />
+        <arg name="array_of_maxprocs" type="int*" const="opt"/>
+        <arg name="array_of_info" type="MPI_Info*" const="opt"/>
+        <arg name="root" type="int" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="intercomm" type="MPI_Comm*" />
+        <arg name="array_of_errcodes" type="int*" />
+      </function>
+
+      <function name="Lookup_name" version="2.0">
+        <arg name="service_name" type="char*" const="opt"/>
+        <arg name="info" type="MPI_Info" />
+        <arg name="port_name" type="char*" />
+      </function>
+
+      <function name="Open_port" version="2.0">
+        <arg name="info" type="MPI_Info" />
+        <arg name="port_name" type="char*" />
+      </function>
+
+      <function name="Publish_name" version="2.0">
+        <arg name="service_name" type="char*" const="opt"/>
+        <arg name="info" type="MPI_Info" />
+        <arg name="port_name" type="char*" const="opt"/>
+      </function>
+
+      <function name="Unpublish_name" version="2.0">
+        <arg name="service_name" type="char*" const="opt"/>
+        <arg name="info" type="MPI_Info" />
+        <arg name="port_name" type="char*" const="opt"/>
+      </function>
+
+    <!-- A.2.9 One-Sided Communication C Bindings -->
+
+      <function name="Accumulate" version="2.0" mediHandle="disable">
+        <arg name="origin_addr" type="void*" const="1"/>
+        <arg name="origin_count" type="int" />
+        <arg name="origin_datatype" type="MPI_Datatype" />
+        <arg name="target_rank" type="int" />
+        <arg name="target_disp" type="MPI_Aint" />
+        <arg name="target_count" type="int" />
+        <arg name="target_datatype" type="MPI_Datatype" />
+        <arg name="op" type="MPI_Op" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Compare_and_swap" version="3.0" mediHandle="disable">
+        <arg name="origin_addr" type="void*" const="1"/>
+        <arg name="compare_addr" type="void*" const="1"/>
+        <arg name="result_addr" type="void*" />
+        <arg name="datatype" type="MPI_Datatype" />
+        <arg name="target_rank" type="int" />
+        <arg name="target_disp" type="MPI_Aint" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Fetch_and_op" version="3.0" mediHandle="disable">
+        <arg name="origin_addr" type="void*" const="1"/>
+        <arg name="result_addr" type="void*" />
+        <arg name="datatype" type="MPI_Datatype" />
+        <arg name="target_rank" type="int" />
+        <arg name="target_disp" type="MPI_Aint" />
+        <arg name="op" type="MPI_Op" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Get" version="2.0" mediHandle="disable">
+        <arg name="origin_addr" type="void*" />
+        <arg name="origin_count" type="int" />
+        <arg name="origin_datatype" type="MPI_Datatype" />
+        <arg name="target_rank" type="int" />
+        <arg name="target_disp" type="MPI_Aint" />
+        <arg name="target_count" type="int" />
+        <arg name="target_datatype" type="MPI_Datatype" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Get_accumulate" version="3.0" mediHandle="disable">
+        <arg name="origin_addr" type="void*" const="1"/>
+        <arg name="origin_count" type="int" />
+        <arg name="origin_datatype" type="MPI_Datatype" />
+        <arg name="result_addr" type="void*" />
+        <arg name="result_count" type="int" />
+        <arg name="result_datatype" type="MPI_Datatype" />
+        <arg name="target_rank" type="int" />
+        <arg name="target_disp" type="MPI_Aint" />
+        <arg name="target_count" type="int" />
+        <arg name="target_datatype" type="MPI_Datatype" />
+        <arg name="op" type="MPI_Op" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Put" version="2.0" mediHandle="disable">
+        <arg name="origin_addr" type="void*" const="1"/>
+        <arg name="origin_count" type="int" />
+        <arg name="origin_datatype" type="MPI_Datatype" />
+        <arg name="target_rank" type="int" />
+        <arg name="target_disp" type="MPI_Aint" />
+        <arg name="target_count" type="int" />
+        <arg name="target_datatype" type="MPI_Datatype" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Raccumulate" version="3.0" mediHandle="disable">
+        <arg name="origin_addr" type="void*" const="1"/>
+        <arg name="origin_count" type="int" />
+        <arg name="origin_datatype" type="MPI_Datatype" />
+        <arg name="target_rank" type="int" />
+        <arg name="target_disp" type="MPI_Aint" />
+        <arg name="target_count" type="int" />
+        <arg name="target_datatype" type="MPI_Datatype" />
+        <arg name="op" type="MPI_Op" />
+        <arg name="win" type="MPI_Win" />
+        <arg name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Rget" version="3.0" mediHandle="disable">
+        <arg name="origin_addr" type="void*" />
+        <arg name="origin_count" type="int" />
+        <arg name="origin_datatype" type="MPI_Datatype" />
+        <arg name="target_rank" type="int" />
+        <arg name="target_disp" type="MPI_Aint" />
+        <arg name="target_count" type="int" />
+        <arg name="target_datatype" type="MPI_Datatype" />
+        <arg name="win" type="MPI_Win" />
+        <arg name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Rget_accumulate" version="3.0" mediHandle="disable">
+        <arg name="origin_addr" type="void*" const="1"/>
+        <arg name="origin_count" type="int" />
+        <arg name="origin_datatype" type="MPI_Datatype" />
+        <arg name="result_addr" type="void*" />
+        <arg name="result_count" type="int" />
+        <arg name="result_datatype" type="MPI_Datatype" />
+        <arg name="target_rank" type="int" />
+        <arg name="target_disp" type="MPI_Aint" />
+        <arg name="target_count" type="int" />
+        <arg name="target_datatype" type="MPI_Datatype" />
+        <arg name="op" type="MPI_Op" />
+        <arg name="win" type="MPI_Win" />
+        <arg name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Rput" version="3.0" mediHandle="disable">
+        <arg name="origin_addr" type="void*" const="1"/>
+        <arg name="origin_count" type="int" />
+        <arg name="origin_datatype" type="MPI_Datatype" />
+        <arg name="target_rank" type="int" />
+        <arg name="target_disp" type="MPI_Aint" />
+        <arg name="target_count" type="int" />
+        <arg name="target_datatype" type="MPI_Datatype" />
+        <arg name="win" type="MPI_Win" />
+        <arg name="request" type="MPI_Request*" />
+      </function>
+
+      <function name="Win_allocate" version="3.0" mediHandle="disable">
+        <arg name="size" type="MPI_Aint" />
+        <arg name="disp_unit" type="int" />
+        <arg name="info" type="MPI_Info" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="baseptr" type="void*" />
+        <arg name="win" type="MPI_Win*" />
+      </function>
+
+      <function name="Win_allocate_shared" version="3.0" mediHandle="disable">
+        <arg name="size" type="MPI_Aint" />
+        <arg name="disp_unit" type="int" />
+        <arg name="info" type="MPI_Info" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="baseptr" type="void*" />
+        <arg name="win" type="MPI_Win*" />
+      </function>
+
+      <function name="Win_attach" version="3.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+        <arg name="base" type="void*" />
+        <arg name="size" type="MPI_Aint" />
+      </function>
+
+      <function name="Win_complete" version="2.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_create" version="2.0" mediHandle="disable">
+        <arg name="base" type="void*" />
+        <arg name="size" type="MPI_Aint" />
+        <arg name="disp_unit" type="int" />
+        <arg name="info" type="MPI_Info" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="win" type="MPI_Win*" />
+      </function>
+
+      <function name="Win_create_dynamic" version="3.0" mediHandle="disable">
+        <arg name="info" type="MPI_Info" />
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="win" type="MPI_Win*" />
+      </function>
+
+      <function name="Win_detach" version="3.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+        <arg name="base" type="void*" const="1"/>
+      </function>
+
+      <function name="Win_fence" version="2.0" mediHandle="disable">
+        <arg name="assert" type="int" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_flush" version="3.0" mediHandle="disable">
+        <arg name="rank" type="int" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_flush_all" version="3.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_flush_local" version="3.0" mediHandle="disable">
+        <arg name="rank" type="int" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_flush_local_all" version="3.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_free" version="2.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win*" />
+      </function>
+
+      <function name="Win_get_group" version="2.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+        <arg name="group" type="MPI_Group*" />
+      </function>
+
+      <function name="Win_get_info" version="3.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+        <arg name="info_used" type="MPI_Info*" />
+      </function>
+
+      <function name="Win_lock" version="2.0" mediHandle="disable">
+        <arg name="lock_type" type="int" />
+        <arg name="rank" type="int" />
+        <arg name="assert" type="int" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_lock_all" version="3.0" mediHandle="disable">
+        <arg name="assert" type="int" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_post" version="2.0" mediHandle="disable">
+        <arg name="group" type="MPI_Group" />
+        <arg name="assert" type="int" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_set_info" version="3.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+        <arg name="info" type="MPI_Info" />
+      </function>
+
+      <function name="Win_shared_query" version="3.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+        <arg name="rank" type="int" />
+        <arg name="size" type="MPI_Aint*" />
+        <arg name="disp_unit" type="int*" />
+        <arg name="baseptr" type="void*" />
+      </function>
+
+      <function name="Win_start" version="2.0" mediHandle="disable">
+        <arg name="group" type="MPI_Group" />
+        <arg name="assert" type="int" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_sync" version="3.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_test" version="2.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+        <arg name="flag" type="int*" />
+      </function>
+
+      <function name="Win_unlock" version="2.0" mediHandle="disable">
+        <arg name="rank" type="int" />
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_unlock_all" version="3.0" mediHandle="disable">
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_wait" version="2.0" mediHandle="disable">
+        <arg name="win" type="MPI_Wina" />
+      </function>
+
+    <!-- A.2.10 External Interfaces C Bindings -->
+
+    <function name="Grequest_complete" version="2.0">
+      <request name="request" type="MPI_Request" noptr="1"/>
+    </function>
+
+    <function name="Grequest_start" version="2.0">
+      <arg name="query_fn" type="MPI_Grequest_query_function*" />
+      <arg name="free_fn" type="MPI_Grequest_free_function*" />
+      <arg name="cancel_fn" type="MPI_Grequest_cancel_function*" />
+      <arg name="extra_state" type="void*" />
+      <request name="request" type="MPI_Request*" />
+    </function>
+
+    <function name="Init_thread" version="2.0" mediHandle="handled">
+      <arg name="argc" type="int*" />
+      <arg name="argv" type="char***" />
+      <arg name="required" type="int" />
+      <arg name="provided" type="int*" />
+    </function>
+
+    <function name="Is_thread_main" version="2.0">
+      <arg name="flag" type="int*" />
+    </function>
+
+    <function name="Query_thread" version="2.0">
+      <arg name="provided" type="int*" />
+    </function>
+
+    <function name="Status_set_cancelled" version="2.0">
+      <arg name="status" type="MPI_Status*" />
+      <arg name="flag" type="int" />
+    </function>
+
+    <function name="Status_set_elements" version="2.0">
+      <arg name="status" type="MPI_Status*" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="count" type="int" />
+    </function>
+
+    <function name="Status_set_elements_x" version="3.0">
+      <arg name="status" type="MPI_Status*" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="count" type="MPI_Count" />
+    </function>
+
+    <!-- A.2.11 I/O C Bindings -->
+
+    <function name="File_close" version="2.0">
+      <arg name="fh" type="MPI_File*" />
+    </function>
+
+    <function name="File_delete" version="2.0">
+      <arg name="filename" type="char*" const="opt"/>
+      <arg name="info" type="MPI_Info" />
+    </function>
+
+    <function name="File_get_amode" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="amode" type="int*" />
+    </function>
+
+    <function name="File_get_atomicity" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="flag" type="int*" />
+    </function>
+
+    <function name="File_get_byte_offset" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="disp" type="MPI_Offset*" />
+    </function>
+
+    <function name="File_get_group" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="group" type="MPI_Group*" />
+    </function>
+
+    <function name="File_get_info" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="info_used" type="MPI_Info*" />
+    </function>
+
+    <function name="File_get_position" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset*" />
+    </function>
+
+    <function name="File_get_position_shared" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset*" />
+    </function>
+
+    <function name="File_get_size" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="size" type="MPI_Offset*" />
+    </function>
+
+    <function name="File_get_type_extent" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="extent" type="MPI_Aint*" />
+    </function>
+
+    <function name="File_get_view" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="disp" type="MPI_Offset*" />
+      <type name="etype" type="MPI_Datatype*" />
+      <type name="filetype" type="MPI_Datatype*" />
+      <arg name="datarep" type="char*" />
+    </function>
+
+    <function name="File_iread" async="request" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <rquest name="request" type="MPI_Request*" />
+    </function>
+
+    <function name="File_iread_all" async="request" version="3.1">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <request name="request" type="MPI_Request*" />
+    </function>
+
+    <function name="File_iread_at" async="request" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <request name="request" type="MPI_Request*" />
+    </function>
+
+    <function name="File_iread_at_all" async="request" version="3.1">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <request name="request" type="MPI_Request*" />
+    </function>
+
+    <function name="File_iread_shared" async="request" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <request name="request" type="MPI_Request*" />
+    </function>
+
+    <function name="File_iwrite" async="request" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <request name="request" type="MPI_Request*" />
+    </function>
+
+    <function name="File_iwrite_all" async="request" version="3.1">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <request name="request" type="MPI_Request*" />
+    </function>
+
+    <function name="File_iwrite_at" async="request" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <request name="request" type="MPI_Request*" />
+    </function>
+
+    <function name="File_iwrite_at_all" async="request" version="3.1">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <request name="request" type="MPI_Request*" />
+    </function>
+
+    <function name="File_iwrite_shared" async="request" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <request name="request" type="MPI_Request*" />
+    </function>
+
+    <function name="File_open" version="2.0">
+      <arg name="comm" type="MPI_Comm" />
+      <arg name="filename" type="char*" const="opt"/>
+      <arg name="amode" type="int" />
+      <arg name="info" type="MPI_Info" />
+      <arg name="fh" type="MPI_File*" />
+    </function>
+
+    <function name="File_preallocate" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="size" type="MPI_Offset" />
+    </function>
+
+    <function name="File_read" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_read_all" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_read_all_begin" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+    </function>
+
+    <function name="File_read_all_end" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_read_at" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_read_at_all" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_read_at_all_begin" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+    </function>
+
+    <function name="File_read_at_all_end" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_read_ordered" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_read_ordered_begin" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+    </function>
+
+    <function name="File_read_ordered_end" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_read_shared" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" />
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_seek" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="whence" type="int" />
+    </function>
+
+    <function name="File_seek_shared" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="whence" type="int" />
+    </function>
+
+    <function name="File_set_atomicity" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="flag" type="int" />
+    </function>
+
+    <function name="File_set_info" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="info" type="MPI_Info" />
+    </function>
+
+    <function name="File_set_size" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="size" type="MPI_Offset" />
+    </function>
+
+    <function name="File_set_view" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="disp" type="MPI_Offset" />
+      <type name="etype" type="MPI_Datatype" />
+      <type name="filetype" type="MPI_Datatype" />
+      <arg name="datarep" type="char*" const="1"/>
+      <arg name="info" type="MPI_Info" />
+    </function>
+
+    <function name="File_sync" version="2.0">
+      <arg name="fh" type="MPI_File" />
+    </function>
+
+    <function name="File_write" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_write_all" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_write_all_begin" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+    </function>
+
+    <function name="File_write_all_end" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="opt"/>
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_write_at" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_write_at_all" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_write_at_all_begin" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="offset" type="MPI_Offset" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+    </function>
+
+    <function name="File_write_at_all_end" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="opt"/>
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_write_ordered" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_write_ordered_begin" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+    </function>
+
+    <function name="File_write_ordered_end" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="opt"/>
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="File_write_shared" version="2.0">
+      <arg name="fh" type="MPI_File" />
+      <arg name="buf" type="void*" const="1"/>
+      <arg name="count" type="int" />
+      <type name="datatype" type="MPI_Datatype" />
+      <arg name="status" type="MPI_Status*" />
+    </function>
+
+    <function name="Register_datarep" version="2.0">
+      <arg name="datarep" type="char*" const="opt"/>
+      <arg name="read_conversion_fn" type="MPI_Datarep_conversion_function*" />
+      <arg name="write_conversion_fn" type="MPI_Datarep_conversion_function*" />
+      <arg name="dtype_file_extent_fn" type="MPI_Datarep_extent_function*" />
+      <arg name="extra_state" type="void*" />
+    </function>
+
+    <!-- A.2.12 Language Bindings C Bindings -->
+
+      <function name="Status_f082f" version="3.0" mediHandle="ignore">
+        <arg name="f08_status" type="MPI_F08_status*" />
+        <arg name="f_status" type="MPI_Fint*" />
+      </function>
+
+      <function name="Status_f2f08" version="3.0" mediHandle="ignore">
+        <arg name="f_status" type="MPI_Fint*" />
+        <arg name="f08_status" type="MPI_F08_status*" />
+      </function>
+
+      <function name="Type_create_f90_complex" version="2.0" mediHandle="disable">
+        <arg name="r" type="int p, int" />
+        <arg name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <function name="Type_create_f90_integer" version="2.0" mediHandle="disable">
+        <arg name="r" type="int" />
+        <arg name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <function name="Type_create_f90_real" version="2.0" mediHandle="disable">
+        <arg name="p" type="int" />
+        <arg name="r" type="int" />
+        <arg name="newtype" type="MPI_Datatype*" />
+      </function>
+
+      <function name="Type_match_size" version="2.0" mediHandle="disable">
+        <arg name="typeclass" type="int" />
+        <arg name="size" type="int" />
+        <arg name="datatype" type="MPI_Datatype*" />
+      </function>
+
+      <function name="Comm_c2f" version="2.0" type="MPI_Fint" >
+        <arg name="comm" type="MPI_Comm" />
+      </function>
+
+      <function name="Comm_f2c" version="2.0" type="MPI_Comm" >
+        <arg name="comm" type="MPI_Fint" />
+      </function>
+
+      <function name="Errhandler_c2f" type="MPI_Fint" version="2.1">
+        <arg name="errhandler" type="MPI_Errhandler" />
+      </function>
+
+      <function name="Errhandler_f2c" type="MPI_Errhandler" version="2.1">
+        <arg name="errhandler" type="MPI_Fint" />
+      </function>
+
+      <function name="File_c2f" version="2.0" type="MPI_Fint" >
+        <arg name="file" type="MPI_File" />
+      </function>
+
+      <function name="File_f2c" version="2.0" type="MPI_File" >
+        <arg name="file" type="MPI_Fint" />
+      </function>
+
+      <function name="Group_c2f" version="2.0" type="MPI_Fint" >
+        <arg name="group" type="MPI_Group" />
+      </function>
+
+      <function name="Group_f2c" version="2.0" type="MPI_Group" >
+        <arg name="group" type="MPI_Fint" />
+      </function>
+
+      <function name="Info_c2f" version="2.0" type="MPI_Fint" >
+        <arg name="info" type="MPI_Info" />
+      </function>
+
+      <function name="Info_f2c" version="2.0" type="MPI_Info" >
+        <arg name="info" type="MPI_Fint" />
+      </function>
+
+      <function name="Message_c2f" type="MPI_Fint" version="3.0" mediHandle="disable">
+        <arg name="message" type="MPI_Message" />
+      </function>
+
+      <function name="Message_f2c" type="MPI_Message" version="3.0" mediHandle="disable">
+        <arg name="message" type="MPI_Fint" />
+      </function>
+
+      <function name="Op_c2f" version="2.0" type="MPI_Fint" mediHandle="disable">
+        <arg name="op" type="MPI_Op" />
+      </function>
+
+      <function name="Op_f2c" version="2.0" type="MPI_Op" mediHandle="disable">
+        <arg name="op" type="MPI_Fint" />
+      </function>
+
+      <function name="Request_c2f" version="2.0" type="MPI_Fint" mediHandle="disable">
+        <arg name="request" type="MPI_Request" />
+      </function>
+
+      <function name="Request_f2c" version="2.0" type="MPI_Request" mediHandle="disable">
+        <arg name="request" type="MPI_Fint" />
+      </function>
+
+      <function name="Status_c2f" version="2.0">
+        <arg name="c_status" type="MPI_Status*" const="opt"/>
+        <arg name="f_status" type="MPI_Fint*" />
+      </function>
+
+      <function name="Status_c2f08" version="3.0" mediHandle="ignore">
+        <arg name="c_status" type="MPI_Status*" const="1"/>
+        <arg name="f08_status" type="MPI_F08_status*" />
+      </function>
+
+      <function name="Status_f082c" version="3.0" mediHandle="ignore">
+        <arg name="f08_status" type="MPI_F08_status*" const="1"/>
+        <arg name="c_status" type="MPI_Status*" />
+      </function>
+
+      <function name="Status_f2c" version="2.0">
+        <arg name="f_status" type="MPI_Fint*" const="opt"/>
+        <arg name="c_status" type="MPI_Status*" />
+      </function>
+
+      <function name="Type_c2f" version="2.0" type="MPI_Fint" mediHandle="disable">
+        <arg name="datatype" type="MPI_Datatype" />
+      </function>
+
+      <function name="Type_f2c" version="2.0" type="MPI_Datatype" mediHandle="disable">
+        <arg name="datatype" type="MPI_Fint" />
+      </function>
+
+      <function name="Win_c2f" version="2.0" type="MPI_Fint" >
+        <arg name="win" type="MPI_Win" />
+      </function>
+
+      <function name="Win_f2c" version="2.0" type="MPI_Win" >
+        <arg name="win" type="MPI_Fint" />
+      </function>
+
+    <!-- A.2.13 Tools / Profiling Interface C Bindings -->
+
+      <function name="Pcontrol" version="1.0" mediHandle="forward">
+      </function>
+
+    <!-- A.2.14 Tools / MPI Tool Information Interface C Bindings -->
+
+      <function name="T_category_changed" version="3.0">
+        <arg name="stamp" type="int*" />
+      </function>
+
+      <function name="T_category_get_categories" version="3.0">
+        <arg name="cat_index" type="int" />
+        <arg name="len" type="int" />
+        <arg name="indices" type="int*" />
+      </function>
+
+      <function name="T_category_get_cvars" version="3.0">
+        <arg name="cat_index" type="int" />
+        <arg name="len" type="int" />
+        <arg name="indices" type="int*" />
+      </function>
+
+      <function name="T_category_get_index" version="3.1">
+        <arg name="name" type="char*" const="1"/>
+        <arg name="cat_index" type="int*" />
+      </function>
+
+      <function name="T_category_get_info" version="3.0">
+        <arg name="cat_index" type="int" />
+        <arg name="name" type="char*" />
+        <arg name="name_len" type="int*" />
+        <arg name="desc" type="char*" />
+        <arg name="desc_len" type="int*" />
+        <arg name="num_cvars" type="int*" />
+        <arg name="num_pvars" type="int*" />
+        <arg name="num_categories" type="int*" />
+      </function>
+
+      <function name="T_category_get_num" version="3.0">
+        <arg name="num_cat" type="int*" />
+      </function>
+
+      <function name="T_category_get_pvars" version="3.0">
+        <arg name="cat_index" type="int" />
+        <arg name="len" type="int" />
+        <arg name="indices" type="int*" />
+      </function>
+
+      <function name="T_cvar_get_index" version="3.1">
+        <arg name="name" type="char*" const="1"/>
+        <arg name="cvar_index" type="int*" />
+      </function>
+
+      <function name="T_cvar_get_info" version="3.0" mediHandle="disable">
+        <arg name="cvar_index" type="int" />
+        <arg name="name" type="char*" />
+        <arg name="name_len" type="int*" />
+        <arg name="verbosity" type="int*" />
+        <datatype name="datatype" type="MPI_Datatype*" />
+        <arg name="enumtype" type="MPI_T_enum*" />
+        <arg name="desc" type="char*" />
+        <arg name="desc_len" type="int*" />
+        <arg name="bind" type="int*" />
+        <arg name="scope" type="int*" />
+      </function>
+
+      <function name="T_cvar_get_num" version="3.0">
+        <arg name="num_cvar" type="int*" />
+      </function>
+
+      <function name="T_cvar_handle_alloc" version="3.0">
+        <arg name="cvar_index" type="int" />
+        <arg name="obj_handle" type="void*" />
+        <arg name="handle" type="MPI_T_cvar_handle*" />
+        <arg name="count" type="int*" />
+      </function>
+
+      <function name="T_cvar_handle_free" version="3.0">
+        <arg name="handle" type="MPI_T_cvar_handle*" />
+      </function>
+
+      <function name="T_cvar_read" version="3.0">
+        <arg name="handle" type="MPI_T_cvar_handle" />
+        <arg name="buf" type="void*" />
+      </function>
+
+      <function name="T_cvar_write" version="3.0">
+        <arg name="handle" type="MPI_T_cvar_handle" />
+        <arg name="buf" type="void*" const="1"/>
+      </function>
+
+      <function name="T_enum_get_info" version="3.0">
+        <arg name="enumtype" type="MPI_T_enum" />
+        <arg name="num" type="int*" />
+        <arg name="name" type="char*" />
+        <arg name="name_len" type="int*" />
+      </function>
+
+      <function name="T_enum_get_item" version="3.0">
+        <arg name="enumtype" type="MPI_T_enum" />
+        <arg name="index" type="int" />
+        <arg name="value" type="int*" />
+        <arg name="name" type="char*" />
+        <arg name="name_len" type="int*" />
+      </function>
+
+      <function name="T_finalize" version="3.0">
+      </function>
+      <function name="T_init_thread" version="3.0">
+        <arg name="required" type="int" />
+        <arg name="provided" type="int*" />
+      </function>
+
+      <function name="T_pvar_get_index" version="3.1">
+        <arg name="name" type="char*" const="1"/>
+        <arg name="var_class" type="int" />
+        <arg name="pvar_index" type="int*" />
+      </function>
+
+      <function name="T_pvar_get_info" version="3.0" mediHandle="disable">
+        <arg name="pvar_index" type="int" />
+        <arg name="name" type="char*" />
+        <arg name="name_len" type="int*" />
+        <arg name="verbosity" type="int*" />
+        <arg name="var_class" type="int*" />
+        <datatype name="datatype" type="MPI_Datatype*" />
+        <arg name="enumtype" type="MPI_T_enum*" />
+        <arg name="desc" type="char*" />
+        <arg name="desc_len" type="int*" />
+        <arg name="bind" type="int*" />
+        <arg name="readonly" type="int*" />
+        <arg name="continuous" type="int*" />
+        <arg name="atomic" type="int*" />
+      </function>
+
+      <function name="T_pvar_get_num" version="3.0">
+        <arg name="num_pvar" type="int*" />
+      </function>
+
+      <function name="T_pvar_handle_alloc" version="3.0">
+        <arg name="session" type="MPI_T_pvar_session" />
+        <arg name="pvar_index" type="int" />
+        <arg name="obj_handle" type="void*" />
+        <arg name="handle" type="MPI_T_pvar_handle*" />
+        <arg name="count" type="int*" />
+      </function>
+
+      <function name="T_pvar_handle_free" version="3.0">
+        <arg name="session" type="MPI_T_pvar_session" />
+        <arg name="handle" type="MPI_T_pvar_handle*" />
+      </function>
+
+      <function name="T_pvar_read" version="3.0">
+        <arg name="session" type="MPI_T_pvar_session" />
+        <arg name="handle" type="MPI_T_pvar_handle" />
+        <arg name="buf" type="void*" />
+      </function>
+
+      <function name="T_pvar_readreset" version="3.0">
+        <arg name="session" type="MPI_T_pvar_session" />
+        <arg name="handle" type="MPI_T_pvar_handle" />
+        <arg name="buf" type="void*" />
+      </function>
+
+      <function name="T_pvar_reset" version="3.0">
+        <arg name="session" type="MPI_T_pvar_session" />
+        <arg name="handle" type="MPI_T_pvar_handle" />
+      </function>
+
+      <function name="T_pvar_session_create" version="3.0">
+        <arg name="session" type="MPI_T_pvar_session*" />
+      </function>
+
+      <function name="T_pvar_session_free" version="3.0">
+        <arg name="session" type="MPI_T_pvar_session*" />
+      </function>
+
+      <function name="T_pvar_start" version="3.0">
+        <arg name="session" type="MPI_T_pvar_session" />
+        <arg name="handle" type="MPI_T_pvar_handle" />
+      </function>
+
+      <function name="T_pvar_stop" version="3.0">
+        <arg name="session" type="MPI_T_pvar_session" />
+        <arg name="handle" type="MPI_T_pvar_handle" />
+      </function>
+
+      <function name="T_pvar_write" version="3.0">
+        <arg name="session" type="MPI_T_pvar_session" />
+        <arg name="handle" type="MPI_T_pvar_handle" />
+        <arg name="buf" type="void*" const="1"/>
+      </function>
+
+    <!-- deprecated functions -->
+
+      <function name="Address" version="1.0" deprecated="3.0">
+        <arg name="location" type="void*" />
+        <arg name="address" type="MPI_Aint*" />
+      </function>
+
+      <function name="Attr_delete" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="keyval" type="int" />
+      </function>
+
+      <function name="Attr_get" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="keyval" type="int" />
+        <arg name="attribute_val" type="void*" />
+        <arg name="flag" type="int*" />
+      </function>
+
+      <function name="Attr_put" version="1.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="keyval" type="int" />
+        <arg name="attribute_val" type="void*" />
+      </function>
+
+      <function name="Keyval_create" version="1.0">
+        <arg name="copy_fn" type="MPI_Copy_function*" />
+        <arg name="delete_fn" type="MPI_Delete_function*" />
+        <arg name="keyval" type="int*" />
+        <arg name="extra_state" type="void*" />
+      </function>
+
+      <function name="Keyval_free" version="1.0">
+        <arg name="keyval" type="int*" />
+      </function>
+
+      <function name="Errhandler_create" version="1.0" deprecated="3.0">
+        <arg name="function" type="MPI_Handler_function*" />
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="Errhandler_get" version="1.0" deprecated="3.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="errhandler" type="MPI_Errhandler*" />
+      </function>
+
+      <function name="Errhandler_set" version="1.0" deprecated="3.0">
+        <arg name="comm" type="MPI_Comm" />
+        <arg name="errhandler" type="MPI_Errhandler" />
+      </function>
+
+      <function name="Type_extent" version="1.0" deprecated="3.0">
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="extent" type="MPI_Aint*" />
+      </function>
+
+      <function name="Type_lb" version="1.0" deprecated="3.0">
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="displacement" type="MPI_Aint*" />
+      </function>
+
+      <function name="Type_ub" version="1.0" deprecated="3.0">
+        <type name="datatype" type="MPI_Datatype" />
+        <arg name="displacement" type="MPI_Aint*" />
+      </function>
+
+</functions>

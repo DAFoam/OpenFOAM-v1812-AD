@@ -1,11 +1,11 @@
 /*
  * CoDiPack, a Code Differentiation Package
  *
- * Copyright (C) 2015-2020 Chair for Scientific Computing (SciComp), TU Kaiserslautern
+ * Copyright (C) 2015-2023 Chair for Scientific Computing (SciComp), University of Kaiserslautern-Landau
  * Homepage: http://www.scicomp.uni-kl.de
  * Contact:  Prof. Nicolas R. Gauger (codi@scicomp.uni-kl.de)
  *
- * Lead developers: Max Sagebaum, Tim Albring (SciComp, TU Kaiserslautern)
+ * Lead developers: Max Sagebaum, Johannes Blühdorn (SciComp, University of Kaiserslautern-Landau)
  *
  * This file is part of CoDiPack (http://www.scicomp.uni-kl.de/software/codi).
  *
@@ -23,33 +23,28 @@
  * General Public License along with CoDiPack.
  * If not, see <http://www.gnu.org/licenses/>.
  *
+ * For other licensing options please contact us.
+ *
  * Authors:
- *  - SciComp, TU Kaiserslautern:
- *     Max Sagebaum
- *     Tim Albring
- *     Johannes Blühdorn
+ *  - SciComp, University of Kaiserslautern-Landau:
+ *    - Max Sagebaum
+ *    - Johannes Blühdorn
+ *    - Former members:
+ *      - Tim Albring
  */
-
 #pragma once
 
-#include "../../configure.h"
-
-/**
- * @brief Global namespace for CoDiPack - Code Differentiation Package
- */
+/** \copydoc codi::Namespace */
 namespace codi {
 
-  /**
-   * @brief A static store for default dummy variables.
-   *
-   * @tparam The dummy type.
-   */
-  template <typename Dummy>
+  /// Static dummy objects for e.g. default reference arguments.
+  template<typename Dummy>
   struct StaticDummy {
-
-      static Dummy dummy; /**< Static value for the dummy */
+      static Dummy dummy;  ///< Dummy object.
   };
 
+#ifndef DOXYGEN_DISABLE
   template<typename Dummy>
   Dummy StaticDummy<Dummy>::dummy;
+#endif
 }

@@ -1,0 +1,118 @@
+.-
+.- MeDiPack, a Message Differentiation Package
+.-
+.- Copyright (C) 2017-2023 Chair for Scientific Computing (SciComp), University of Kaiserslautern-Landau
+.- Homepage: http://www.scicomp.uni-kl.de
+.- Contact:  Prof. Nicolas R. Gauger (codi@scicomp.uni-kl.de)
+.-
+.- Lead developers: Max Sagebaum (SciComp, University of Kaiserslautern-Landau)
+.-
+.- This file is part of MeDiPack (http://www.scicomp.uni-kl.de/software/codi).
+.-
+.- MeDiPack is free software: you can redistribute it and/or
+.- modify it under the terms of the GNU Lesser General Public
+.- License as published by the Free Software Foundation, either
+.- version 3 of the License, or (at your option) any later version.
+.-
+.- MeDiPack is distributed in the hope that it will be useful,
+.- but WITHOUT ANY WARRANTY; without even the implied warranty of
+.- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.-
+.- See the GNU Lesser General Public License for more details.
+.- You should have received a copy of the GNU
+.- Lesser General Public License along with MeDiPack.
+.- If not, see <http://www.gnu.org/licenses/>.
+.-
+.- Authors: Max Sagebaum, Tim Albring (SciComp, University of Kaiserslautern-Landau)
+.-
+.
+.ignorecase = 0
+.
+.include "templates/medi/basicTemplates.gsl"
+.
+.template 0
+
+# delete all items that have a special handling
+
+for definitions. as item where item.special ?<> ""
+  delete item
+endfor
+
+for definitions.define as curDefine
+  curDefine.ampiName = modifyTypeName(curDefine.name)
+endfor
+
+for definitions.typedef as curTypedef
+  curTypedef.ampiName = modifyTypeName(curTypedef.name)
+endfor
+
+for definitions.operator as curOperator
+  curOperator.ampiName = modifyTypeName(curOperator.name)
+endfor
+
+for definitions.datatype
+  datatype.taType = modifyTypeName(datatype.name)
+endfor
+
+.endtemplate
+.output "$(switches.arg1)"
+.literal from "templates/medi/license_c.header"
+
+#pragma once
+
+#include <cstdlib>
+#include <cstdint>
+
+#include <mpi.h>
+
+#include "../ampi/typePassive.hpp"
+
+/**
+ * @brief Global namespace for MeDiPack - Message Differentiation Package
+ */
+namespace medi {
+.for definitions.define as curDefine
+. startVersionGuard(curDefine)
+.
+  #define $(curDefine.ampiName) $(curDefine.name)
+.
+. endVersionGuard(curDefine)
+.endfor
+
+.for definitions.typedef as curTypedef
+. startVersionGuard(curTypedef)
+.
+  typedef $(curTypedef.name) $(curTypedef.ampiName);
+.
+. endVersionGuard(curTypedef)
+.endfor
+
+  void initializeOperators();
+
+.for definitions.operator as curOperator
+. startVersionGuard(curOperator)
+.
+  extern AMPI_Op $(curOperator.ampiName);
+.
+. endVersionGuard(curOperator)
+.endfor
+
+  void initTypes();
+  void finalizeTypes();
+
+.for definitions.datatype
+. startVersionGuard(datatype)
+.
+  typedef MpiTypePassive<$(datatype.type)> $(datatype.taType)_Type;
+.
+. endVersionGuard(datatype)
+.endfor
+
+.for definitions.datatype
+. startVersionGuard(datatype)
+.
+  extern $(datatype.taType)_Type* $(datatype.taType);
+.
+. endVersionGuard(datatype)
+.endfor
+}
