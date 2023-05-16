@@ -36,7 +36,7 @@ License
 // MediPack
 #include <medi/medi.hpp>
 #include <codi.hpp>
-#include <codi/externals/codiMpiTypes.hpp>
+#include <codi/tools/mpi/codiMpiTypes.hpp>
 using namespace medi;
 
 #include <cstring>
@@ -577,7 +577,7 @@ void Foam::UPstream::allToAll
     }
 
     bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
-                   && codi::RealReverse::getGlobalTape().isActive();
+                   && codi::RealReverse::getTape().isActive();
 
     if (debug)
     {
@@ -675,7 +675,7 @@ void Foam::UPstream::gather
     }
 
     bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
-                   && codi::RealReverse::getGlobalTape().isActive();
+                   && codi::RealReverse::getTape().isActive();
 
     if (debug)
     {
@@ -764,7 +764,7 @@ void Foam::UPstream::scatter
     }
 
     bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
-                   && codi::RealReverse::getGlobalTape().isActive();
+                   && codi::RealReverse::getTape().isActive();
 
     if (debug)
     {

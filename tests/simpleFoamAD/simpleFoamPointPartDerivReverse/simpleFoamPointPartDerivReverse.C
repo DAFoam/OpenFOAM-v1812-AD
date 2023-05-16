@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 
     label myProc = Pstream::myProcNo();
     {
-        codi::RealReverse::TapeType& tape = codi::RealReverse::getGlobalTape();
+        codi::RealReverse::Tape& tape = codi::RealReverse::getTape();
         tape.setActive();
 
         // compute dFdXv using reverse mode AD.

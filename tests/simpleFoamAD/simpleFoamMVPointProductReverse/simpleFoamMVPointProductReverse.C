@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 
     label myProc = Pstream::myProcNo();
     {
-        codi::RealReverse::TapeType& tape = codi::RealReverse::getGlobalTape();
+        codi::RealReverse::Tape& tape = codi::RealReverse::getTape();
         tape.setActive();
 
         // compute dRdXvT * psi using reverse mode AD. Here psi is a random vector

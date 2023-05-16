@@ -1,0 +1,104 @@
+.-
+.- MeDiPack, a Message Differentiation Package
+.-
+.- Copyright (C) 2017-2023 Chair for Scientific Computing (SciComp), University of Kaiserslautern-Landau
+.- Homepage: http://www.scicomp.uni-kl.de
+.- Contact:  Prof. Nicolas R. Gauger (codi@scicomp.uni-kl.de)
+.-
+.- Lead developers: Max Sagebaum (SciComp, University of Kaiserslautern-Landau)
+.-
+.- This file is part of MeDiPack (http://www.scicomp.uni-kl.de/software/codi).
+.-
+.- MeDiPack is free software: you can redistribute it and/or
+.- modify it under the terms of the GNU Lesser General Public
+.- License as published by the Free Software Foundation, either
+.- version 3 of the License, or (at your option) any later version.
+.-
+.- MeDiPack is distributed in the hope that it will be useful,
+.- but WITHOUT ANY WARRANTY; without even the implied warranty of
+.- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.-
+.- See the GNU Lesser General Public License for more details.
+.- You should have received a copy of the GNU
+.- Lesser General Public License along with MeDiPack.
+.- If not, see <http://www.gnu.org/licenses/>.
+.-
+.- Authors: Max Sagebaum, Tim Albring (SciComp, University of Kaiserslautern-Landau)
+.-
+.
+.ignorecase = 0
+.
+.include "templates/medi/basicTemplates.gsl"
+.
+.template 0
+
+for definitions.operator as curOperator
+  curOperator.ampiName = modifyTypeName(curOperator.name)
+endfor
+
+for definitions.datatype
+  datatype.taType = modifyTypeName(datatype.name)
+endfor
+
+.endtemplate
+.output "$(switches.arg1)"
+.literal from "templates/medi/license_c.header"
+
+#pragma once
+
+#include <mpi.h>
+
+#include "../macros.h"
+#include "ampiDefinitions.h"
+
+/**
+ * @brief Global namespace for MeDiPack - Message Differentiation Package
+ */
+namespace medi {
+
+.for definitions.operator as curOperator
+. startVersionGuard(curOperator)
+.
+  AMPI_Op $(curOperator.ampiName);
+.
+. endVersionGuard(curOperator)
+.endfor
+
+.for definitions.datatype
+. startVersionGuard(datatype)
+.
+  $(datatype.taType)_Type* $(datatype.taType);
+.
+. endVersionGuard(datatype)
+.endfor
+
+  void initializeOperators() {
+.   for definitions.operator as curOperator
+.     startVersionGuard(curOperator)
+.
+      $(curOperator.ampiName).init($(curOperator.name));
+.
+.     endVersionGuard(curOperator)
+.   endfor
+  }
+
+  void initTypes() {
+.   for definitions.datatype
+.     startVersionGuard(datatype)
+.
+      $(datatype.taType) = new $(datatype.taType)_Type($(datatype.name));
+.
+.     endVersionGuard(datatype)
+.   endfor
+  }
+
+  void finalizeTypes() {
+.   for definitions.datatype
+.     startVersionGuard(datatype)
+.
+     delete $(datatype.taType);
+.
+.    endVersionGuard(datatype)
+.   endfor
+  }
+}
