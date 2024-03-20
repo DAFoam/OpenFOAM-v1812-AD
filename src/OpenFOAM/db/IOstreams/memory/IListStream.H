@@ -156,7 +156,7 @@ public:
         //- Move construct from List
         IListStream
         (
-            List<char>&& buffer,
+            Foam::List<char>&& buffer,
             streamFormat format=ASCII,
             versionNumber version=currentVersion,
             const Foam::string& name="input"
