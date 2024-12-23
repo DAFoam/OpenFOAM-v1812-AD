@@ -164,7 +164,7 @@ void Foam::fvMesh::clearAddressing(const bool isMeshUpdate)
 
 void Foam::fvMesh::storeOldVol(const scalarField& V)
 {
-    if (curTimeIndex_ < time().timeIndex())
+    if (curTimeIndex_ != time().timeIndex())
     {
         if (debug)
         {
@@ -748,7 +748,7 @@ Foam::tmp<Foam::scalarField> Foam::fvMesh::movePoints(const pointField& p)
 {
     // Grab old time volumes if the time has been incremented
     // This will update V0, V00
-    if (curTimeIndex_ < time().timeIndex())
+    if (curTimeIndex_ != time().timeIndex())
     {
         storeOldVol(V());
     }
