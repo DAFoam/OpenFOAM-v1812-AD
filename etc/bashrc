@@ -53,7 +53,7 @@ export WM_PROJECT_VERSION=v1812-AD
 # --
 projectDir="${BASH_SOURCE:-${ZSH_NAME:+$0}}";
 [ -n "$projectDir" ] && projectDir="$(\cd $(dirname $projectDir)/.. && \pwd -L)" ||\
-projectDir="$HOME/OpenFOAM/OpenFOAM-$WM_PROJECT_VERSION"
+projectDir="$DAFOAM_ROOT_PATH/OpenFOAM/OpenFOAM-$WM_PROJECT_VERSION"
 # projectDir="/opt/OpenFOAM/OpenFOAM-$WM_PROJECT_VERSION"
 # projectDir="/usr/local/OpenFOAM/OpenFOAM-$WM_PROJECT_VERSION"
 # END OF (NORMAL) USER EDITABLE PART
@@ -95,9 +95,9 @@ export WM_COMPILE_OPTION=Opt
 #   HPMPI | CRAY-MPICH | FJMPI | QSMPI | SGIMPI | INTELMPI | USERMPI
 export WM_MPLIB=SYSTEMOPENMPI
 
-# [WM_CODI_AD_MODE] - Automatic differentiation mode
-# = CODI_AD_FORWARD | CODI_AD_REVERSE
-export WM_CODI_AD_MODE=CODI_AD_FORWARD
+# [WM_CODI_AD_LIB_POSTFIX] - Automatic differentiation postfix
+# = ADF | ADR
+export WM_CODI_AD_LIB_POSTFIX=ADF
 
 #------------------------------------------------------------------------------
 # (advanced / legacy)
@@ -118,7 +118,7 @@ export WM_CODI_AD_MODE=CODI_AD_FORWARD
 
 # [FOAM_JOB_DIR] - location of jobControl
 #                - unset: equivalent to ~/.OpenFOAM/jobControl
-# export FOAM_JOB_DIR="$HOME/.OpenFOAM/jobControl"
+# export FOAM_JOB_DIR="$DAFOAM_ROOT_PATH/.OpenFOAM/jobControl"
 
 # [WM_OSTYPE] - Operating System Type
 # = POSIX
@@ -128,14 +128,14 @@ export WM_CODI_AD_MODE=CODI_AD_FORWARD
 
 # Capture values of old directories to be cleaned from PATH, LD_LIBRARY_PATH
 foamOldDirs="$WM_PROJECT_DIR $WM_THIRD_PARTY_DIR \
-    $HOME/$WM_PROJECT/$USER $FOAM_USER_APPBIN $FOAM_USER_LIBBIN \
+    $DAFOAM_ROOT_PATH/$WM_PROJECT/$USER $FOAM_USER_APPBIN $FOAM_USER_LIBBIN \
     $WM_PROJECT_SITE $FOAM_SITE_APPBIN $FOAM_SITE_LIBBIN"
 
 # [WM_PROJECT_DIR] - Location of this OpenFOAM version
 export WM_PROJECT_DIR="$projectDir"
 
 # [WM_PROJECT_USER_DIR] - Location of user files
-export WM_PROJECT_USER_DIR="$HOME/$WM_PROJECT/$USER-$WM_PROJECT_VERSION"
+export WM_PROJECT_USER_DIR="$DAFOAM_ROOT_PATH/$WM_PROJECT/$USER-$WM_PROJECT_VERSION"
 
 # [WM_PROJECT_SITE] - Location of site-specific (group) files
 # Default (unset) implies WM_PROJECT_DIR/site
@@ -153,15 +153,6 @@ then
 else
     echo "Error: did not locate installation path for $WM_PROJECT-$WM_PROJECT_VERSION" 1>&2
     echo "No directory: $WM_PROJECT_DIR" 1>&2
-fi
-
-# Set the AD postfix for libraries
-if [ "$WM_CODI_AD_MODE" = "CODI_AD_REVERSE" ]; then
-    export WM_CODI_AD_LIB_POSTFIX="ADR"
-elif [ "$WM_CODI_AD_MODE" = "CODI_AD_FORWARD" ]; then
-    export WM_CODI_AD_LIB_POSTFIX="ADF"
-else
-    echo "WM_CODI_AD_MODE not valid!!!! Options are: CODI_AD_FORWARD or CODI_AD_REVERSE"
 fi
 
 # Cleanup variables (done as final statement for a clean exit code)

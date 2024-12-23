@@ -52,7 +52,7 @@ echo
 #applications/Allwmake $targetType $*
 
 # Compile common applications
-if [ "$WM_CODI_AD_MODE" = "CODI_AD_REVERSE" ]; then
+if [ "$WM_CODI_AD_LIB_POSTFIX" = "ADR" ]; then
  wmake applications/solvers/incompressible/DASimpleFoamReverseAD
 fi
 
