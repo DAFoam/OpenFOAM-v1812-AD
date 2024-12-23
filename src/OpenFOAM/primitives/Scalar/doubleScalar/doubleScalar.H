@@ -48,11 +48,11 @@ namespace Foam
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 // Replace double with codi type
-#ifdef CODI_AD_FORWARD
+#ifdef CODI_ADF
 typedef codi::RealForward doubleScalar; // forward mode AD
 #endif
 
-#ifdef CODI_AD_REVERSE
+#ifdef CODI_ADR
 typedef codi::RealReverse doubleScalar; // reverse mode AD
 #endif
 

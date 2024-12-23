@@ -9,7 +9,7 @@ LD         = ld
 
 GFLAGS     = -D$(WM_VERSION) -D$(WM_ARCH) -DWM_ARCH_OPTION=$(WM_ARCH_OPTION) \
              -DWM_$(WM_PRECISION_OPTION) -DWM_LABEL_SIZE=$(WM_LABEL_SIZE) \
-             -D$(WM_CODI_AD_MODE)
+             -DCODI_$(WM_CODI_AD_LIB_POSTFIX)
 GINC       =
 GLIBS      = -lm
 GLIB_LIBS  =

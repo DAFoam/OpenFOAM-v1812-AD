@@ -44,10 +44,10 @@ SourceFiles
 #include <codi.hpp>
 #include <codi/tools/mpi/codiMpiTypes.hpp>
 using namespace medi;
-#ifdef CODI_AD_FORWARD
+#ifdef CODI_ADF
 using MpiTypes = codi::CoDiMpiTypes<codi::RealForward>;
 #endif
-#ifdef CODI_AD_REVERSE
+#ifdef CODI_ADR
 using MpiTypes = codi::CoDiMpiTypes<codi::RealReverse>;
 #endif
 
