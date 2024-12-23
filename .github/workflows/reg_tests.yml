@@ -5,7 +5,7 @@ on: [push, pull_request]
 env:
   DOCKER_WORKING_DIR: '/home/dafoamuser/dafoam/OpenFOAM/OpenFOAM-v1812-AD'
   DOCKER_MOUNT_DIR: '/home/dafoamuser/mount/OpenFOAM-v1812-AD'
-  DOCKER_TAG: 'latest'
+  DOCKER_TAG: 'v4'
 
 jobs:
 
