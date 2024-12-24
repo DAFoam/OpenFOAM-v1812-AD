@@ -8,7 +8,7 @@ ptFLAGS     = -DNoRepository
 # - Less restrictive warnings (may be needed for flex++, CGAL, etc.).
 
 c++WARN     = \
-    -Wall -Wextra \
+    -Wall -Wextra -w \
     -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof \
     -Wno-unknown-pragmas \
     -diag-disable 327,654,1125,1292,2289,2304,11062,11074,11076

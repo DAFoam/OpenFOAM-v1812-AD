@@ -9,7 +9,7 @@ ptFLAGS     = -DNoRepository -ftemplate-depth-100
 
 # CoDiPack4OpenFOAM Deleted old style and non virtual warnings
 c++WARN     = \
-    -Wall -Wextra \
+    -Wall -Wextra -w \
     -Wno-unused-parameter -Wno-invalid-offsetof \
     -Wno-attributes -Wno-unknown-pragmas
 
